@@ -1,12 +1,10 @@
 package ibm.tsa.eda.app;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 @ApplicationScoped
-@Path("/kafka")
 public class Consumer {
 
 /**
