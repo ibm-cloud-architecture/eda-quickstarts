@@ -1,0 +1,4 @@
+export SCRAM_USERNAME=
+export SCRAM_PASSWORD=
+export CERT_LOCATION=
+export CERT_PASSWORD=
