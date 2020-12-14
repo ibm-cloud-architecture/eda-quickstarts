@@ -4,7 +4,7 @@ const process = require('process');
 const run = async () => {
     const connection = kafka_config.config();
     const producer = connection.producer()
-    const TOPIC = process.env.TOPIC
+    const TOPIC = process.env.KAFKA_TOPIC
     console.log("Connecting.....")
     await producer.connect()
     console.log("Connected!")

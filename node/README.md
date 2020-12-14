@@ -5,15 +5,17 @@ This is quick starter code for kafka application development with kafka.
 npm install
 ```
 
-`Copy ``env.temp.sh`` file as env.sh. 
-fill all required property in env.sh file`
+Copy ``env.temp.sh`` file as env.sh 
+
+fill all required property in env.sh file
+
 ```
-export BROKER= # broker url
-export MECHANISM= # mechanish used 
-export USERNAME= # username
-export PASSWORD= # password
-export CERT= # pem file
-export TOPIC= # topic name
+export KAFKA_BOOTSTRAP_SERVERS=# broker url
+export SASL_MECHANISM=# mechanish used 
+export KAFKA_SASL_USERNAME=# username
+export KAFKA_SASL_PASSWORD=# password
+export KAFKA_SASL_TRUSTSTORE_LOCATION=# pem file
+export KAFKA_TOPIC=# topic name
 ```
 
 Source environment file
@@ -21,12 +23,12 @@ Source environment file
 source env.sh
 ```
 
-`To Produce message to your kafka topic run`
+To Produce message to your kafka topic run
 ```bash
-npm producer.js
+node producer.js
 ```
 
-`To Consume message from kafka topic run`
+To Consume message from kafka topic run
 ```bash
-npm comsumer.js
+node consumer.js
 ```

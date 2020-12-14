@@ -9,13 +9,10 @@ then do
 ```bash
 source env.sh
 ```
-After that you can do 
+
+After that you can do s
 ```bash
 ./mvnw quarkus:dev
 ```
 
-Code to produce message to kafka is located in `src/java/tsa/eda/app/Producer.java`
-
 Code to consume message from kafka using `src/java/tsa/eda/app/Consumer.java`
-
-there is also endpoint to send message to kafka. localhost:8082/kafka/produce

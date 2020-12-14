@@ -4,13 +4,12 @@ const process = require('process');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 function config() {
-  console.log(process.env);
-  BROKER = process.env.BROKER
-  MECHANISM = process.env.MECHANISM
-  USERNAME = process.env.SCRAM_USERNAME
-  PASSWORD = process.env.SCRAM_PASSWORD
-  CERT = process.env.CERT
-  
+  BROKER = process.env.KAFKA_BOOTSTRAP_SERVERS
+  MECHANISM = process.env.SASL_MECHANISM
+  USERNAME = process.env.KAFKA_SCRAM_USERNAME
+  PASSWORD = process.env.KAFKA_SCRAM_PASSWORD
+  CERT = process.env.KAFKA_SASL_TRUSTSTORE_LOCATION
+
   return new Kafka({
     clientId: 'connection-id',
     brokers: [BROKER],

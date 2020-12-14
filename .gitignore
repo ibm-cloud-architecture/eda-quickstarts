@@ -4,3 +4,6 @@ kafka-producer-node/node_modules/.package-lock.json
 node/env.sh
 node/package.json
 node/node_modules/*
+node/package-lock.json
+kafka-consumer/env.sh
+kafka-consumer/env.sh

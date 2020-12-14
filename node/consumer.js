@@ -10,8 +10,8 @@ async function run(){
         console.log("Connecting...")
         await consumer.connect()
         console.log("Connected!!!")
-        TOPIC = process.env.TOPIC
-        console.log(`Subscribed to topic ${TOPIC}`)
+        TOPIC = process.env.KAFKA_TOPIC
+        console.log(`Subscribed to topic ${KAFKA_TOPIC}`)
         await consumer.subscribe({
             topic: TOPIC,
             // fromBeginning: true
@@ -26,9 +26,6 @@ async function run(){
     catch(exception)
     {
         console.error(`Some problem occured: ${exception}`)
-    }
-    finally{
-        console.log('listening...')
     }
 }
 

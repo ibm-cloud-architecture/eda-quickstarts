@@ -1,6 +1,6 @@
-export BROKER=# broker url
-export MECHANISM=# mechanish used 
-export USERNAME=# username
-export PASSWORD=# password
-export CERT=# pem file
-export TOPIC=# topic name
+export KAFKA_BOOTSTRAP_SERVERS=
+export SASL_MECHANISM=
+export KAFKA_SCRAM_USERNAME=
+export KAFKA_SCRAM_PASSWORD=
+export KAFKA_SASL_TRUSTSTORE_LOCATION=
+export KAFKA_TOPIC=
