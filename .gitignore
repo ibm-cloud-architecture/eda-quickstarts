@@ -1,0 +1,6 @@
+kafka-producer-node/env.sh
+kafka-producer-node/package-lock.json
+kafka-producer-node/node_modules/.package-lock.json
+node/env.sh
+node/package.json
+node/node_modules/*
