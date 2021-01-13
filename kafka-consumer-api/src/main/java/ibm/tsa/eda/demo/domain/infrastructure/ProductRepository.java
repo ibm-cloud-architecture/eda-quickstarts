@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import ibm.tsa.eda.demo.domain.Product;
 
-@ApplicationScoped
+@Singleton
 public class ProductRepository {
     
-    private HashMap<String,Product> repo = new HashMap<String,Product>();
+    private static HashMap<String,Product> repo = new HashMap<String,Product>();
 
     public ProductRepository() {
         super();

@@ -8,4 +8,5 @@ data:
   KAFKA_SSL_TRUSTSTORE_LOCATION: "/deployments/certs/server/ca.p12"
   KAFKA_SSL_TRUSTSTORE_TYPE: "PKCS12"
   KAFKA_TOPIC_NAME: "products"
+  KAFKA_CONSUMER_POLL_TIMEOUT: "2000"
  

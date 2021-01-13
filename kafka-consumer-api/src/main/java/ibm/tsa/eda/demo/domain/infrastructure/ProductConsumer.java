@@ -29,21 +29,22 @@ import ibm.tsa.eda.demo.domain.Product;
 @ApplicationScoped
 public class ProductConsumer implements Runnable {
     private static final Logger logger = Logger.getLogger(ProductConsumer.class.getName());
-    @Inject
-    ProductRepository repository;
+    
+    private ProductRepository repository;
 
     KafkaConfiguration configuration;
     private KafkaConsumer<String, String> kafkaConsumer = null;
     private boolean running = true;
     private Jsonb parser;
 
-    public ProductConsumer() {
-        configuration = new KafkaConfiguration();
+    public ProductConsumer( ProductRepository repository) {
+        this.configuration = new KafkaConfiguration();
+        this.repository = repository;
+        init();
     }
 
     @Override
     public void run() {
-        init();
         loop();
     }
 
@@ -93,7 +94,8 @@ public class ProductConsumer implements Runnable {
                             "Consumer Record - key: " + record.key() + " timestamp: " + record.timestamp() + " value: "
                                     + record.value() + " partition: " + record.partition() + " offset: "
                                     + record.offset() + "\n");
-                    repository.addProduct(parser.fromJson(record.value(), Product.class));
+                    Product p = parser.fromJson(record.value(), Product.class);
+                    repository.addProduct(p);
                     if (configuration.pollRecords != -1)
                         count++;
                 }
