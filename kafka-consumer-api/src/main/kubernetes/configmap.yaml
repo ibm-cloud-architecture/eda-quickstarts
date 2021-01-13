@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-mgr-cm
+data:
+  KAFKA_BROKERS: "light-es-kafka-bootstrap.eventstreams.svc:9092"
+  KAFKA_SSL_PROTOCOL: "TLSv1.2"
+  KAFKA_SSL_TRUSTSTORE_LOCATION: "/deployments/certs/server/ca.p12"
+  KAFKA_SSL_TRUSTSTORE_TYPE: "PKCS12"
+  KAFKA_TOPIC_NAME: "products"
+ 
