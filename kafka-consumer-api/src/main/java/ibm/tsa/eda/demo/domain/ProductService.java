@@ -10,8 +10,8 @@ import javax.inject.Singleton;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.logging.Logger;
 
-import ibm.tsa.eda.demo.domain.infrastructure.ProductConsumer;
-import ibm.tsa.eda.demo.domain.infrastructure.ProductRepository;
+import ibm.tsa.eda.demo.infrastructure.ProductConsumer;
+import ibm.tsa.eda.demo.infrastructure.ProductRepository;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 

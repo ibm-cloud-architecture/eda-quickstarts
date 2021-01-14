@@ -1,4 +1,4 @@
-package ibm.tsa.eda.demo.domain.infrastructure;
+package ibm.tsa.eda.demo.infrastructure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
