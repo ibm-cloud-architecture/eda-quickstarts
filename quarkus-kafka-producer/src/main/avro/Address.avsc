@@ -1,0 +1,32 @@
+{
+    "namespace": "ibm.eda.demo.app.infrastructure.events",
+    "type": "record",
+    "name": "Address",
+    "fields": [
+        {
+            "name": "street",
+            "type": "string",
+            "doc": "Street name with number within the street"
+        },
+        {
+            "name": "city",
+            "type": "string",
+            "doc": "city"
+        },
+        {
+            "name": "state",
+            "type": "string",
+            "doc": "State code or name"
+        },
+        {
+            "name": "country",
+            "type": "string",
+            "doc": "Country"
+        },
+        {
+            "name": "zipcode",
+            "type": "string",
+            "doc": "Zipcode"
+        }
+    ]
+}

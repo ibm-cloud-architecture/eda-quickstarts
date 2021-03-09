@@ -1,0 +1,18 @@
+[
+    { "orderID" : "Order01",
+       "productID" : "P01",
+        "customerID" : "C01",
+        "quantity": 10,
+        "deliveryAddress": {"street": "12 main street", "city" : "san francisco", 
+            "country": "USA", "state": "CA", "zipcode": "92000"},
+        "status" : "pending"
+    },
+    { "orderID" : "Order02",
+        "productID" : "P02",
+         "customerID" : "C03",
+         "quantity": 7,
+         "deliveryAddress": {"street": "12 blue horizon avenue", "city" : "san francisco", 
+             "country": "USA", "state": "CA", "zipcode": "92000"},
+         "status" : "pending"
+     }
+]

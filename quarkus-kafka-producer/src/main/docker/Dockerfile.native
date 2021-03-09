@@ -3,18 +3,18 @@
 #
 # Before building the container image run:
 #
-# mvn package -Pnative -Dquarkus.native.container-build=true
+# ./mvnw package -Pnative
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/order-mgr .
+# docker build -f src/main/docker/Dockerfile.native -t quarkus/reefer-ms .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/order-mgr
+# docker run -i --rm -p 8080:8080 quarkus/reefer-ms
 #
 ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \

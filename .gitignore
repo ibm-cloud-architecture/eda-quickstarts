@@ -7,3 +7,4 @@ node/node_modules/*
 node/package-lock.json
 kafka-consumer/env.sh
 kafka-consumer/env.sh
+reefer-ms/

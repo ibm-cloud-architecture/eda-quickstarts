@@ -1,8 +1,11 @@
-# Template project: quarkus based kafka producer
+# Template project for a Quarkus app with Kafka producer API
 
-## What the template do
+## What the template does
 
 * Use Quarkus and Microprofile 3.0 for health, metrics and open API.
+* Use Kafka producer API, with Avro serialization
+* Use [Avro maven plugin](https://avro.apache.org/docs/current/gettingstartedjava.html#Serializing+and+deserializing+without+code+generation) to generate code from Avro definitions, taking into account the order of import to manage schema dependencies
+* Use Apicurio schema registry and the maven plugin to upload new definition to the connected registry.
 
 
 ## Code structure
@@ -10,14 +13,45 @@
 The code is reusing the Domain Driven Design approach layers to organize the code:
 
 * **infrastructure**: to include lower level integration layer. This is where to find repository or kafka lower level component if needed
-* **domain**: domain model and services supporting the business logic
-* **app**: APIs and application related classes to make it running. 
+* **domain**: domain model and services supporting the business logic - Events are generate under the domain. It could have bean generated under infrastructure.
+* **app**: APIs and application related classes to make it running.
+
+The REST resource delegates to a service where you may want to implement some business logic there. The service class should be tested by isolation. The Resource is doing simple data mapping between the model for the query, creation or update of the main business entity, in this example the Order. 
+
+The GreetingResource could be deleted, it was created during the Quarkus app creation.
+
+The repository is a mockup one using HashMap to keep the data, it helps to start quickly to demonstrate the application. So the event producer is using Avro schema and the pattern of writing to the topic immediately once the order is received at the API level. 
 
 ## Run and build locally
 
+### Update to schema
+
+The Apache Avro schemas are in `src/main/avro`. The package name will reflect the Java packages. Use the following command to update the Java class and upload the schema to the registry. See next section on how to start Kafka and Apicurio.
+
+```shell
+mvn generate-sources
+```
+
+### Start local Kafka
+
+For development purpose you can run the following command to start one kafka, one zookeeper and Apicurio for schema registry on port 8090.
+
+```shell
+docker-compose up -d
+```
+
+To create the Kafka topic, you may need to update this script: `scripts/createTopics.sh` and change the topic name or add more line for other topics
+
+```shell
+./scripts/createTopics.sh
+```
+
+Going to the URL: [http://localhost:8090/ui/artifacts](http://localhost:8090/ui/artifacts) to see the schema in the registry.
+
 ### Running the application in dev mode
 
-You can run your application in dev mode that enables live coding using:
+You can run your application in dev mode which enables live coding using:
+
 ```
 ./mvnw quarkus:dev
 ```

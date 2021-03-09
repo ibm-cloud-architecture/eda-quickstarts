@@ -1,0 +1,27 @@
+{
+    "namespace": "ibm.eda.demo.app.infrastructure.events",
+    "type": "record",
+    "name": "OrderEvent",
+    "fields": [
+        {
+            "name": "timestampMillis",
+            "type": "long",
+            "doc": "time stamp of the order creation"
+        },
+        {
+            "name": "type",
+            "type": {
+                "name": "EventType",
+                "type": "enum",
+                "symbols": ["OrderCreated", "OrderUpdated", "OrderInTransit", "OrderCompleted", "OrderRejected", "OrderCancelled"]
+            },
+            "doc": "Type of event"
+        },
+        {
+            "name": "payload",
+            "namespace": "ibm.eda.demo.app.domain.events",
+            "type": ["OrderCreatedEvent"],
+            "doc": "Different payload structure depending of event type"
+        }
+    ] 
+}

@@ -1,4 +1,4 @@
-package ibm.tsa.eda.api;
+package ibm.eda.demo.api;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -10,12 +10,12 @@ import static org.hamcrest.CoreMatchers.is;
 public class OrderResourceTest {
 
     @Test
-    public void testHelloEndpoint() {
+    public void testOrdersEndpoint() {
         given()
-          .when().get("/hello")
+          .when().get("/orders")
           .then()
              .statusCode(200)
-             .body(is("hello"));
+             ;
     }
 
 }
