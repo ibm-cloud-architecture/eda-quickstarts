@@ -15,14 +15,20 @@ import org.jboss.logging.Logger;
  * and consumer
  */
 public class KafkaConfiguration {
-    private static final Logger logger = Logger.getLogger(KafkaConfiguration.class.getName());
+    protected static final Logger logger = Logger.getLogger(KafkaConfiguration.class.getName());
 
-    public  String mainTopicName = "otders";
+    public  String mainTopicName = "orders";
     public  String schemaName = "Order";
     public  String schemaVersion = "1.0.0";
     public  String truststoreLocation = "";
     public  String truststorePassword = "";
- 
+    public  String bootstrapServers = null; 
+
+    public KafkaConfiguration(){}
+
+    public KafkaConfiguration(String bootStrap) {
+        this.bootstrapServers = bootStrap;
+    }
     /**
      * @return common kafka properties
      */
@@ -34,8 +40,12 @@ public class KafkaConfiguration {
             mainTopicName = topic.get();
         }
 
-        properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
-                ConfigProvider.getConfig().getValue("kafka.bootstrap.servers", String.class));
+        if (bootstrapServers == null) {
+            bootstrapServers = ConfigProvider.getConfig().getValue("kafka.bootstrap.servers", String.class);
+        }
+
+        properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        
         
         Optional<String> v = ConfigProvider.getConfig().getOptionalValue("kafka.security.protocol", String.class);
         if (v.isPresent()) {

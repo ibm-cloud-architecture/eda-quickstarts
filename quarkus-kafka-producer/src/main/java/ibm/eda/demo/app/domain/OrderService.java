@@ -6,10 +6,13 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import ibm.eda.demo.app.infrastructure.OrderEventProducer;
+import ibm.eda.demo.app.infrastructure.OrderEventAvroProducer;
 import ibm.eda.demo.app.infrastructure.OrderRepositoryMem;
-import ibm.eda.demo.app.infrastructure.events.OrderEventOld;
-import ibm.eda.demo.app.infrastructure.events.OrderPayload;
+import ibm.eda.demo.app.infrastructure.events.Address;
+import ibm.eda.demo.app.infrastructure.events.EventEmitter;
+import ibm.eda.demo.app.infrastructure.events.EventType;
+import ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent;
+import ibm.eda.demo.app.infrastructure.events.OrderEvent;
 
 @ApplicationScoped
 public class OrderService {
@@ -19,10 +22,10 @@ public class OrderService {
 	public OrderRepositoryMem repository;
 
 	@Inject
-	public OrderEventProducer eventProducer;
+	public EventEmitter eventProducer;
 	
 	
-	public OrderService(OrderEventProducer eventProducer, OrderRepositoryMem  repo) {
+	public OrderService(EventEmitter eventProducer, OrderRepositoryMem  repo) {
 		this.eventProducer = eventProducer;
 		this.repository = repo;
 	}
@@ -30,15 +33,20 @@ public class OrderService {
 	public void createOrder(OrderEntity order) {
 		// TODO This has to be transactional or use outbox, or use command pattern to kafka topic
 		repository.addOrder(order);
-		OrderEventOld orderEvent = new OrderEventOld(System.currentTimeMillis(),
-				OrderEventOld.TYPE_ORDER_CREATED);
-		OrderPayload orderPayload = new OrderPayload(order.getOrderID(),
+		Address deliveryAddress = new Address(order.getDeliveryAddress().getStreet()
+				,order.getDeliveryAddress().getCity()
+				,order.getDeliveryAddress().getCountry()
+				,order.getDeliveryAddress().getState(),
+				order.getDeliveryAddress().getZipcode());
+		OrderCreatedEvent orderPayload = new OrderCreatedEvent(order.getOrderID(),
 				order.getProductID(),
 				order.getCustomerID(),
 				order.getQuantity(),
 				order.getStatus(),
-				order.getDeliveryAddress());
-		orderEvent.setPayload(orderPayload);
+				deliveryAddress);
+		OrderEvent orderEvent = new OrderEvent(order.getOrderID(),System.currentTimeMillis(),
+				EventType.OrderCreated,orderPayload);
+		
 		try {
 			logger.severe("emit event for " + order.getOrderID());
 			eventProducer.emit(orderEvent);

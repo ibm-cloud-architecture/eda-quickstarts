@@ -1,4 +1,4 @@
-package ibm.eda.demo.api;
+package it.eda.demo.api;
 
 import io.quarkus.test.junit.NativeImageTest;
 

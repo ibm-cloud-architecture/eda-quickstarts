@@ -4,6 +4,11 @@
     "name": "OrderEvent",
     "fields": [
         {
+            "name": "orderID",
+            "type": "string",
+            "doc": "Unique order identifier"
+        },
+        {
             "name": "timestampMillis",
             "type": "long",
             "doc": "time stamp of the order creation"
@@ -19,7 +24,7 @@
         },
         {
             "name": "payload",
-            "namespace": "ibm.eda.demo.app.domain.events",
+            "namespace": "ibm.eda.demo.app.infrastructure.events",
             "type": ["OrderCreatedEvent"],
             "doc": "Different payload structure depending of event type"
         }
