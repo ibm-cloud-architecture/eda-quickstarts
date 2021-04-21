@@ -1,0 +1,4 @@
+resources:
+  - ./RoleBinding.yml
+  - ./Service.yml
+  - ./Deployment.yml

@@ -1,0 +1,41 @@
+{
+    "namespace": "ibm.eda.demo.infrastructure.events",
+    "type": "record",
+    "name": "OrderEvent",
+    "fields": [
+        {
+            "name": "orderID",
+            "type": "string",
+            "doc": "Unique ID from source system"
+        },
+        {
+            "name": "productID",
+            "type": "string",
+            "doc": "Unique ID for the product as defined in product catalog"
+        },
+        {
+            "name": "customerID",
+            "type": "string",
+            "doc": "Unique ID for the customer organization"
+        },
+        {
+            "name": "quantity",
+            "type": "int",
+            "doc": "Quantity ordered"
+        },
+        {
+            "name": "status",
+            "type": {
+                "name": "EventType",
+                "type": "enum",
+                "symbols": ["OrderCreated", "OrderUpdated", "OrderInTransit", "OrderCompleted", "OrderRejected", "OrderCancelled"]
+            },
+            "doc": "Type of event"
+        },
+        {
+            "name": "creationDAte",
+            "type": "string",
+            "doc": "Creation date of the order."
+        }
+    ] 
+}

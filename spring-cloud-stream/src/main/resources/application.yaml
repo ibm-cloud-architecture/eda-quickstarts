@@ -1,0 +1,13 @@
+spring.cloud.stream:
+  kafka:
+    binder:
+      brokers: ${KAFKA_BOOTSTRAP_SERVERS}
+      auto-create-topics: true
+  bindings:
+    orders-out-0:
+      producer:
+        partition-count: 3
+        partition-key-expression: headers['partitionKey']
+    orders-consumer:
+      destination: orders
+      contentType: application/json

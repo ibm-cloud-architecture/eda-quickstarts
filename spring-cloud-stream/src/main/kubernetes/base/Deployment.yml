@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: order-mgr
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app: order-mgr
+  name: order-mgr
+spec:
+  replicas: 1
+  selector:
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app.kubernetes.io/name: order-mgr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: order-mgr
+        app.kubernetes.io/version: 1.0.0-SNAPSHOT
+        app: order-mgr
+    spec:
+      containers:
+      - args:
+        - -jar
+        - /deployments/vaccine-order-mgr-1.0.0-SNAPSHOT-runner.jar
+        - -Dquarkus.http.host=0.0.0.0
+        - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+        command:
+        - java
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KAFKA_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: user.password
+              name: tls-user
+        - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ca.password
+              name: vaccine-kafka-cluster-ca-cert
+        - name: JAVA_APP_JAR
+          value: /deployments/vaccine-order-mgr-1.0.0-SNAPSHOT-runner.jar
+        envFrom:
+        - configMapRef:
+            name: order-mgr-cm
+        - secretRef:
+            name: order-mgr-secret
+        image: quay.io/ibmcase/vaccine-order-mgr
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/live
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: order-mgr
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/ready
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        volumeMounts:
+        - mountPath: /deployments/certs/server
+          name: kafka-cert
+          readOnly: false
+          subPath: ""
+        - mountPath: /deployments/certs/user
+          name: user-cert
+          readOnly: false
+          subPath: ""
+      serviceAccount: order-mgr
+      volumes:
+      - name: kafka-cert
+        secret:
+          defaultMode: 384
+          optional: false
+          secretName: kafka-cluster-ca-cert
+      - name: user-cert
+        secret:
+          defaultMode: 384
+          optional: false
+          secretName: tls-user
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - order-mgr
+      from:
+        kind: ImageStreamTag
+        name: order-mgr:1.0.0-SNAPSHOT
+    type: ImageChange
+

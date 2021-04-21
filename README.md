@@ -20,3 +20,4 @@ We are adopting Quarkus as our main framework, for the development experience, a
 
 * [Quarkus app with Kafka Consumer API](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/kafka-consumer-api): OpenAPI, metrics, health, RESTeasy, Kafka API, to consume 'product' events. Deployable on OpenShift with source to image, with configMap to tune the EventStreams or Kafka client settings.
 * [Quarkus Kafka producer - command part of CQRS](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/quarkus-kafka-producer) is to use Microprofile reactive messaging outbound channel which produces `create events` when data is pushed via REST POST end point. The basic Order entity is here as a placeholder to support REST operation, event creation and persistence. The repository is a Postgresql access layer using Quarkus Panache and hibernate ORM. The code generates to `orders` topic.
+* []()

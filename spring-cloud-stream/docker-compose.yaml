@@ -6,7 +6,7 @@ services:
     ports:
       - 8090:8080
   zookeeper:
-    image: strimzi/kafka:latest-kafka-2.7.0
+    image: strimzi/kafka:latest-kafka-2.6.0
     container_name: zookeeper
     command: [
       "sh", "-c",
@@ -18,7 +18,7 @@ services:
       LOG_DIR: /tmp/logs
 
   kafka:
-    image: strimzi/kafka:latest-kafka-2.7.0
+    image: strimzi/kafka:latest-kafka-2.6.0
     container_name: kafka
     command: [
       "sh", "-c",
