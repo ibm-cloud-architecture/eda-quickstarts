@@ -42,13 +42,13 @@ spec:
               key: ca.password
               name: vaccine-kafka-cluster-ca-cert
         - name: JAVA_APP_JAR
-          value: /deployments/vaccine-order-mgr-1.0.0-SNAPSHOT-runner.jar
+          value: /deployments/order-mgr-1.0.0-SNAPSHOT-runner.jar
         envFrom:
         - configMapRef:
             name: order-mgr-cm
         - secretRef:
             name: order-mgr-secret
-        image: quay.io/ibmcase/vaccine-order-mgr
+        image: quay.io/ibmcase/order-mgr
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

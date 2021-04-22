@@ -2,8 +2,9 @@ package ibm.eda.demo.infrastructure;
 
 import java.util.HashMap;
 
-import ibm.eda.demo.domain.Order;
 import org.springframework.stereotype.Repository;
+
+import ibm.eda.demo.domain.Order;
 
 @Repository
 public class OrderRepositoryMem implements OrderRepository {
@@ -20,6 +21,7 @@ public class OrderRepositoryMem implements OrderRepository {
     public Order getOrderById(String orderID) {
         return repo.get(orderID);
     }
+    
     
     
 }

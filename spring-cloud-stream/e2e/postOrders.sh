@@ -1,0 +1,5 @@
+curl -X POST http://localhost:8080/orderms/orders  -H "Accept: application/json"  -H "Content-Type: application/json" -d '{"customerID": "CUST_IT_1", "productID": "PROD_IT_1", "quantity": 10}'
+curl -X POST http://localhost:8080/orderms/orders  -H "Accept: application/json"  -H "Content-Type: application/json" -d '{"customerID": "CUST_IT_2", "productID": "PROD_IT_1", "quantity": 11}'
+curl -X POST http://localhost:8080/orderms/orders  -H "Accept: application/json"  -H "Content-Type: application/json" -d '{"customerID": "CUST_IT_3", "productID": "PROD_IT_1", "quantity": 12}'
+curl -X POST http://localhost:8080/orderms/orders  -H "Accept: application/json"  -H "Content-Type: application/json" -d '{"customerID": "CUST_IT_1", "productID": "PROD_IT_1", "quantity": 9}'
+curl -X POST http://localhost:8080/orderms/orders  -H "Accept: application/json"  -H "Content-Type: application/json" -d '{"customerID": "CUST_IT_2", "productID": "PROD_IT_1", "quantity": 13}'

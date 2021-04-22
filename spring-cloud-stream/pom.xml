@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>ibm.eda.demo</groupId>
 	<artifactId>spring-cloud-stream</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>spring-cloud-stream-kafka</name>
 	<description>Quickstart project for Kafka with Spring Cloud</description>
 	<properties>
@@ -20,11 +20,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -38,7 +38,7 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro</artifactId>
 			<version>1.10.1</version>
-		  </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -62,6 +62,17 @@
 			<artifactId>kafka</artifactId>
 			<version>1.15.3</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -87,24 +98,24 @@
 				<artifactId>avro-maven-plugin</artifactId>
 				<version>${avro.version}</version>
 				<executions>
-				  <execution>
-					<phase>generate-sources</phase>
-					<goals>
-					  <goal>schema</goal>
-					</goals>
-					<configuration>
-					  <sourceDirectory>src/main/avro/</sourceDirectory>
-					  <outputDirectory>src/main/java/</outputDirectory>
-					  <!-- need to specify order for dependencies -->
-					  <imports>
-						<import>src/main/avro/OrderEvent.avsc</import>
-						<import>src/main/avro/CloudEvent.avsc</import>
-					  </imports>
-					  <stringType>String</stringType>
-					</configuration>
-				  </execution>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>schema</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>src/main/avro/</sourceDirectory>
+							<outputDirectory>src/main/java/</outputDirectory>
+							<!-- need to specify order for dependencies -->
+							<imports>
+								<import>src/main/avro/OrderEvent.avsc</import>
+								<import>src/main/avro/CloudEvent.avsc</import>
+							</imports>
+							<stringType>String</stringType>
+						</configuration>
+					</execution>
 				</executions>
-			  </plugin>
+			</plugin>
 		</plugins>
 	</build>
 

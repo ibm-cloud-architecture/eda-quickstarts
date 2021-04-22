@@ -1,13 +1,28 @@
+management.endpoint.health.show-details: ALWAYS
+management.endpoints.web.exposure.include: metrics,health
+spring.application.name: order-spring-ms
+server.servlet.context-path: /orderms
 spring.cloud.stream:
-  kafka:
-    binder:
-      brokers: ${KAFKA_BOOTSTRAP_SERVERS}
-      auto-create-topics: true
   bindings:
     orders-out-0:
+      destination: orders
       producer:
-        partition-count: 3
-        partition-key-expression: headers['partitionKey']
+        key.serializer: org.springframework.kafka.support.serializer.StringSerializer
+        value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
     orders-consumer:
       destination: orders
       contentType: application/json
+      group: orderms-grp
+  kafka:
+    binder:
+      brokers: localhost:9092
+      auto-create-topics: true
+      messageKeyExpression: headers['messageKey']
+    bindings:
+      orders-out-0:
+        producer:
+          partition-count: 3
+          configuration:
+            acks: -1
+            idempotence: true
+  

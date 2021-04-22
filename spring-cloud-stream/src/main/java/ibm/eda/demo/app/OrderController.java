@@ -34,7 +34,10 @@ public class OrderController {
     }
 
     @GetMapping
+    @RequestMapping("/orders/{id}")
     public OrderDTO getOrderById(@RequestParam(value= "id") String id) {
         return orderService.getOrderById(id).toDTO();
     }
+
+
 }
