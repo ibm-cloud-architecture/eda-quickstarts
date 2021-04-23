@@ -1,5 +1,8 @@
 package ibm.eda.demo.app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +20,12 @@ import ibm.eda.demo.domain.OrderService;
  */
 @RestController
 @RequestMapping("/orders")
-public class OrderController {
+public class OrderResource {
 
     @Autowired
     public OrderService orderService;
     
-    public OrderController() {
+    public OrderResource() {
         super();
     }
 
@@ -34,10 +37,18 @@ public class OrderController {
     }
 
     @GetMapping
-    @RequestMapping("/orders/{id}")
+    @RequestMapping("/{id}")
     public OrderDTO getOrderById(@RequestParam(value= "id") String id) {
         return orderService.getOrderById(id).toDTO();
     }
 
+    @GetMapping
+    public List<OrderDTO> getAllOrders() {
+        List<OrderDTO> dtos = new ArrayList<OrderDTO>();
+        for (Order o : orderService.getAllOrders()){
+            dtos.add(o.toDTO());
+        }
+        return dtos;
+    }
 
 }

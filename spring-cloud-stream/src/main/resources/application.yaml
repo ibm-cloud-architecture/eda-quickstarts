@@ -7,22 +7,37 @@ spring.cloud.stream:
     orders-out-0:
       destination: orders
       producer:
-        key.serializer: org.springframework.kafka.support.serializer.StringSerializer
-        value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    orders-consumer:
+          useNativeEncoding: true
+          message-key-expression: headers['messageKey']
+    consumeOrderEvent-in-0:
       destination: orders
       contentType: application/json
       group: orderms-grp
+      useNativeDecoding: true
   kafka:
     binder:
       brokers: localhost:9092
       auto-create-topics: true
       messageKeyExpression: headers['messageKey']
+      configuration:
+        # Put here properties common to consumer and producer
+        security.protocol: PLAINTEXT
     bindings:
       orders-out-0:
+        transaction:
+          transaction-id-prefix: order-
         producer:
           partition-count: 3
           configuration:
-            acks: -1
-            idempotence: true
+            value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+            acks: all
+            retries: 1
+            enable.idempotence: true
+      consumeOrderEvent-in-0:
+        consumer:
+          autoCommitOffset: false
+          startOffset: latest
+          ackMode: MANUAL
+          configuration:
+            value.deserializer: ibm.eda.demo.infrastructure.events.OrderDeserializer
   

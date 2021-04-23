@@ -11,7 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 public class TestProduceOrderEvent {
     
 
-    @Test
+    //@Test
     public void givenEmbeddedKafka_whenSendingOrder_thenOrderEventSent(){
         
     }

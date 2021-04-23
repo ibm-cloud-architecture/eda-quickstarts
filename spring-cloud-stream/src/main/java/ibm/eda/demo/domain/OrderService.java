@@ -1,6 +1,7 @@
 package ibm.eda.demo.domain;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
+
 import ibm.eda.demo.infrastructure.OrderRepository;
 
 @Service
@@ -42,5 +44,8 @@ public class OrderService {
         return orderRepository.getOrderById(id);
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepository.getAllOrders();
+    }
     
  }
