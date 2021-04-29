@@ -6,17 +6,23 @@ spring.cloud.stream:
   bindings:
     orders-out-0:
       destination: orders
+      content-type: application/*+avro
       producer:
           useNativeEncoding: true
           message-key-expression: headers['messageKey']
     consumeOrderEvent-in-0:
       destination: orders
+      content-type: application/*+avro
       contentType: application/json
       group: orderms-grp
       useNativeDecoding: true
   kafka:
     binder:
       brokers: localhost:9092
+      producer-properties:
+          key.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+          value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+          schema.registry.url: http://localhost:8090/api 
       auto-create-topics: true
       messageKeyExpression: headers['messageKey']
       configuration:
@@ -39,5 +45,5 @@ spring.cloud.stream:
           startOffset: latest
           ackMode: MANUAL
           configuration:
-            value.deserializer: ibm.eda.demo.infrastructure.events.OrderDeserializer
+            value.deserializer: ibm.eda.demo.infrastructure.events.CloudEventDeserializer
   

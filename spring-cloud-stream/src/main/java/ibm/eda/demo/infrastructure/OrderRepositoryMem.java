@@ -12,6 +12,7 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Repository;
 
 import ibm.eda.demo.domain.Order;
+import ibm.eda.demo.infrastructure.events.CloudEvent;
 
 @Repository
 public class OrderRepositoryMem implements OrderRepository {
@@ -31,10 +32,10 @@ public class OrderRepositoryMem implements OrderRepository {
     
     
     @Bean
-    public Consumer<Message<Order>> consumeOrderEvent(){
+    public Consumer<Message<CloudEvent>> consumeCloudEventEvent(){
         return msg -> {
             Acknowledgment acknowledgment = msg.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
-            saveOrder(msg.getPayload());
+            saveOrder((Order)msg.getPayload().getData());
             if (acknowledgment != null) {
                 System.out.println("Acknowledgment provided");
                 acknowledgment.acknowledge();

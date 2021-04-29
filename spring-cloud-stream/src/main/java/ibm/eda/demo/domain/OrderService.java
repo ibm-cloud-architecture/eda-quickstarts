@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
 import ibm.eda.demo.infrastructure.OrderRepository;
+import ibm.eda.demo.infrastructure.events.CloudEvent;
 
 @Service
 public class OrderService {
@@ -33,7 +34,8 @@ public class OrderService {
         order.status = OrderStatus.OPEN;
         order.orderID = UUID.randomUUID().toString();
         order.creationDate = LocalDate.now();
-        Message<Order> toSend = MessageBuilder.withPayload(order)
+
+        Message<CloudEvent> toSend = MessageBuilder.withPayload(prepareCloudEvent(order))
             .setHeader(KafkaHeaders.MESSAGE_KEY, order.customerID.getBytes())
             .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON).build();
         streamBridge.send(BINDING_NAME, toSend);
@@ -48,4 +50,13 @@ public class OrderService {
         return orderRepository.getAllOrders();
     }
     
+    public CloudEvent prepareCloudEvent(Order order) {
+        CloudEvent ce = new CloudEvent();
+        ce.setType(Order.class.getName());
+        ce.setTime(LocalDate.now().toString());
+        ce.setSpecversion("0.2");
+        ce.setContenttype("value");
+        ce.setData(order);
+        return ce;
+    }
  }

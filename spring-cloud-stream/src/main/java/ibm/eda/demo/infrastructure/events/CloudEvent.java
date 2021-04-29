@@ -15,8 +15,8 @@ import org.apache.avro.message.SchemaStore;
 /** Avro data schema for Order domain Cloud Events */
 @org.apache.avro.specific.AvroGenerated
 public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 6822164588413244872L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"CloudEvent\",\"namespace\":\"ibm.eda.demo.infrastructure.events\",\"doc\":\"Avro data schema for Order domain Cloud Events\",\"fields\":[{\"name\":\"type\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Type of event\"},{\"name\":\"specversion\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"CloudEvents specVersion\"},{\"name\":\"source\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"The source where this event comes from\"},{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"CloudEvents event uniquely id\"},{\"name\":\"time\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Time when this event was created\"},{\"name\":\"dataschema\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Location of the events Avro data schema\"},{\"name\":\"datacontenttype\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Type of the data attributes content\"},{\"name\":\"data\",\"type\":[{\"type\":\"record\",\"name\":\"OrderEvent\",\"fields\":[{\"name\":\"orderID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID from source system\"},{\"name\":\"productID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the product as defined in product catalog\"},{\"name\":\"customerID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the customer organization\"},{\"name\":\"quantity\",\"type\":\"int\",\"doc\":\"Quantity ordered\"},{\"name\":\"status\",\"type\":{\"type\":\"enum\",\"name\":\"EventType\",\"symbols\":[\"OrderCreated\",\"OrderUpdated\",\"OrderInTransit\",\"OrderCompleted\",\"OrderRejected\",\"OrderCancelled\"]},\"doc\":\"Type of event\"},{\"name\":\"creationDAte\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Creation date of the order.\"}]}],\"doc\":\"The event\"}]}");
+  private static final long serialVersionUID = 3147108525253944365L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"CloudEvent\",\"namespace\":\"ibm.eda.demo.infrastructure.events\",\"doc\":\"Avro data schema for Order domain Cloud Events\",\"fields\":[{\"name\":\"type\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Type of event\"},{\"name\":\"specversion\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"CloudEvents specVersion\",\"enum\":[\"0.2\"]},{\"name\":\"source\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"The source where this event comes from\",\"format\":\"uri\"},{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"CloudEvents event uniquely id\"},{\"name\":\"time\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Time when this event was created\"},{\"name\":\"contenttype\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Type of the data attributes content\"},{\"name\":\"data\",\"type\":[{\"type\":\"record\",\"name\":\"OrderEvent\",\"fields\":[{\"name\":\"orderID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID from source system\"},{\"name\":\"productID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the product as defined in product catalog\"},{\"name\":\"customerID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the customer organization\"},{\"name\":\"quantity\",\"type\":\"int\",\"doc\":\"Quantity ordered\"},{\"name\":\"status\",\"type\":{\"type\":\"enum\",\"name\":\"EventType\",\"symbols\":[\"OrderCreated\",\"OrderUpdated\",\"OrderInTransit\",\"OrderCompleted\",\"OrderRejected\",\"OrderCancelled\"]},\"doc\":\"Type of event\"},{\"name\":\"creationDAte\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Creation date of the order.\"}]}],\"doc\":\"The event\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -82,10 +82,8 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
    private java.lang.String id;
   /** Time when this event was created */
    private java.lang.String time;
-  /** Location of the events Avro data schema */
-   private java.lang.String dataschema;
   /** Type of the data attributes content */
-   private java.lang.String datacontenttype;
+   private java.lang.String contenttype;
   /** The event */
    private java.lang.Object data;
 
@@ -103,18 +101,16 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * @param source The source where this event comes from
    * @param id CloudEvents event uniquely id
    * @param time Time when this event was created
-   * @param dataschema Location of the events Avro data schema
-   * @param datacontenttype Type of the data attributes content
+   * @param contenttype Type of the data attributes content
    * @param data The event
    */
-  public CloudEvent(java.lang.String type, java.lang.String specversion, java.lang.String source, java.lang.String id, java.lang.String time, java.lang.String dataschema, java.lang.String datacontenttype, java.lang.Object data) {
+  public CloudEvent(java.lang.String type, java.lang.String specversion, java.lang.String source, java.lang.String id, java.lang.String time, java.lang.String contenttype, java.lang.Object data) {
     this.type = type;
     this.specversion = specversion;
     this.source = source;
     this.id = id;
     this.time = time;
-    this.dataschema = dataschema;
-    this.datacontenttype = datacontenttype;
+    this.contenttype = contenttype;
     this.data = data;
   }
 
@@ -128,9 +124,8 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
     case 2: return source;
     case 3: return id;
     case 4: return time;
-    case 5: return dataschema;
-    case 6: return datacontenttype;
-    case 7: return data;
+    case 5: return contenttype;
+    case 6: return data;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -144,9 +139,8 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
     case 2: source = value$ != null ? value$.toString() : null; break;
     case 3: id = value$ != null ? value$.toString() : null; break;
     case 4: time = value$ != null ? value$.toString() : null; break;
-    case 5: dataschema = value$ != null ? value$.toString() : null; break;
-    case 6: datacontenttype = value$ != null ? value$.toString() : null; break;
-    case 7: data = value$; break;
+    case 5: contenttype = value$ != null ? value$.toString() : null; break;
+    case 6: data = value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -242,39 +236,21 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
   }
 
   /**
-   * Gets the value of the 'dataschema' field.
-   * @return Location of the events Avro data schema
-   */
-  public java.lang.String getDataschema() {
-    return dataschema;
-  }
-
-
-  /**
-   * Sets the value of the 'dataschema' field.
-   * Location of the events Avro data schema
-   * @param value the value to set.
-   */
-  public void setDataschema(java.lang.String value) {
-    this.dataschema = value;
-  }
-
-  /**
-   * Gets the value of the 'datacontenttype' field.
+   * Gets the value of the 'contenttype' field.
    * @return Type of the data attributes content
    */
-  public java.lang.String getDatacontenttype() {
-    return datacontenttype;
+  public java.lang.String getContenttype() {
+    return contenttype;
   }
 
 
   /**
-   * Sets the value of the 'datacontenttype' field.
+   * Sets the value of the 'contenttype' field.
    * Type of the data attributes content
    * @param value the value to set.
    */
-  public void setDatacontenttype(java.lang.String value) {
-    this.datacontenttype = value;
+  public void setContenttype(java.lang.String value) {
+    this.contenttype = value;
   }
 
   /**
@@ -346,10 +322,8 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
     private java.lang.String id;
     /** Time when this event was created */
     private java.lang.String time;
-    /** Location of the events Avro data schema */
-    private java.lang.String dataschema;
     /** Type of the data attributes content */
-    private java.lang.String datacontenttype;
+    private java.lang.String contenttype;
     /** The event */
     private java.lang.Object data;
 
@@ -384,17 +358,13 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
         this.time = data().deepCopy(fields()[4].schema(), other.time);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
       }
-      if (isValidValue(fields()[5], other.dataschema)) {
-        this.dataschema = data().deepCopy(fields()[5].schema(), other.dataschema);
+      if (isValidValue(fields()[5], other.contenttype)) {
+        this.contenttype = data().deepCopy(fields()[5].schema(), other.contenttype);
         fieldSetFlags()[5] = other.fieldSetFlags()[5];
       }
-      if (isValidValue(fields()[6], other.datacontenttype)) {
-        this.datacontenttype = data().deepCopy(fields()[6].schema(), other.datacontenttype);
+      if (isValidValue(fields()[6], other.data)) {
+        this.data = data().deepCopy(fields()[6].schema(), other.data);
         fieldSetFlags()[6] = other.fieldSetFlags()[6];
-      }
-      if (isValidValue(fields()[7], other.data)) {
-        this.data = data().deepCopy(fields()[7].schema(), other.data);
-        fieldSetFlags()[7] = other.fieldSetFlags()[7];
       }
     }
 
@@ -424,17 +394,13 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
         this.time = data().deepCopy(fields()[4].schema(), other.time);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.dataschema)) {
-        this.dataschema = data().deepCopy(fields()[5].schema(), other.dataschema);
+      if (isValidValue(fields()[5], other.contenttype)) {
+        this.contenttype = data().deepCopy(fields()[5].schema(), other.contenttype);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.datacontenttype)) {
-        this.datacontenttype = data().deepCopy(fields()[6].schema(), other.datacontenttype);
+      if (isValidValue(fields()[6], other.data)) {
+        this.data = data().deepCopy(fields()[6].schema(), other.data);
         fieldSetFlags()[6] = true;
-      }
-      if (isValidValue(fields()[7], other.data)) {
-        this.data = data().deepCopy(fields()[7].schema(), other.data);
-        fieldSetFlags()[7] = true;
       }
     }
 
@@ -659,90 +625,46 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
     }
 
     /**
-      * Gets the value of the 'dataschema' field.
-      * Location of the events Avro data schema
+      * Gets the value of the 'contenttype' field.
+      * Type of the data attributes content
       * @return The value.
       */
-    public java.lang.String getDataschema() {
-      return dataschema;
+    public java.lang.String getContenttype() {
+      return contenttype;
     }
 
 
     /**
-      * Sets the value of the 'dataschema' field.
-      * Location of the events Avro data schema
-      * @param value The value of 'dataschema'.
+      * Sets the value of the 'contenttype' field.
+      * Type of the data attributes content
+      * @param value The value of 'contenttype'.
       * @return This builder.
       */
-    public ibm.eda.demo.infrastructure.events.CloudEvent.Builder setDataschema(java.lang.String value) {
+    public ibm.eda.demo.infrastructure.events.CloudEvent.Builder setContenttype(java.lang.String value) {
       validate(fields()[5], value);
-      this.dataschema = value;
+      this.contenttype = value;
       fieldSetFlags()[5] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'dataschema' field has been set.
-      * Location of the events Avro data schema
-      * @return True if the 'dataschema' field has been set, false otherwise.
+      * Checks whether the 'contenttype' field has been set.
+      * Type of the data attributes content
+      * @return True if the 'contenttype' field has been set, false otherwise.
       */
-    public boolean hasDataschema() {
+    public boolean hasContenttype() {
       return fieldSetFlags()[5];
     }
 
 
     /**
-      * Clears the value of the 'dataschema' field.
-      * Location of the events Avro data schema
+      * Clears the value of the 'contenttype' field.
+      * Type of the data attributes content
       * @return This builder.
       */
-    public ibm.eda.demo.infrastructure.events.CloudEvent.Builder clearDataschema() {
-      dataschema = null;
+    public ibm.eda.demo.infrastructure.events.CloudEvent.Builder clearContenttype() {
+      contenttype = null;
       fieldSetFlags()[5] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'datacontenttype' field.
-      * Type of the data attributes content
-      * @return The value.
-      */
-    public java.lang.String getDatacontenttype() {
-      return datacontenttype;
-    }
-
-
-    /**
-      * Sets the value of the 'datacontenttype' field.
-      * Type of the data attributes content
-      * @param value The value of 'datacontenttype'.
-      * @return This builder.
-      */
-    public ibm.eda.demo.infrastructure.events.CloudEvent.Builder setDatacontenttype(java.lang.String value) {
-      validate(fields()[6], value);
-      this.datacontenttype = value;
-      fieldSetFlags()[6] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'datacontenttype' field has been set.
-      * Type of the data attributes content
-      * @return True if the 'datacontenttype' field has been set, false otherwise.
-      */
-    public boolean hasDatacontenttype() {
-      return fieldSetFlags()[6];
-    }
-
-
-    /**
-      * Clears the value of the 'datacontenttype' field.
-      * Type of the data attributes content
-      * @return This builder.
-      */
-    public ibm.eda.demo.infrastructure.events.CloudEvent.Builder clearDatacontenttype() {
-      datacontenttype = null;
-      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -763,9 +685,9 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * @return This builder.
       */
     public ibm.eda.demo.infrastructure.events.CloudEvent.Builder setData(java.lang.Object value) {
-      validate(fields()[7], value);
+      validate(fields()[6], value);
       this.data = value;
-      fieldSetFlags()[7] = true;
+      fieldSetFlags()[6] = true;
       return this;
     }
 
@@ -775,7 +697,7 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * @return True if the 'data' field has been set, false otherwise.
       */
     public boolean hasData() {
-      return fieldSetFlags()[7];
+      return fieldSetFlags()[6];
     }
 
 
@@ -786,7 +708,7 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
       */
     public ibm.eda.demo.infrastructure.events.CloudEvent.Builder clearData() {
       data = null;
-      fieldSetFlags()[7] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -800,9 +722,8 @@ public class CloudEvent extends org.apache.avro.specific.SpecificRecordBase impl
         record.source = fieldSetFlags()[2] ? this.source : (java.lang.String) defaultValue(fields()[2]);
         record.id = fieldSetFlags()[3] ? this.id : (java.lang.String) defaultValue(fields()[3]);
         record.time = fieldSetFlags()[4] ? this.time : (java.lang.String) defaultValue(fields()[4]);
-        record.dataschema = fieldSetFlags()[5] ? this.dataschema : (java.lang.String) defaultValue(fields()[5]);
-        record.datacontenttype = fieldSetFlags()[6] ? this.datacontenttype : (java.lang.String) defaultValue(fields()[6]);
-        record.data = fieldSetFlags()[7] ? this.data :  defaultValue(fields()[7]);
+        record.contenttype = fieldSetFlags()[5] ? this.contenttype : (java.lang.String) defaultValue(fields()[5]);
+        record.data = fieldSetFlags()[6] ? this.data :  defaultValue(fields()[6]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;

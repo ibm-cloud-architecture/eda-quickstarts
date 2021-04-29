@@ -12,11 +12,13 @@
             {
                 "name": "specversion",
                 "type": "string",
+                "enum": ["0.2"],
                 "doc": "CloudEvents specVersion"
             },
             {
                 "name": "source",
                 "type": "string",
+                "format": "uri",
                 "doc": "The source where this event comes from"
             },
             {
@@ -30,12 +32,7 @@
                 "doc": "Time when this event was created"
             },
             {
-                "name": "dataschema",
-                "type": "string",
-                "doc": "Location of the events Avro data schema"
-            },
-            {
-                "name": "datacontenttype",
+                "name": "contenttype",
                 "type": "string",
                 "doc": "Type of the data attributes content"
             },
