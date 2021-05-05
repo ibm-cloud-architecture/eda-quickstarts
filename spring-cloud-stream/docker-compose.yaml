@@ -2,9 +2,15 @@ version: '2'
 services:
   apicurio:
     container_name: apicurio
-    image: apicurio/apicurio-registry-mem
+    image: apicurio/apicurio-registry-streams
     ports:
       - 8090:8080
+    environment:
+      QUARKUS_PROFILE: prod
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      APPLICATION_ID: order_mgt_1
+    depends_on:
+      - kafka
   zookeeper:
     image: quay.io/strimzi/kafka:latest-kafka-2.7.0
     container_name: zookeeper

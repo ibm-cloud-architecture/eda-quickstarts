@@ -31,11 +31,16 @@ The way to generate events from a POST or any internal processing is to use  Spr
     }
 ```
 
-The send is not sending directly the order, but use a [Message object](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/Message.html) to help defining header so we can control the behavior of Spring Cloud Stream. The `KafkaHeaders.MESSAGE_KEY` helps defining the Kafka Record Key to be set in the Kafka Record. 
+The `send()` method is not sending directly the order, but uses a [Message object](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/Message.html) to help defining header so we can control the behavior of Spring Cloud Stream. 
+The `KafkaHeaders.MESSAGE_KEY` helps defining the Kafka Record Key to be set in the Kafka Record. 
 
 ### Defining Cloud Events and Event schema
 
-The best practice to define Kafka topic content is to use Avro Schema. The events can be also encapsulated in the Cloud Events structure. The [Java SDK for CloudEvents](https://github.com/cloudevents/sdk-java) is a collection of Java packages to adopt CloudEvents in your Java application. As of now it does not support Avro serialization, so we are defining our own `CloudEvent.avsc` envelop and use another schema for the payload.
+The best practice to define Kafka topic content is to use Avro Schema, use schema registry and specific APIs for consumer and producer. 
+The events can be also encapsulated in the Cloud Events structure. The [Java SDK for CloudEvents](https://github.com/cloudevents/sdk-java) is a collection of Java packages to adopt CloudEvents in your Java application. As of now it does not support Avro serialization, so we are defining our own `CloudEvent.avsc` envelop and use another Avro schema for the payload.
+Only the payload has a business significance. In the following declaration the CloudEveny has a data which is define with the OrderEvent designed to send order information to the external world, and a 'type' attribute to specify what is the specific structure of the payload. 
+As `data` is an array we can have more than one type, which will make sense if we want to model OrderCreated, OrderUpdated, OrderCancelled events. 
+This approach fits well into the event sourcing pattern where one topic contains different event types.
 
 ```json
 {   
@@ -85,15 +90,6 @@ The pom.xml has declarations to get the event generated as Java classes under th
 			</plugin>
 ```
 
-As of now only one message type is defined in the payload, but you can add more and in this case add the declaration in the list of schemas: e.g. "ibm.eda.demo.infrastructure.events.ShipmentEvent".
-
-```
- {
-                "name": "data",
-                "type": ["ibm.eda.demo.infrastructure.events.OrderEvent","ibm.eda.demo.infrastructure.events.ShipmentEvent"],
-                "doc": "The event"
-            }
-```
 
 ## Build and run locally
 
@@ -135,3 +131,4 @@ Kafdrop is started with docker compose, and accessible to the URL: [http://local
 
 ## Deploy to OpenShift
 
+The `src/main/kubernetes` folder includes the yaml manifests to define the deployment and service objects for OpenShift using the [kustomize tooling]()
