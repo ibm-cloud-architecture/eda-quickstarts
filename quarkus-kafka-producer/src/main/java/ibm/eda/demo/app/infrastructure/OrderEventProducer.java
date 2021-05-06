@@ -3,6 +3,7 @@ package ibm.eda.demo.app.infrastructure;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.kafka.clients.producer.Callback;
@@ -14,7 +15,12 @@ import org.jboss.logging.Logger;
 import ibm.eda.demo.app.infrastructure.events.EventEmitter;
 import ibm.eda.demo.app.infrastructure.events.OrderEvent;
 
+/**
+ * Standard Kafka Producer without Avro and Schema Registry. 
+ * If you want to use this code change the Inject and Named annotation in the OrderService component to use "default"
+ */
 @Singleton
+@Named("default")
 public class OrderEventProducer implements EventEmitter {
     Logger logger = Logger.getLogger(OrderEventProducer.class.getName());
 

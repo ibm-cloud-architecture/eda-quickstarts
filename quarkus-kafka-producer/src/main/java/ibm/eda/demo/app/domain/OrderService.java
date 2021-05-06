@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import ibm.eda.demo.app.infrastructure.OrderEventAvroProducer;
 import ibm.eda.demo.app.infrastructure.OrderRepositoryMem;
 import ibm.eda.demo.app.infrastructure.events.Address;
 import ibm.eda.demo.app.infrastructure.events.EventEmitter;
@@ -22,9 +22,11 @@ public class OrderService {
 	public OrderRepositoryMem repository;
 
 	@Inject
+	@Named("avroProducer")
 	public EventEmitter eventProducer;
 	
-	
+	public OrderService(){}
+
 	public OrderService(EventEmitter eventProducer, OrderRepositoryMem  repo) {
 		this.eventProducer = eventProducer;
 		this.repository = repo;

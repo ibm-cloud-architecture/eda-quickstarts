@@ -24,14 +24,6 @@ The repository is a mockup one using HashMap to keep the data, it helps to start
 
 ## Run and build locally
 
-### Update to schema
-
-The Apache Avro schemas are in `src/main/avro`. The package name will reflect the Java packages. Use the following command to update the Java class and upload the schema to the registry. See next section on how to start Kafka and Apicurio.
-
-```shell
-mvn generate-sources
-```
-
 ### Start local Kafka
 
 For development purpose you can run the following command to start one kafka, one zookeeper and Apicurio for schema registry on port 8090.
@@ -48,6 +40,22 @@ To create the Kafka topic, you may need to update this script: `scripts/createTo
 
 Going to the URL: [http://localhost:8090/ui/artifacts](http://localhost:8090/ui/artifacts) to see the schema in the registry.
 
+### Update to schema
+
+The Apache Avro schemas are in `src/main/avro`. The package name defined in the avro namespace attribute, will map to the Java packages. Use the following command to update the Java classes and upload the schema to the registry. See next section on how to start Kafka and Apicurio.
+
+```shell
+mvn generate-sources
+```
+
+You should see messages like:
+
+```
+ Registered artifact [order-schema1] with global id 1, version 1
+[INFO] Registered artifact [order-schema2] with global id 2, version 1
+[INFO] Registered artifact [order-schema3] with global id 3, version 1
+```
+
 ### Running the application in dev mode
 
 You can run your application in dev mode which enables live coding using:
@@ -56,6 +64,10 @@ You can run your application in dev mode which enables live coding using:
 ./mvnw quarkus:dev
 ```
 
+Use the Swagger UI to access existing orders (loaded from the `resources/orders.json` file) and to post new order.
+
+[http://localhost:8080/q/swagger-ui/](http://localhost:8080/q/swagger-ui/).
+
 ### Packaging and running the application
 
 The application can be packaged using `./mvnw package`.
@@ -63,6 +75,8 @@ It produces the `order-mgr-1.0-SNAPSHOT-runner.jar` file in the `/target` direct
 Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/lib` directory.
 
 The application is now runnable using `java -jar target/order-mgr-1.0-SNAPSHOT-runner.jar`.
+
+The script: `./scripts/buildAll.sh` do the maven packaging and then build a docker images.
 
 ### Creating a native executable
 

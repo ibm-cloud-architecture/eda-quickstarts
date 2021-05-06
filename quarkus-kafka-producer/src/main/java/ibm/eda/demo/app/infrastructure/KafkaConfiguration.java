@@ -23,12 +23,19 @@ public class KafkaConfiguration {
     public  String truststoreLocation = "";
     public  String truststorePassword = "";
     public  String bootstrapServers = null; 
+    public  String schemaRegistryURL = null;
 
     public KafkaConfiguration(){}
 
     public KafkaConfiguration(String bootStrap) {
         this.bootstrapServers = bootStrap;
     }
+
+    public KafkaConfiguration(String bootstrapServers, String schemaRegistryURL) {
+        this.bootstrapServers = bootstrapServers;
+        this.schemaRegistryURL = schemaRegistryURL;
+    }
+
     /**
      * @return common kafka properties
      */

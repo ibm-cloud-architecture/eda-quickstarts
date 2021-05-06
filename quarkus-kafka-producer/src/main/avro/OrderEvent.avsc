@@ -24,7 +24,6 @@
         },
         {
             "name": "payload",
-            "namespace": "ibm.eda.demo.app.infrastructure.events",
             "type": ["OrderCreatedEvent"],
             "doc": "Different payload structure depending of event type"
         }

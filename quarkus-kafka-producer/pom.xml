@@ -194,9 +194,9 @@
                 <!-- the name of the tag will be the id of the schema
                 
                 -->
-                <order-schema1>src/main/avro/Address.avsc</order-schema1>
-                <order-schema2>src/main/avro/OrderCreatedEvent.avsc</order-schema2>
-                <order-schema3>src/main/avro/OrderEvent.avsc</order-schema3>
+                <Address>src/main/avro/Address.avsc</Address>
+                <OrderCreatedEvent>src/main/avro/OrderCreatedEvent.avsc</OrderCreatedEvent>
+                <OrderEvent>src/main/avro/OrderEvent.avsc</OrderEvent>
               </artifacts>
             </configuration>
           </execution>

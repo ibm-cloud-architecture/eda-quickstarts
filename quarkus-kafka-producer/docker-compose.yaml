@@ -2,9 +2,15 @@ version: '2'
 services:
   apicurio:
     container_name: apicurio
-    image: apicurio/apicurio-registry-mem
+    image: apicurio/apicurio-registry-streams
     ports:
       - 8090:8080
+    environment:
+      QUARKUS_PROFILE: prod
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      APPLICATION_ID: order_mgt_1
+    depends_on:
+      - kafka
   zookeeper:
     image: quay.io/strimzi/kafka:latest-kafka-2.7.0
     hostname: zookeeper
@@ -20,9 +26,6 @@ services:
       - ZOO_SERVERS=server.1=zookeeper:2888:3888
       - ALLOW_ANONYMOUS_LOGIN=yes
       - LOG_DIR=/tmp/logs
-    volumes:
-      - ./data/zookeeper/data:/data
-      - ./data/zookeeper/datalog:/datalog
   kafka:
     image: quay.io/strimzi/kafka:latest-kafka-2.7.0
     container_name: kafka
@@ -32,13 +35,13 @@ services:
       --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} \
       --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} \
       --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME} \
-      --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
+      --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} \
+      --override offsets.topic.replication.factor=$${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}"
     ]
     depends_on:
       - zookeeper
     ports:
       - "9092:9092"
-      - "29092:9092"
     environment:
       LOG_DIR: "/tmp/logs"
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
@@ -47,3 +50,13 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+    depends_on:
+      - kafka
