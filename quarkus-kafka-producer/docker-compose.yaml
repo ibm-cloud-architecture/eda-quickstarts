@@ -1,8 +1,8 @@
-version: '2'
+version: '3.8'
 services:
   apicurio:
     container_name: apicurio
-    image: apicurio/apicurio-registry-streams
+    image: apicurio/apicurio-registry-kafka
     ports:
       - 8090:8080
     environment:

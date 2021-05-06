@@ -50,7 +50,7 @@ public class OrderService {
 				EventType.OrderCreated,orderPayload);
 		
 		try {
-			logger.severe("emit event for " + order.getOrderID());
+			logger.info("emit event for " + order.getOrderID());
 			eventProducer.emit(orderEvent);
 		} catch (Exception e) {
 			e.printStackTrace();

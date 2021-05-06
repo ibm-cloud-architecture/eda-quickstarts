@@ -56,6 +56,8 @@ You should see messages like:
 [INFO] Registered artifact [order-schema3] with global id 3, version 1
 ```
 
+Remark: `mvn install` will also perform this maven goal.
+
 ### Running the application in dev mode
 
 You can run your application in dev mode which enables live coding using:

@@ -31,7 +31,7 @@
         {
             "name": "shippingAddress",
             "namespace": "ibm.eda.demo.app.infrastructure.events",
-            "type": "ibm.eda.demo.app.infrastructure.events.Address",
+            "type": "Address",
             "doc": "Address to ship the ordered items"
         }
     ] 
