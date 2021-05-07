@@ -18,15 +18,91 @@
             "type": {
                 "name": "EventType",
                 "type": "enum",
-                "symbols": ["OrderCreated", "OrderUpdated", "OrderInTransit", "OrderCompleted", "OrderRejected", "OrderCancelled"]
+                "symbols": [
+                    "OrderCreated",
+                    "OrderUpdated",
+                    "OrderInTransit",
+                    "OrderCompleted",
+                    "OrderRejected",
+                    "OrderCancelled"
+                ]
             },
             "doc": "Type of event"
         },
         {
             "name": "payload",
-            "namespace": "ibm.eda.demo.app.infrastructure.events",
-            "type": ["OrderCreatedEvent"],
-            "doc": "Different payload structure depending of event type"
+            "doc": "Different payload structure depending of event type",
+            "type": [
+                {
+                    "namespace": "ibm.eda.demo.app.infrastructure.events",
+                    "type": "record",
+                    "name": "OrderCreatedEvent",
+                    "fields": [
+                        {
+                            "name": "orderID",
+                            "type": "string",
+                            "doc": "Unique ID from source system"
+                        },
+                        {
+                            "name": "productID",
+                            "type": "string",
+                            "doc": "Unique ID for the product as defined in product catalog"
+                        },
+                        {
+                            "name": "customerID",
+                            "type": "string",
+                            "doc": "Unique ID for the customer organization"
+                        },
+                        {
+                            "name": "quantity",
+                            "type": "int",
+                            "doc": "Quantity ordered"
+                        },
+                        {
+                            "name": "status",
+                            "type": "string",
+                            "doc": "Status of the order."
+                        },
+                        {
+                            "name": "shippingAddress",
+                            "namespace": "ibm.eda.demo.app.infrastructure.events",
+                            "type": {
+                                "namespace": "ibm.eda.demo.app.infrastructure.events",
+                                "type": "record",
+                                "name": "Address",
+                                "fields": [
+                                    {
+                                        "name": "street",
+                                        "type": "string",
+                                        "doc": "Street name with number within the street"
+                                    },
+                                    {
+                                        "name": "city",
+                                        "type": "string",
+                                        "doc": "city"
+                                    },
+                                    {
+                                        "name": "state",
+                                        "type": "string",
+                                        "doc": "State code or name"
+                                    },
+                                    {
+                                        "name": "country",
+                                        "type": "string",
+                                        "doc": "Country"
+                                    },
+                                    {
+                                        "name": "zipcode",
+                                        "type": "string",
+                                        "doc": "Zipcode"
+                                    }
+                                ]
+                            },
+                            "doc": "Address to ship the ordered items"
+                        }
+                    ]
+                }
+            ]
         }
-    ] 
+    ]
 }

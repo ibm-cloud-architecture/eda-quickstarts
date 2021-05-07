@@ -2,7 +2,6 @@ package ibm.eda.demo.app.infrastructure;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Named;
@@ -15,14 +14,12 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 import ibm.eda.demo.app.infrastructure.events.EventEmitter;
 import ibm.eda.demo.app.infrastructure.events.OrderEvent;
-import io.apicurio.registry.client.RegistryRestClient;
-import io.apicurio.registry.client.RegistryRestClientFactory;
+import io.apicurio.registry.rest.client.RegistryClient;
+import io.apicurio.registry.rest.client.RegistryClientFactory;
 
 /**
  * Avro and schema registry based Kafka producer.
@@ -35,21 +32,18 @@ public class OrderEventAvroProducer implements EventEmitter {
     private KafkaProducer<String,OrderEvent> kafkaProducer = null;
     private KafkaWithSchemaRegistryConfiguration configuration = null;
     private Schema avroSchema;
-    public String artifactName = "OrderEvent";
+   
 
     public OrderEventAvroProducer() {
         super();
         configuration = new KafkaWithSchemaRegistryConfiguration();
-        Optional<String> vs = ConfigProvider.getConfig().getOptionalValue("app.apicurio.root.schema.name", String.class);
-        if (vs.isPresent()) {
-            artifactName= vs.get();
-        }
+        
         Properties props = configuration.getAvroProducerProperties("OrderProducer_1");
         kafkaProducer = new KafkaProducer<String, OrderEvent>(props);
         try {
             Map<String,Object> config = (Map)props; 
-            RegistryRestClient client = RegistryRestClientFactory.create(configuration.REGISTRY_URL, config);
-            avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(artifactName));
+            RegistryClient client = RegistryClientFactory.create(configuration.REGISTRY_URL, config);
+            avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(configuration.groupId,configuration.artifactId));
         } catch(Exception e) {
             e.printStackTrace();
         }
