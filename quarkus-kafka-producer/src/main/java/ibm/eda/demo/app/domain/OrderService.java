@@ -32,7 +32,7 @@ public class OrderService {
 		this.repository = repo;
 	}
 	
-	public void createOrder(OrderEntity order) {
+	public OrderEntity createOrder(OrderEntity order) {
 		// TODO This has to be transactional or use outbox, or use command pattern to kafka topic
 		repository.addOrder(order);
 		Address deliveryAddress = new Address(order.getDeliveryAddress().getStreet()
@@ -55,10 +55,15 @@ public class OrderService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return order;
 	}
 
 	public List<OrderEntity> getAllOrders() {
 		return repository.getAll();
 	}
+
+    public void updateOrder(OrderEntity entity) {
+		repository.updateOrder(entity);
+    }
 
 }

@@ -48,15 +48,14 @@ The Apache Avro schemas are in `src/main/avro`. The package name defined in the 
 mvn generate-sources
 ```
 
-You should see messages like:
+You should see messages like this in the terminal log:
 
 ```
- Registered artifact [order-schema1] with global id 1, version 1
-[INFO] Registered artifact [order-schema2] with global id 2, version 1
-[INFO] Registered artifact [order-schema3] with global id 3, version 1
+Successfully registered artifact [OrderGroup] / [OrderEvent].  GlobalId is [1]
 ```
+Each time this goal is run, a new version of the schema is created. Remark: `mvn install` will also perform this maven goal.
 
-Remark: `mvn install` will also perform this maven goal.
+In docker compose we are using Apicurio with Kafka persistence. So a topic is create named `kafkasql-journal` to persist any actions on the schema. 
 
 ### Running the application in dev mode
 

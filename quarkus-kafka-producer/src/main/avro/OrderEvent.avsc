@@ -2,10 +2,12 @@
     "namespace": "ibm.eda.demo.app.infrastructure.events",
     "type": "record",
     "name": "OrderEvent",
+    "doc": "Order events to report change to the Order entity. It can take different type and may have different payload per type used.",
     "fields": [
         {
             "name": "orderID",
             "type": "string",
+            "default": "-1",
             "doc": "Unique order identifier"
         },
         {
@@ -18,6 +20,8 @@
             "type": {
                 "name": "EventType",
                 "type": "enum",
+                "doc": "The different types of events emitted",
+                "default": "OrderCreated",
                 "symbols": [
                     "OrderCreated",
                     "OrderUpdated",
@@ -56,11 +60,13 @@
                         {
                             "name": "quantity",
                             "type": "int",
+                            "default": -1,
                             "doc": "Quantity ordered"
                         },
                         {
                             "name": "status",
                             "type": "string",
+                            "default": "Pending",
                             "doc": "Status of the order."
                         },
                         {

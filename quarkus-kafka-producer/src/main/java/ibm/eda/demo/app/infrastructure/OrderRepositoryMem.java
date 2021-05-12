@@ -36,7 +36,11 @@ public class OrderRepositoryMem {
         return new ArrayList<OrderEntity>(repo.values());
     }
 
-    public void addOrder(OrderEntity p) {
-        repo.put(p.getOrderID(), p);
+    public void addOrder(OrderEntity entity) {
+        repo.put(entity.getOrderID(), entity);
+    }
+
+    public void updateOrder(OrderEntity entity) {
+        repo.put(entity.getOrderID(), entity);
     }
 }

@@ -29,7 +29,7 @@ import io.apicurio.registry.rest.client.RegistryClientFactory;
 public class OrderEventAvroProducer implements EventEmitter {
     Logger logger = Logger.getLogger(OrderEventAvroProducer.class.getName());
 
-    private KafkaProducer<String,OrderEvent> kafkaProducer = null;
+    private KafkaProducer<String,GenericRecord> kafkaProducer = null;
     private KafkaWithSchemaRegistryConfiguration configuration = null;
     private Schema avroSchema;
    
@@ -39,7 +39,7 @@ public class OrderEventAvroProducer implements EventEmitter {
         configuration = new KafkaWithSchemaRegistryConfiguration();
         
         Properties props = configuration.getAvroProducerProperties("OrderProducer_1");
-        kafkaProducer = new KafkaProducer<String, OrderEvent>(props);
+        kafkaProducer = new KafkaProducer<String, GenericRecord>(props);
         try {
             Map<String,Object> config = (Map)props; 
             RegistryClient client = RegistryClientFactory.create(configuration.REGISTRY_URL, config);
@@ -59,8 +59,8 @@ public class OrderEventAvroProducer implements EventEmitter {
     public void emit(OrderEvent oevent) { 
         logger.info(avroSchema.toString());
         GenericRecord record = new GenericData.Record(avroSchema);
-        ProducerRecord<String, OrderEvent> producerRecord = new ProducerRecord<String, OrderEvent>(
-                configuration.getTopicName(), oevent.getOrderID(), oevent);
+        ProducerRecord<String, GenericRecord> producerRecord = new ProducerRecord<String, GenericRecord>(
+                configuration.getTopicName(), oevent.getOrderID(), record);
        
         logger.info("sending to " + configuration.getTopicName() + " item " + producerRecord
         .toString());
