@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.infrastructure.events;
+package ibm.eda.demo.ordermgr.infra.events;
 
 public interface EventEmitter {
 

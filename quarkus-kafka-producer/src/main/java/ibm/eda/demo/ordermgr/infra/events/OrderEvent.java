@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package ibm.eda.demo.app.infrastructure.events;
+package ibm.eda.demo.ordermgr.infra.events;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -77,7 +77,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
   /** time stamp of the order creation */
    private long timestampMillis;
   /** Type of event */
-   private ibm.eda.demo.app.infrastructure.events.EventType type;
+   private ibm.eda.demo.ordermgr.infra.events.EventType type;
   /** Different payload structure depending of event type */
    private java.lang.Object payload;
 
@@ -95,7 +95,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * @param type Type of event
    * @param payload Different payload structure depending of event type
    */
-  public OrderEvent(java.lang.String orderID, java.lang.Long timestampMillis, ibm.eda.demo.app.infrastructure.events.EventType type, java.lang.Object payload) {
+  public OrderEvent(java.lang.String orderID, java.lang.Long timestampMillis, ibm.eda.demo.ordermgr.infra.events.EventType type, java.lang.Object payload) {
     this.orderID = orderID;
     this.timestampMillis = timestampMillis;
     this.type = type;
@@ -121,7 +121,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
     switch (field$) {
     case 0: orderID = value$ != null ? value$.toString() : null; break;
     case 1: timestampMillis = (java.lang.Long)value$; break;
-    case 2: type = (ibm.eda.demo.app.infrastructure.events.EventType)value$; break;
+    case 2: type = (ibm.eda.demo.ordermgr.infra.events.EventType)value$; break;
     case 3: payload = value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
@@ -167,7 +167,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * Gets the value of the 'type' field.
    * @return Type of event
    */
-  public ibm.eda.demo.app.infrastructure.events.EventType getType() {
+  public ibm.eda.demo.ordermgr.infra.events.EventType getType() {
     return type;
   }
 
@@ -177,7 +177,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * Type of event
    * @param value the value to set.
    */
-  public void setType(ibm.eda.demo.app.infrastructure.events.EventType value) {
+  public void setType(ibm.eda.demo.ordermgr.infra.events.EventType value) {
     this.type = value;
   }
 
@@ -203,8 +203,8 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * Creates a new OrderEvent RecordBuilder.
    * @return A new OrderEvent RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder newBuilder() {
-    return new ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder();
+  public static ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder newBuilder() {
+    return new ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder();
   }
 
   /**
@@ -212,11 +212,11 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * @param other The existing builder to copy.
    * @return A new OrderEvent RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder newBuilder(ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder other) {
+  public static ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder newBuilder(ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder other) {
     if (other == null) {
-      return new ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder();
+      return new ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder();
     } else {
-      return new ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder(other);
+      return new ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder(other);
     }
   }
 
@@ -225,11 +225,11 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
    * @param other The existing instance to copy.
    * @return A new OrderEvent RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder newBuilder(ibm.eda.demo.app.infrastructure.events.OrderEvent other) {
+  public static ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder newBuilder(ibm.eda.demo.ordermgr.infra.events.OrderEvent other) {
     if (other == null) {
-      return new ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder();
+      return new ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder();
     } else {
-      return new ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder(other);
+      return new ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder(other);
     }
   }
 
@@ -245,7 +245,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
     /** time stamp of the order creation */
     private long timestampMillis;
     /** Type of event */
-    private ibm.eda.demo.app.infrastructure.events.EventType type;
+    private ibm.eda.demo.ordermgr.infra.events.EventType type;
     /** Different payload structure depending of event type */
     private java.lang.Object payload;
 
@@ -258,7 +258,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder other) {
+    private Builder(ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.orderID)) {
         this.orderID = data().deepCopy(fields()[0].schema(), other.orderID);
@@ -282,7 +282,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
      * Creates a Builder by copying an existing OrderEvent instance
      * @param other The existing instance to copy.
      */
-    private Builder(ibm.eda.demo.app.infrastructure.events.OrderEvent other) {
+    private Builder(ibm.eda.demo.ordermgr.infra.events.OrderEvent other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.orderID)) {
         this.orderID = data().deepCopy(fields()[0].schema(), other.orderID);
@@ -318,7 +318,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'orderID'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder setOrderID(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder setOrderID(java.lang.String value) {
       validate(fields()[0], value);
       this.orderID = value;
       fieldSetFlags()[0] = true;
@@ -340,7 +340,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * Unique order identifier
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder clearOrderID() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder clearOrderID() {
       orderID = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -362,7 +362,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'timestampMillis'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder setTimestampMillis(long value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder setTimestampMillis(long value) {
       validate(fields()[1], value);
       this.timestampMillis = value;
       fieldSetFlags()[1] = true;
@@ -384,7 +384,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * time stamp of the order creation
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder clearTimestampMillis() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder clearTimestampMillis() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -394,7 +394,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * Type of event
       * @return The value.
       */
-    public ibm.eda.demo.app.infrastructure.events.EventType getType() {
+    public ibm.eda.demo.ordermgr.infra.events.EventType getType() {
       return type;
     }
 
@@ -405,7 +405,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'type'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder setType(ibm.eda.demo.app.infrastructure.events.EventType value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder setType(ibm.eda.demo.ordermgr.infra.events.EventType value) {
       validate(fields()[2], value);
       this.type = value;
       fieldSetFlags()[2] = true;
@@ -427,7 +427,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * Type of event
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder clearType() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder clearType() {
       type = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -449,7 +449,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'payload'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder setPayload(java.lang.Object value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder setPayload(java.lang.Object value) {
       validate(fields()[3], value);
       this.payload = value;
       fieldSetFlags()[3] = true;
@@ -471,7 +471,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
       * Different payload structure depending of event type
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderEvent.Builder clearPayload() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderEvent.Builder clearPayload() {
       payload = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -484,7 +484,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
         OrderEvent record = new OrderEvent();
         record.orderID = fieldSetFlags()[0] ? this.orderID : (java.lang.String) defaultValue(fields()[0]);
         record.timestampMillis = fieldSetFlags()[1] ? this.timestampMillis : (java.lang.Long) defaultValue(fields()[1]);
-        record.type = fieldSetFlags()[2] ? this.type : (ibm.eda.demo.app.infrastructure.events.EventType) defaultValue(fields()[2]);
+        record.type = fieldSetFlags()[2] ? this.type : (ibm.eda.demo.ordermgr.infra.events.EventType) defaultValue(fields()[2]);
         record.payload = fieldSetFlags()[3] ? this.payload :  defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {

@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package ibm.eda.demo.app.infrastructure.events;
+package ibm.eda.demo.ordermgr.infra.events;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -226,8 +226,8 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
    * Creates a new Address RecordBuilder.
    * @return A new Address RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.Address.Builder newBuilder() {
-    return new ibm.eda.demo.app.infrastructure.events.Address.Builder();
+  public static ibm.eda.demo.ordermgr.infra.events.Address.Builder newBuilder() {
+    return new ibm.eda.demo.ordermgr.infra.events.Address.Builder();
   }
 
   /**
@@ -235,11 +235,11 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param other The existing builder to copy.
    * @return A new Address RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.Address.Builder newBuilder(ibm.eda.demo.app.infrastructure.events.Address.Builder other) {
+  public static ibm.eda.demo.ordermgr.infra.events.Address.Builder newBuilder(ibm.eda.demo.ordermgr.infra.events.Address.Builder other) {
     if (other == null) {
-      return new ibm.eda.demo.app.infrastructure.events.Address.Builder();
+      return new ibm.eda.demo.ordermgr.infra.events.Address.Builder();
     } else {
-      return new ibm.eda.demo.app.infrastructure.events.Address.Builder(other);
+      return new ibm.eda.demo.ordermgr.infra.events.Address.Builder(other);
     }
   }
 
@@ -248,11 +248,11 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param other The existing instance to copy.
    * @return A new Address RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.Address.Builder newBuilder(ibm.eda.demo.app.infrastructure.events.Address other) {
+  public static ibm.eda.demo.ordermgr.infra.events.Address.Builder newBuilder(ibm.eda.demo.ordermgr.infra.events.Address other) {
     if (other == null) {
-      return new ibm.eda.demo.app.infrastructure.events.Address.Builder();
+      return new ibm.eda.demo.ordermgr.infra.events.Address.Builder();
     } else {
-      return new ibm.eda.demo.app.infrastructure.events.Address.Builder(other);
+      return new ibm.eda.demo.ordermgr.infra.events.Address.Builder(other);
     }
   }
 
@@ -283,7 +283,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(ibm.eda.demo.app.infrastructure.events.Address.Builder other) {
+    private Builder(ibm.eda.demo.ordermgr.infra.events.Address.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.street)) {
         this.street = data().deepCopy(fields()[0].schema(), other.street);
@@ -311,7 +311,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing Address instance
      * @param other The existing instance to copy.
      */
-    private Builder(ibm.eda.demo.app.infrastructure.events.Address other) {
+    private Builder(ibm.eda.demo.ordermgr.infra.events.Address other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.street)) {
         this.street = data().deepCopy(fields()[0].schema(), other.street);
@@ -351,7 +351,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'street'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder setStreet(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder setStreet(java.lang.String value) {
       validate(fields()[0], value);
       this.street = value;
       fieldSetFlags()[0] = true;
@@ -373,7 +373,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * Street name with number within the street
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder clearStreet() {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder clearStreet() {
       street = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -395,7 +395,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'city'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder setCity(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder setCity(java.lang.String value) {
       validate(fields()[1], value);
       this.city = value;
       fieldSetFlags()[1] = true;
@@ -417,7 +417,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * city
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder clearCity() {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder clearCity() {
       city = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -439,7 +439,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'state'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder setState(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder setState(java.lang.String value) {
       validate(fields()[2], value);
       this.state = value;
       fieldSetFlags()[2] = true;
@@ -461,7 +461,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * State code or name
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder clearState() {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder clearState() {
       state = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -483,7 +483,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'country'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder setCountry(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder setCountry(java.lang.String value) {
       validate(fields()[3], value);
       this.country = value;
       fieldSetFlags()[3] = true;
@@ -505,7 +505,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * Country
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder clearCountry() {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder clearCountry() {
       country = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -527,7 +527,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'zipcode'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder setZipcode(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder setZipcode(java.lang.String value) {
       validate(fields()[4], value);
       this.zipcode = value;
       fieldSetFlags()[4] = true;
@@ -549,7 +549,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
       * Zipcode
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder clearZipcode() {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder clearZipcode() {
       zipcode = null;
       fieldSetFlags()[4] = false;
       return this;

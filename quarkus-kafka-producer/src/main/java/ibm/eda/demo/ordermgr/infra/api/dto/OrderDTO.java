@@ -1,9 +1,9 @@
-package ibm.eda.demo.app.api.dto;
+package ibm.eda.demo.ordermgr.infra.api.dto;
 
 import com.fasterxml.jackson.databind.util.BeanUtil;
 
-import ibm.eda.demo.app.domain.Address;
-import ibm.eda.demo.app.domain.OrderEntity;
+import ibm.eda.demo.ordermgr.domain.Address;
+import ibm.eda.demo.ordermgr.domain.OrderEntity;
 
 public class OrderDTO {
 	public String orderID;

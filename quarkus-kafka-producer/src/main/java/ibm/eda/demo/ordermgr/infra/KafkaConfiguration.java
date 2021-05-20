@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.infrastructure;
+package ibm.eda.demo.ordermgr.infra;
 
 import java.util.Optional;
 import java.util.Properties;

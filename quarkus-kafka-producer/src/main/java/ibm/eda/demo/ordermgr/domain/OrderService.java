@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.domain;
+package ibm.eda.demo.ordermgr.domain;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -7,12 +7,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import ibm.eda.demo.app.infrastructure.OrderRepositoryMem;
-import ibm.eda.demo.app.infrastructure.events.Address;
-import ibm.eda.demo.app.infrastructure.events.EventEmitter;
-import ibm.eda.demo.app.infrastructure.events.EventType;
-import ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent;
-import ibm.eda.demo.app.infrastructure.events.OrderEvent;
+import ibm.eda.demo.ordermgr.infra.OrderRepositoryMem;
+import ibm.eda.demo.ordermgr.infra.events.Address;
+import ibm.eda.demo.ordermgr.infra.events.EventEmitter;
+import ibm.eda.demo.ordermgr.infra.events.EventType;
+import ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent;
+import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
 
 @ApplicationScoped
 public class OrderService {

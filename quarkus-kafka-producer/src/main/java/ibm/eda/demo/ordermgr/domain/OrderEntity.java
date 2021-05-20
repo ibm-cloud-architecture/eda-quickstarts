@@ -1,8 +1,8 @@
-package ibm.eda.demo.app.domain;
+package ibm.eda.demo.ordermgr.domain;
 
 import java.util.UUID;
 
-import ibm.eda.demo.app.api.dto.OrderDTO;
+import ibm.eda.demo.ordermgr.infra.api.dto.OrderDTO;
 
 public class OrderEntity {
 	public static final String PENDING_STATUS = "pending";

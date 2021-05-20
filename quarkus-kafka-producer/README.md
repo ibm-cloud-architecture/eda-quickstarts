@@ -2,19 +2,22 @@
 
 ## What the template does
 
-* Use Quarkus and Microprofile 3.0 for health, metrics and open API.
-* Use Kafka producer API, with Avro serialization
+* Use Quarkus and Microprofile 3.0 for health, metrics and open API extensions
+* Use Kafka producer API, with Json schema and Avro serialization
 * Use [Avro maven plugin](https://avro.apache.org/docs/current/gettingstartedjava.html#Serializing+and+deserializing+without+code+generation) to generate code from Avro definitions, taking into account the order of import to manage schema dependencies
 * Use Apicurio schema registry and the maven plugin to upload new definition to the connected registry.
-
+* Support Domain driven design practices
+* Deliver a Strimzi test container class 
 
 ## Code structure
 
-The code is reusing the Domain Driven Design approach layers to organize the code:
+The code is reusing the Domain Driven Design approach of layers to organize the code. From top down visibility we have:
 
-* **infrastructure**: to include lower level integration layer. This is where to find repository or kafka lower level component if needed
-* **domain**: domain model and services supporting the business logic - Events are generate under the domain. It could have bean generated under infrastructure.
 * **app**: APIs and application related classes to make it running.
+* **domain**: domain model and services supporting the business logic - Events are generate under the domain. It could have bean generated under infrastructure.
+* **infrastructure**: to include lower level integration layer. This is where to find repository or Kafka lower level component needed.
+
+Normally events can be considered at the domain level, as it is a business decision to define what data elements to share with other. It is also fine to consider them at the infrastructure level.
 
 The REST resource delegates to a service where you may want to implement some business logic there. The service class should be tested by isolation. The Resource is doing simple data mapping between the model for the query, creation or update of the main business entity, in this example the Order. 
 
@@ -88,3 +91,7 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 You can then execute your native executable with: `./target/order-mgr-1.0-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+
+## Example based on this template
+
+The [Freezer manager service in the vaccine solution uses this template]()

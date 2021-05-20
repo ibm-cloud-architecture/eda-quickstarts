@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package ibm.eda.demo.app.infrastructure.events;
+package ibm.eda.demo.ordermgr.infra.events;
 /** The different types of events emitted */
 @org.apache.avro.specific.AvroGenerated
 public enum EventType implements org.apache.avro.generic.GenericEnumSymbol<EventType> {

@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.domain;
+package ibm.eda.demo.ordermgr.domain;
 
 public class Address {
     private String street;

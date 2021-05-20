@@ -8,11 +8,11 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import ibm.eda.demo.app.domain.OrderEntity;
-import ibm.eda.demo.app.domain.OrderService;
-import ibm.eda.demo.app.infrastructure.KafkaConfiguration;
-import ibm.eda.demo.app.infrastructure.OrderEventProducer;
-import ibm.eda.demo.app.infrastructure.OrderRepositoryMem;
+import ibm.eda.demo.ordermgr.domain.OrderEntity;
+import ibm.eda.demo.ordermgr.domain.OrderService;
+import ibm.eda.demo.ordermgr.infra.KafkaConfiguration;
+import ibm.eda.demo.ordermgr.infra.OrderEventProducer;
+import ibm.eda.demo.ordermgr.infra.OrderRepositoryMem;
 
 public class TestService {
     

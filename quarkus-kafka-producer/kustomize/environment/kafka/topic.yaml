@@ -1,10 +1,10 @@
-apiVersion: kafka.strimzi.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   namespace: kafka
   name: orders
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: my-kafka
 spec:
   partitions: 1
   replicas: 1

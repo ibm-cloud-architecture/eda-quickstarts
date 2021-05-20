@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.infrastructure;
+package ibm.eda.demo.ordermgr.infra;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ibm.eda.demo.app.domain.OrderEntity;
+import ibm.eda.demo.ordermgr.domain.OrderEntity;
 
 @Singleton
 public class OrderRepositoryMem {

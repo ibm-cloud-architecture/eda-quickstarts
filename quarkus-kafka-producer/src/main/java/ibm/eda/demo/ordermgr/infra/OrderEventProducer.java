@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.infrastructure;
+package ibm.eda.demo.ordermgr.infra;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,8 +12,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.jboss.logging.Logger;
 
-import ibm.eda.demo.app.infrastructure.events.EventEmitter;
-import ibm.eda.demo.app.infrastructure.events.OrderEvent;
+import ibm.eda.demo.ordermgr.infra.events.EventEmitter;
+import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
 
 /**
  * Standard Kafka Producer without Avro and Schema Registry. 

@@ -1,4 +1,4 @@
-package ibm.eda.demo.app.api;
+package ibm.eda.demo.ordermgr.infra.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +13,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import ibm.eda.demo.app.api.dto.OrderDTO;
-import ibm.eda.demo.app.domain.OrderEntity;
-import ibm.eda.demo.app.domain.OrderService;
+import ibm.eda.demo.ordermgr.domain.OrderEntity;
+import ibm.eda.demo.ordermgr.domain.OrderService;
+import ibm.eda.demo.ordermgr.infra.api.dto.OrderDTO;
 
-@Path("/api/orders/v2")
+@Path("/api/orders/v1")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped

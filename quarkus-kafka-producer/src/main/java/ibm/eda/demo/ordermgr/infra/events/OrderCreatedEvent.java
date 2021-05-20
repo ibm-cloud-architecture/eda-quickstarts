@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package ibm.eda.demo.app.infrastructure.events;
+package ibm.eda.demo.ordermgr.infra.events;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -82,7 +82,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
   /** Status of the order. */
    private java.lang.String status;
   /** Address to ship the ordered items */
-   private ibm.eda.demo.app.infrastructure.events.Address shippingAddress;
+   private ibm.eda.demo.ordermgr.infra.events.Address shippingAddress;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -100,7 +100,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
    * @param status Status of the order.
    * @param shippingAddress Address to ship the ordered items
    */
-  public OrderCreatedEvent(java.lang.String orderID, java.lang.String productID, java.lang.String customerID, java.lang.Integer quantity, java.lang.String status, ibm.eda.demo.app.infrastructure.events.Address shippingAddress) {
+  public OrderCreatedEvent(java.lang.String orderID, java.lang.String productID, java.lang.String customerID, java.lang.Integer quantity, java.lang.String status, ibm.eda.demo.ordermgr.infra.events.Address shippingAddress) {
     this.orderID = orderID;
     this.productID = productID;
     this.customerID = customerID;
@@ -133,7 +133,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
     case 2: customerID = value$ != null ? value$.toString() : null; break;
     case 3: quantity = (java.lang.Integer)value$; break;
     case 4: status = value$ != null ? value$.toString() : null; break;
-    case 5: shippingAddress = (ibm.eda.demo.app.infrastructure.events.Address)value$; break;
+    case 5: shippingAddress = (ibm.eda.demo.ordermgr.infra.events.Address)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -232,7 +232,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
    * Gets the value of the 'shippingAddress' field.
    * @return Address to ship the ordered items
    */
-  public ibm.eda.demo.app.infrastructure.events.Address getShippingAddress() {
+  public ibm.eda.demo.ordermgr.infra.events.Address getShippingAddress() {
     return shippingAddress;
   }
 
@@ -242,7 +242,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
    * Address to ship the ordered items
    * @param value the value to set.
    */
-  public void setShippingAddress(ibm.eda.demo.app.infrastructure.events.Address value) {
+  public void setShippingAddress(ibm.eda.demo.ordermgr.infra.events.Address value) {
     this.shippingAddress = value;
   }
 
@@ -250,8 +250,8 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
    * Creates a new OrderCreatedEvent RecordBuilder.
    * @return A new OrderCreatedEvent RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder newBuilder() {
-    return new ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder();
+  public static ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder newBuilder() {
+    return new ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder();
   }
 
   /**
@@ -259,11 +259,11 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
    * @param other The existing builder to copy.
    * @return A new OrderCreatedEvent RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder newBuilder(ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder other) {
+  public static ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder newBuilder(ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder other) {
     if (other == null) {
-      return new ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder();
+      return new ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder();
     } else {
-      return new ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder(other);
+      return new ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder(other);
     }
   }
 
@@ -272,11 +272,11 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
    * @param other The existing instance to copy.
    * @return A new OrderCreatedEvent RecordBuilder
    */
-  public static ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder newBuilder(ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent other) {
+  public static ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder newBuilder(ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent other) {
     if (other == null) {
-      return new ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder();
+      return new ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder();
     } else {
-      return new ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder(other);
+      return new ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder(other);
     }
   }
 
@@ -298,8 +298,8 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
     /** Status of the order. */
     private java.lang.String status;
     /** Address to ship the ordered items */
-    private ibm.eda.demo.app.infrastructure.events.Address shippingAddress;
-    private ibm.eda.demo.app.infrastructure.events.Address.Builder shippingAddressBuilder;
+    private ibm.eda.demo.ordermgr.infra.events.Address shippingAddress;
+    private ibm.eda.demo.ordermgr.infra.events.Address.Builder shippingAddressBuilder;
 
     /** Creates a new Builder */
     private Builder() {
@@ -310,7 +310,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder other) {
+    private Builder(ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.orderID)) {
         this.orderID = data().deepCopy(fields()[0].schema(), other.orderID);
@@ -337,7 +337,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
         fieldSetFlags()[5] = other.fieldSetFlags()[5];
       }
       if (other.hasShippingAddressBuilder()) {
-        this.shippingAddressBuilder = ibm.eda.demo.app.infrastructure.events.Address.newBuilder(other.getShippingAddressBuilder());
+        this.shippingAddressBuilder = ibm.eda.demo.ordermgr.infra.events.Address.newBuilder(other.getShippingAddressBuilder());
       }
     }
 
@@ -345,7 +345,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
      * Creates a Builder by copying an existing OrderCreatedEvent instance
      * @param other The existing instance to copy.
      */
-    private Builder(ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent other) {
+    private Builder(ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.orderID)) {
         this.orderID = data().deepCopy(fields()[0].schema(), other.orderID);
@@ -390,7 +390,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'orderID'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setOrderID(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setOrderID(java.lang.String value) {
       validate(fields()[0], value);
       this.orderID = value;
       fieldSetFlags()[0] = true;
@@ -412,7 +412,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Unique ID from source system
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder clearOrderID() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder clearOrderID() {
       orderID = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -434,7 +434,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'productID'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setProductID(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setProductID(java.lang.String value) {
       validate(fields()[1], value);
       this.productID = value;
       fieldSetFlags()[1] = true;
@@ -456,7 +456,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Unique ID for the product as defined in product catalog
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder clearProductID() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder clearProductID() {
       productID = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -478,7 +478,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'customerID'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setCustomerID(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setCustomerID(java.lang.String value) {
       validate(fields()[2], value);
       this.customerID = value;
       fieldSetFlags()[2] = true;
@@ -500,7 +500,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Unique ID for the customer organization
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder clearCustomerID() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder clearCustomerID() {
       customerID = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -522,7 +522,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'quantity'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setQuantity(int value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setQuantity(int value) {
       validate(fields()[3], value);
       this.quantity = value;
       fieldSetFlags()[3] = true;
@@ -544,7 +544,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Quantity ordered
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder clearQuantity() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder clearQuantity() {
       fieldSetFlags()[3] = false;
       return this;
     }
@@ -565,7 +565,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'status'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setStatus(java.lang.String value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setStatus(java.lang.String value) {
       validate(fields()[4], value);
       this.status = value;
       fieldSetFlags()[4] = true;
@@ -587,7 +587,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Status of the order.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder clearStatus() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder clearStatus() {
       status = null;
       fieldSetFlags()[4] = false;
       return this;
@@ -598,7 +598,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Address to ship the ordered items
       * @return The value.
       */
-    public ibm.eda.demo.app.infrastructure.events.Address getShippingAddress() {
+    public ibm.eda.demo.ordermgr.infra.events.Address getShippingAddress() {
       return shippingAddress;
     }
 
@@ -609,7 +609,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'shippingAddress'.
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setShippingAddress(ibm.eda.demo.app.infrastructure.events.Address value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setShippingAddress(ibm.eda.demo.ordermgr.infra.events.Address value) {
       validate(fields()[5], value);
       this.shippingAddressBuilder = null;
       this.shippingAddress = value;
@@ -631,12 +631,12 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
      * Address to ship the ordered items
      * @return This builder.
      */
-    public ibm.eda.demo.app.infrastructure.events.Address.Builder getShippingAddressBuilder() {
+    public ibm.eda.demo.ordermgr.infra.events.Address.Builder getShippingAddressBuilder() {
       if (shippingAddressBuilder == null) {
         if (hasShippingAddress()) {
-          setShippingAddressBuilder(ibm.eda.demo.app.infrastructure.events.Address.newBuilder(shippingAddress));
+          setShippingAddressBuilder(ibm.eda.demo.ordermgr.infra.events.Address.newBuilder(shippingAddress));
         } else {
-          setShippingAddressBuilder(ibm.eda.demo.app.infrastructure.events.Address.newBuilder());
+          setShippingAddressBuilder(ibm.eda.demo.ordermgr.infra.events.Address.newBuilder());
         }
       }
       return shippingAddressBuilder;
@@ -649,7 +649,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
      * @return This builder.
      */
 
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder setShippingAddressBuilder(ibm.eda.demo.app.infrastructure.events.Address.Builder value) {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder setShippingAddressBuilder(ibm.eda.demo.ordermgr.infra.events.Address.Builder value) {
       clearShippingAddress();
       shippingAddressBuilder = value;
       return this;
@@ -669,7 +669,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       * Address to ship the ordered items
       * @return This builder.
       */
-    public ibm.eda.demo.app.infrastructure.events.OrderCreatedEvent.Builder clearShippingAddress() {
+    public ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent.Builder clearShippingAddress() {
       shippingAddress = null;
       shippingAddressBuilder = null;
       fieldSetFlags()[5] = false;
@@ -694,7 +694,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
             throw e;
           }
         } else {
-          record.shippingAddress = fieldSetFlags()[5] ? this.shippingAddress : (ibm.eda.demo.app.infrastructure.events.Address) defaultValue(fields()[5]);
+          record.shippingAddress = fieldSetFlags()[5] ? this.shippingAddress : (ibm.eda.demo.ordermgr.infra.events.Address) defaultValue(fields()[5]);
         }
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
@@ -758,7 +758,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
       this.status = in.readString();
 
       if (this.shippingAddress == null) {
-        this.shippingAddress = new ibm.eda.demo.app.infrastructure.events.Address();
+        this.shippingAddress = new ibm.eda.demo.ordermgr.infra.events.Address();
       }
       this.shippingAddress.customDecode(in);
 
@@ -787,7 +787,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
 
         case 5:
           if (this.shippingAddress == null) {
-            this.shippingAddress = new ibm.eda.demo.app.infrastructure.events.Address();
+            this.shippingAddress = new ibm.eda.demo.ordermgr.infra.events.Address();
           }
           this.shippingAddress.customDecode(in);
           break;
