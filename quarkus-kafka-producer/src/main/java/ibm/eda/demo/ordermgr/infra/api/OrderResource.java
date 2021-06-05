@@ -17,7 +17,7 @@ import ibm.eda.demo.ordermgr.domain.OrderEntity;
 import ibm.eda.demo.ordermgr.domain.OrderService;
 import ibm.eda.demo.ordermgr.infra.api.dto.OrderDTO;
 
-@Path("/api/orders/v1")
+@Path("/api/v1/orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped

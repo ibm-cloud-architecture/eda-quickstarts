@@ -1,0 +1,21 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.quarkus.io/vcs-url: https://github.com/ibm-cloud-architecture/eda-quickstarts.git
+    app.quarkus.io/build-timestamp: 2021-06-04 - 20:25:20 +0000
+    app.quarkus.io/commit-id: d0a382ad1d3518c79e595abd6df442e858fb5d1c
+  labels:
+    app.kubernetes.io/name: order-ms
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  name: order-ms
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: order-ms
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  type: ClusterIP

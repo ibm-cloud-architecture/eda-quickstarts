@@ -2,12 +2,18 @@ package it.eda;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ContainerNetwork;
 
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -28,7 +34,7 @@ public class StrimziContainer extends GenericContainer<StrimziContainer>{
     public StrimziContainer(String version){
         super("quay.io/strimzi/kafka:" + version);
         super.withNetwork(Network.SHARED);
-        super.withExposedPorts(KAFKA_PORT);
+        super.withNetworkAliases("kafka");
 
         // exposing kafka port from the container
         withExposedPorts(KAFKA_PORT);
@@ -109,4 +115,18 @@ public class StrimziContainer extends GenericContainer<StrimziContainer>{
             STARTER_SCRIPT
         );
     }
+
+
+    public  void createTopics(String[] topics) {
+        List<NewTopic> newTopics =
+            Arrays.stream(topics)
+                .map(topic -> new NewTopic(topic, 1, (short) 1))
+                .collect(Collectors.toList());
+        try {
+            AdminClient admin = AdminClient.create(Map.of(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers()));
+            admin.createTopics(newTopics);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+      }
 }

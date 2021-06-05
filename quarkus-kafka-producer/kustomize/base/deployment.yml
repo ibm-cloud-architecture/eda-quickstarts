@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.quarkus.io/vcs-url: https://github.com/ibm-cloud-architecture/eda-quickstarts.git
+    app.quarkus.io/build-timestamp: 2021-06-04 - 20:25:20 +0000
+    app.quarkus.io/commit-id: d0a382ad1d3518c79e595abd6df442e858fb5d1c
+  labels:
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app.kubernetes.io/name: order-ms
+  name: order-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/version: 1.0.0-SNAPSHOT
+      app.kubernetes.io/name: order-ms
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/vcs-url: https://github.com/ibm-cloud-architecture/eda-quickstarts.git
+        app.quarkus.io/build-timestamp: 2021-06-04 - 20:25:20 +0000
+        app.quarkus.io/commit-id: d0a382ad1d3518c79e595abd6df442e858fb5d1c
+      labels:
+        app.kubernetes.io/version: 1.0.0-SNAPSHOT
+        app.kubernetes.io/name: order-ms
+    spec:
+      containers:
+      - args:
+        - -Dquarkus.http.host=0.0.0.0
+        - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+        - -jar
+        - /deployments/quarkus-run.jar
+        command:
+        - java
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JAVA_APP_JAR
+          value: /deployments/quarkus-run.jar
+        image: image-registry.openshift-image-registry.svc:5000/ibmcase/order-ms:1.0.0-SNAPSHOT
+        envFrom:
+        - configMapRef:
+            name: order-mgr-cm
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/live
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: order-ms
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/ready
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10

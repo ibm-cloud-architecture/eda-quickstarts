@@ -1,5 +1,5 @@
 {
-    "namespace": "ibm.eda.demo.app.infrastructure.events",
+    "namespace": "ibm.eda.demo.ordermgr.infra.events",
     "type": "record",
     "name": "OrderEvent",
     "doc": "Order events to report change to the Order entity. It can take different type and may have different payload per type used.",
@@ -38,7 +38,7 @@
             "doc": "Different payload structure depending of event type",
             "type": [
                 {
-                    "namespace": "ibm.eda.demo.app.infrastructure.events",
+                    "namespace": "ibm.eda.demo.ordermgr.infra.events",
                     "type": "record",
                     "name": "OrderCreatedEvent",
                     "fields": [
@@ -71,9 +71,9 @@
                         },
                         {
                             "name": "shippingAddress",
-                            "namespace": "ibm.eda.demo.app.infrastructure.events",
+                            "namespace": "ibm.eda.demo.ordermgr.infra.events",
                             "type": {
-                                "namespace": "ibm.eda.demo.app.infrastructure.events",
+                                "namespace": "ibm.eda.demo.ordermgr.infra.events",
                                 "type": "record",
                                 "name": "Address",
                                 "fields": [

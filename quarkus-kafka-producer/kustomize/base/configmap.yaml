@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-mgr-cm
+data:
+  APP_VERSION: 0.0.1
+  KAFKA_BOOTSTRAP_SERVERS: my-kafka-kafka-bootstrap.mysandbox.svc:9093
+  ORDER_TOPIC: orders
+ 
+  

@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@Path("/api/orders/v1/version")
+@Path("/api/v1/orders/version")
 public class VersionResource {
     
     @Inject

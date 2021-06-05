@@ -42,6 +42,7 @@ services:
       - zookeeper
     ports:
       - "9092:9092"
+      - "29092:9092"
     environment:
       LOG_DIR: "/logs"
       KAFKA_LOG_DIRS: /logs

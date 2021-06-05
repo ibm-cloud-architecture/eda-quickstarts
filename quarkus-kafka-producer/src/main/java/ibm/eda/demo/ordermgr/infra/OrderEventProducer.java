@@ -35,6 +35,8 @@ public class OrderEventProducer implements EventEmitter {
 
     public OrderEventProducer(KafkaConfiguration configuration) {
         this.configuration = configuration;
+        kafkaProducer = new KafkaProducer<String, OrderEvent>(configuration.getProducerProperties("OrderProducer_" + UUID.randomUUID()));
+    
     }
 
     public void sendOrderEvents(List<OrderEvent> l) {

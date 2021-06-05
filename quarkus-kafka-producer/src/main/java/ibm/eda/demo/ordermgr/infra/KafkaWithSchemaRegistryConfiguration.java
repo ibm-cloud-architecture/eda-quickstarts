@@ -7,10 +7,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.eclipse.microprofile.config.ConfigProvider;
 
 import io.apicurio.registry.serde.SerdeConfig;
-import io.apicurio.registry.serde.avro.AvroKafkaSerializer;
-import io.apicurio.registry.serde.avro.strategy.TopicRecordIdStrategy;
 import io.apicurio.registry.serde.avro.strategy.RecordIdStrategy;
-import io.apicurio.registry.serde.avro.AvroSerde;
 /**
  * Centralize in one class the Kafka Configuration when using schema registry. Useful when app has producer
  * and consumer
@@ -43,8 +40,9 @@ public class KafkaWithSchemaRegistryConfiguration  extends KafkaConfiguration {
         vs = ConfigProvider.getConfig().getOptionalValue("kafka.schema.registry.url", String.class);
         if (vs.isPresent()) {
             // Apicurio settings
-            properties.putIfAbsent(SerdeConfig.REGISTRY_URL, vs.get());
             REGISTRY_URL=vs.get();
+            properties.putIfAbsent(SerdeConfig.REGISTRY_URL, REGISTRY_URL);
+            
             if (! truststoreLocation.isEmpty()) {
                 properties.put("value.converter.schema.registry.ssl.trutstore", truststoreLocation);
                 properties.put("value.converter.schema.registry.ssl.trutstore.password",truststorePassword);
