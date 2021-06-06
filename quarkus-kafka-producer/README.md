@@ -125,5 +125,11 @@ Two mode of deployment:
 ### Deploy with quarkus plugin to build the image in OpenShift
 
 ```sh
-/mvnw clean package -Dquarkus.container-image.build=true
+./mvnw clean package -Dquarkus.container-image.build=true
+```
+
+### Deploy using Kustomize
+
+```sh
+oc apply -k 
 ```

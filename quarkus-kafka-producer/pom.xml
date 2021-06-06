@@ -34,6 +34,7 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -183,7 +184,7 @@
                 <import>src/main/avro/Address.avsc</import>
                 <import>src/main/avro/OrderCreatedEvent.avsc</import>
                 -->
-                
+
                 <import>src/main/avro/OrderEvent.avsc</import>
               </imports>
               <stringType>String</stringType>
@@ -191,44 +192,52 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>io.apicurio</groupId>
-        <artifactId>apicurio-registry-maven-plugin</artifactId>
-        <version>${registry.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>register</goal>
-            </goals>
-           
-              <configuration>
-                <registryUrl>http://localhost:8090/</registryUrl>
-                <artifacts>
-                  <!--
-                  <artifact>
-                    <groupId>OrderGroup</groupId>
-                    <artifactId>Address</artifactId>
-                    <type>AVRO</type>
-                    <file>${project.basedir}/src/main/avro/Address.avsc</file>
-                    <ifExists>RETURN_OR_UPDATE</ifExists>
-                  </artifact>
-                -->
-                  <artifact>
-                    <groupId>OrderGroup</groupId>
-                    <artifactId>OrderEvent</artifactId>
-                    <type>AVRO</type>
-                    <file>${project.basedir}/src/main/avro/OrderEvent.avsc</file>
-                    <ifExists>RETURN_OR_UPDATE</ifExists>
-                  </artifact>
-                </artifacts>
-              </configuration>
-          </execution>
-        </executions>
-      </plugin>
+
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>registry</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-maven-plugin</artifactId>
+            <version>${registry.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>register</goal>
+                </goals>
+
+                <configuration>
+                  <registryUrl>http://localhost:8090/</registryUrl>
+                  <artifacts>
+                    <!--
+                    <artifact>
+                      <groupId>OrderGroup</groupId>
+                      <artifactId>Address</artifactId>
+                      <type>AVRO</type>
+                      <file>${project.basedir}/src/main/avro/Address.avsc</file>
+                      <ifExists>RETURN_OR_UPDATE</ifExists>
+                    </artifact>
+                  -->
+                    <artifact>
+                      <groupId>OrderGroup</groupId>
+                      <artifactId>OrderEvent</artifactId>
+                      <type>AVRO</type>
+                      <file>${project.basedir}/src/main/avro/OrderEvent.avsc</file>
+                      <ifExists>RETURN_OR_UPDATE</ifExists>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>native</id>
       <activation>

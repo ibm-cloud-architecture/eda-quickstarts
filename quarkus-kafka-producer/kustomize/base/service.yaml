@@ -8,7 +8,6 @@ metadata:
     app.quarkus.io/commit-id: d0a382ad1d3518c79e595abd6df442e858fb5d1c
   labels:
     app.kubernetes.io/name: order-ms
-    app.kubernetes.io/version: 1.0.0-SNAPSHOT
   name: order-ms
 spec:
   ports:
@@ -17,5 +16,4 @@ spec:
     targetPort: 8080
   selector:
     app.kubernetes.io/name: order-ms
-    app.kubernetes.io/version: 1.0.0-SNAPSHOT
   type: ClusterIP
