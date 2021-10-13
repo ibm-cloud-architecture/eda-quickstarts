@@ -7,7 +7,7 @@
 * Use [Avro maven plugin](https://avro.apache.org/docs/current/gettingstartedjava.html#Serializing+and+deserializing+without+code+generation) to generate code from Avro definitions, taking into account the order of import to manage schema dependencies
 * Use Apicurio schema registry and the maven plugin to upload new definition to the connected registry.
 * Support Domain driven design practices
-* Deliver a Strimzi test container class 
+* Use a Strimzi-Kafka test container class 
 
 ## Code structure
 
@@ -18,13 +18,17 @@ The code is reusing the Domain Driven Design approach of layers to organize the 
 * **infra**: to include the integration layer. This is where to find repository, the REST api or Kafka lower level component needed.
 
 Normally events can be considered at the domain level, as it is a business decision to define what data elements to share with other. 
-It is also fine to consider them at the infrastructure level. In this template the avro schemas in `src/main/avro` use the package namespace: `ibm.eda.demo.ordermgr.infra.events`
+It is also fine to consider them at the infrastructure level. In this template the avro schemas in `src/main/avro` use the package namespace: `ibm.eda.demo.ordermgr.infra.events` but this could
+be changed to be `ibm.eda.demo.ordermgr.domain.events`
 
-The REST resource delegates to a service where you may want to implement some business logic there. The service class should be tested by isolation. The Resource is doing simple data mapping between the model for the query, creation or update of the main business entity, in this example the Order. 
+The REST resource delegates to a service where you may want to implement the business logic with the domain entities. The service class should be tested by isolation. 
+The Resource class supports JAXRS and Microprofile annotation and is doing simple data mapping between the DTOs and the business entities. 
 
-The repository is a mockup one using HashMap to keep the data, it helps to start quickly to demonstrate the application. So the event producer is using Avro schema and the pattern of writing to the topic immediately once the order is received at the API level. 
+The repository is a mockup, and it is using HashMap to keep the data, it helps to start quickly to demonstrate the application. 
+The event producer is using Avro schema and the pattern of writing to the topic immediately once the order is received at the API level. 
 
-The code proposes two KafkaProducer, one with avro, one without. 
+The code proposes two KafkaProducers, one with avro, one without. 
+
 Each producer is annotated with a CDI name, 
 
 ```java
@@ -41,6 +45,11 @@ andthe injection is controlled in the service using the producer as:
 @Named("avroProducer")
 public EventEmitter eventProducer;
 ```
+
+## How to use this template
+
+Clone this repository and start updating tests and business entities in the domain to support
+your business logic.
 
 ## Run and build locally
 

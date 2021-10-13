@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    version: 10.4.0
+    name: es-demo
+  name: es-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: es-demo
+      version: 10.4.0
+  template:
+    metadata:
+      labels:
+        version: 10.4.0
+        name: es-demo
+    spec:
+      containers:
+        - name: es-demo
+          image: quay.io/ibmcase/es-demo
+          imagePullPolicy: Always
+          args:
+            -  -Dproperties_path=/deployments/cfg/kafka.properties
+          env:
+          - name: JAVA_APP_JAR
+            value: /deployments/demo-all.jar
+          - name: SSL_TRUSTSTORE_LOCATION
+            value: /deployments/certs/ca.p12
+          - name: properties_path
+            value: /deployments/cfg/kafka.properties
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          volumeMounts:
+            - mountPath: /deployments/cfg
+              name: properties
+              readOnly: true
+              subPath: ""
+            - mountPath: /deployments/certs
+              name: kafka-cert
+              readOnly: true
+              subPath: ""
+      volumes:
+      - name: properties
+        secret:
+          secretName: demo-app-secret
+          items:
+            - key: kafka.properties
+              path: kafka.properties
+      - name: kafka-cert
+        secret:
+          optional: true
+          secretName: dev-cluster-ca-cert
+          items:  
+            - key: ca.crt
+              path: ca.crt
+            - key: ca.p12
+              path: ca.p12
+            - key: ca.password
+              path: ca.password

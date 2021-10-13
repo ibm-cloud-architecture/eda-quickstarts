@@ -4,8 +4,9 @@ import requests, subprocess, cmd, sys
 
 QUARKUS_RELEASE_URL='https://github.com/quarkusio/quarkus/releases/latest'
 templates={'qkp':'quarkus-kafka-producer','qkc':'quarkus-kafka-consumer','qks':'quarkus-kafka-streams'}
+
 def searchLatestRelease():
-    # normaly it should go to a redirection
+    # normally it should go to a redirection page
     releaseURL=requests.get(QUARKUS_RELEASE_URL).url
     words=releaseURL.split('/')
     return words[len(words) - 1]
