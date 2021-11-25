@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ibm.eda.demo</groupId>
   <artifactId>order-ms</artifactId>
   <version>1.0.0</version>
   <properties>
-    <registry.version>2.0.0.Final</registry.version>
-    <avro.version>1.10.2</avro.version>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>11</maven.compiler.source>
@@ -17,7 +16,6 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.5.0.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-  
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -33,11 +31,7 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kafka-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-openshift</artifactId>
+      <artifactId>quarkus-arc</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -45,7 +39,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-health</artifactId>
+      <artifactId>quarkus-kafka-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -53,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
+      <artifactId>quarkus-openshift</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -65,41 +63,6 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro</artifactId>
-      <version>${avro.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.apicurio</groupId>
-      <artifactId>apicurio-registry-client</artifactId>
-      <version>2.0.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>io.apicurio</groupId>
-      <artifactId>apicurio-registry-common</artifactId>
-      <version>2.0.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>io.apicurio</groupId>
-      <artifactId>apicurio-registry-serdes-avro-serde</artifactId>
-      <version>2.0.0.Final</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.interceptor</groupId>
-          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-
-    <!-- 
-       <dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-avro-serializer</artifactId>
-      <version>6.0.1</version>
-    </dependency>
-    -->
   </dependencies>
   <build>
     <plugins>
@@ -121,6 +84,9 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
+        <configuration>
+          <parameters>${maven.compiler.parameters}</parameters>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -132,79 +98,9 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.avro</groupId>
-        <artifactId>avro-maven-plugin</artifactId>
-        <version>${avro.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>schema</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>src/main/avro/</sourceDirectory>
-              <outputDirectory>src/main/java/</outputDirectory>
-              <!-- need to specify order for dependencies -->
-              <imports>
-                <!--
-                <import>src/main/avro/Address.avsc</import>
-                <import>src/main/avro/OrderCreatedEvent.avsc</import>
-                -->
-
-                <import>src/main/avro/OrderEvent.avsc</import>
-              </imports>
-              <stringType>String</stringType>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
     </plugins>
   </build>
   <profiles>
-    <profile>
-      <id>registry</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-maven-plugin</artifactId>
-            <version>${registry.version}</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>register</goal>
-                </goals>
-
-                <configuration>
-                  <registryUrl>http://localhost:8090/</registryUrl>
-                  <artifacts>
-                    <!--
-                    <artifact>
-                      <groupId>OrderGroup</groupId>
-                      <artifactId>Address</artifactId>
-                      <type>AVRO</type>
-                      <file>${project.basedir}/src/main/avro/Address.avsc</file>
-                      <ifExists>RETURN_OR_UPDATE</ifExists>
-                    </artifact>
-                  -->
-                    <artifact>
-                      <groupId>OrderGroup</groupId>
-                      <artifactId>OrderEvent</artifactId>
-                      <type>AVRO</type>
-                      <file>${project.basedir}/src/main/avro/OrderEvent.avsc</file>
-                      <ifExists>RETURN_OR_UPDATE</ifExists>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <profile>
       <id>native</id>
       <activation>

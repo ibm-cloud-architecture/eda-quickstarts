@@ -13,7 +13,7 @@ public class Consumer {
  * all configuration starting with mp.messaging.incoming.my-data-stream is for this incoming connection
  * all configuration starting with mp.messaging.connector.smallrye-kafka is also for this connection 
  * because we have configured `mp.messaging.incoming.my-data-stream.connector=smallrye-kafka`
- * so in this function we provide connector to use same as our connecore above. `my-data-stream` and it is incoming because of `incoming`
+ * so in this function we provide connector to use same as above. `my-data-stream` and it is incoming because of `incoming`
  * @param priceInUsd data sent to topic. data sent to topic should be of type double otherwise deserialization will fail
  * @return 
  */
