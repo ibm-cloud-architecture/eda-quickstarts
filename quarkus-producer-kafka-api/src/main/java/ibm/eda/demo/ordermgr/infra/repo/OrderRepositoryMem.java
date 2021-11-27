@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ibm.eda.demo.ordermgr.domain.OrderEntity;
 
 @Singleton
-public class OrderRepositoryMem {
+public class OrderRepositoryMem implements OrderRepository {
     private static HashMap<String,OrderEntity> repo = new HashMap<String,OrderEntity>();
 
     private static ObjectMapper mapper = new ObjectMapper();

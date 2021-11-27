@@ -1,9 +1,5 @@
 package ibm.eda.demo.ordermgr.infra.events;
 
-import java.util.UUID;
-
-import ibm.eda.demo.ordermgr.domain.OrderEntity;
-
 public class OrderEvent {
   public java.lang.String orderID;
   /** time stamp of the order creation */
@@ -17,11 +13,18 @@ public class OrderEvent {
 
   public OrderEvent(String orderID, 
         long currentTimeMillis, 
-        EventType eventType, OrderCreatedEvent orderPayload) {
+        EventType eventType, 
+        Object orderPayload) {
         this.orderID= orderID;
+        this.type = eventType;
         this.payload=orderPayload;
         this.timestampMillis = currentTimeMillis;
   }
 
-  
+  public String toString(){
+      return "OrderEvent: { orderid: " + this.orderID 
+        + ", type: " + this.type
+        + ", payload: " + this.payload.toString() 
+        + "}";
+  } 
 }

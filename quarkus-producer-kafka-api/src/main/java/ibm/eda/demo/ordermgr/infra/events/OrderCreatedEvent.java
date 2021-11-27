@@ -15,7 +15,7 @@ public class OrderCreatedEvent {
   /** Status of the order. */
    private java.lang.String status;
   /** Address to ship the ordered items */
-   private ibm.eda.demo.ordermgr.infra.events.Address shippingAddress;
+   private Address shippingAddress;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -33,20 +33,23 @@ public class OrderCreatedEvent {
    * @param status Status of the order.
    * @param shippingAddress Address to ship the ordered items
    */
-  public OrderCreatedEvent(java.lang.String orderID, java.lang.String productID, java.lang.String customerID, java.lang.Integer quantity, java.lang.String status, ibm.eda.demo.ordermgr.infra.events.Address shippingAddress) {
-    this.orderID = orderID;
-    this.productID = productID;
-    this.customerID = customerID;
-    this.quantity = quantity;
-    this.status = status;
-    this.shippingAddress = shippingAddress;
+  public OrderCreatedEvent(String orderID, 
+    String productID, 
+    String customerID, 
+    int quantity, 
+    String status, 
+    Address shippingAddress) {
+      this.orderID = orderID;
+      this.productID = productID;
+      this.customerID = customerID;
+      this.quantity = quantity;
+      this.status = status;
+      this.shippingAddress = shippingAddress;
   }
 
-  
-  public OrderCreatedEvent(String orderID2, String productID2, String customerID2, int quantity2, String status2,
-      Address deliveryAddress) {
+  public String toString(){
+    return "OrderCreateEvent: { orderid: " + this.orderID + ", customer: " + this.customerID + ", product: " + this.productID + "}";
   }
-
   /**
    * Gets the value of the 'orderID' field.
    * @return Unique ID from source system
@@ -141,7 +144,7 @@ public class OrderCreatedEvent {
    * Gets the value of the 'shippingAddress' field.
    * @return Address to ship the ordered items
    */
-  public ibm.eda.demo.ordermgr.infra.events.Address getShippingAddress() {
+  public Address getShippingAddress() {
     return shippingAddress;
   }
 
@@ -151,7 +154,7 @@ public class OrderCreatedEvent {
    * Address to ship the ordered items
    * @param value the value to set.
    */
-  public void setShippingAddress(ibm.eda.demo.ordermgr.infra.events.Address value) {
+  public void setShippingAddress(Address value) {
     this.shippingAddress = value;
   }
 }

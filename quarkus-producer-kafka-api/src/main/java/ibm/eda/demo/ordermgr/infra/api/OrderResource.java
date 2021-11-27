@@ -13,6 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.jboss.logging.Logger;
+
 import ibm.eda.demo.ordermgr.domain.OrderEntity;
 import ibm.eda.demo.ordermgr.domain.OrderService;
 import ibm.eda.demo.ordermgr.infra.api.dto.OrderDTO;
@@ -22,6 +24,7 @@ import ibm.eda.demo.ordermgr.infra.api.dto.OrderDTO;
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
 public class OrderResource {
+    private static final Logger logger = Logger.getLogger(OrderResource.class.getName());
 
     @Inject
     public OrderService service;
@@ -37,6 +40,7 @@ public class OrderResource {
 
     @POST
     public OrderDTO saveNewOrder(OrderDTO order) {
+        logger.info("POST operation " + order.toString());
         OrderEntity entity = OrderEntity.from(order);
         return OrderDTO.from(service.createOrder(entity));
     }

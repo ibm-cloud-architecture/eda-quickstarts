@@ -34,6 +34,11 @@ public class OrderDTO {
 		dto.quantity = order.quantity;
 		return dto;
 	}
+
+	public String toString(){
+		return "OrderDTO: { orderid: " + this.orderID + ", customer: " + this.customerID + ", product: " + this.productID + "}";
+	}
+
 	public String getCustomerID() {
 		return customerID;
 	}

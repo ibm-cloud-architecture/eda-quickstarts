@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: qs-order-ms
+    app.kubernetes.io/version: 1.0.0
+  name: qs-order-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qs-order-ms
+      app.kubernetes.io/version: 1.0.0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: qs-order-ms
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - args:
+        - -Dquarkus.http.host=0.0.0.0
+        - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+        - -jar
+        - /deployments/quarkus-run.jar
+        command:
+        - java
+        image: quay.io/ibmcase/eda-qs-order-ms
+        imagePullPolicy: Always
+        # imagePullPolicy: IfNotPresent
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JAVA_APP_JAR
+          value: /deployments/quarkus-run.jar
+        - name: KAFKA_CERT_PWD
+          valueFrom:
+            secretKeyRef:
+              key: ca.password
+              name: dev-cluster-ca-cert
+        - name: USER_CERT_PWD
+          valueFrom:
+            secretKeyRef:
+              key: user.password
+              name: tls-user
+        envFrom:
+        - configMapRef:
+            name: qs-order-mgr-cm
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/live
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: qs-order-ms
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/ready
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        volumeMounts:
+        - mountPath: /deployments/certs/server
+          name: kafka-cert
+          readOnly: false
+          subPath: ""
+        - mountPath: /deployments/certs/user
+          name: user-cert
+          readOnly: false
+          subPath: ""
+      serviceAccount: qs-prod-sa
+      volumes:
+      - name: kafka-cert
+        secret:
+          defaultMode: 384
+          optional: true
+          secretName: dev-cluster-ca-cert
+      - name: user-cert
+        secret:
+          defaultMode: 384
+          optional: true
+          secretName: tls-user

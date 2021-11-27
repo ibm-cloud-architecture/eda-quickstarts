@@ -1,15 +1,16 @@
 package ibm.eda.demo.ordermgr.infra.events;
+
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.kafka.common.serialization.Serializer;
 
-public class OrderSerializer implements Serializer<OrderEvent> {
+public class OrderCreateEventSerializer implements Serializer<OrderCreatedEvent> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public OrderSerializer(){}
+    public OrderCreateEventSerializer(){}
 
     @Override public void close() {
     }
@@ -18,7 +19,7 @@ public class OrderSerializer implements Serializer<OrderEvent> {
     }
   
     @Override
-    public byte[] serialize(String arg0, OrderEvent data) {
+    public byte[] serialize(String arg0, OrderCreatedEvent data) {
         byte[] retVal = null;
         if (data == null){
             System.out.println("Null received at serializing");
@@ -33,4 +34,5 @@ public class OrderSerializer implements Serializer<OrderEvent> {
         System.out.println(retVal);
         return retVal;
     }
+    
 }

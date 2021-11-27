@@ -39,8 +39,8 @@ public class OrderEventProducer {
     public void emit(OrderEvent oevent) { 
         ProducerRecord<String, OrderEvent> producerRecord = new ProducerRecord<String, OrderEvent>(
                 configuration.getTopicName(), oevent.orderID, oevent);
-       
-        logger.info("sending to " + configuration.getTopicName() + " item " + producerRecord
+        
+        logger.info("sending to " + configuration.getTopicName() + " item: " + producerRecord
         .toString());
         try {
             this.kafkaProducer.send(producerRecord, new Callback() {

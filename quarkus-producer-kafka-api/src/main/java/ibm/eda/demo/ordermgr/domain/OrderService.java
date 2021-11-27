@@ -10,7 +10,7 @@ import ibm.eda.demo.ordermgr.infra.events.EventType;
 import ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent;
 import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
 import ibm.eda.demo.ordermgr.infra.events.OrderEventProducer;
-import ibm.eda.demo.ordermgr.infra.repo.OrderRepositoryMem;
+import ibm.eda.demo.ordermgr.infra.repo.OrderRepository;
 
 
 @ApplicationScoped
@@ -18,11 +18,17 @@ public class OrderService {
 	private static final Logger logger = Logger.getLogger(OrderService.class.getName());
 
 	@Inject
-	public OrderRepositoryMem repository;
+	public OrderRepository repository;
     @Inject
 	public OrderEventProducer eventProducer ;
 	
 	public OrderService(){}
+
+	public OrderService(OrderEventProducer eventProducer,
+						OrderRepository repository	){
+		this.eventProducer= eventProducer;
+		this.repository = repository;
+	}
 
 	
 	public OrderEntity createOrder(OrderEntity order) {
@@ -38,8 +44,10 @@ public class OrderService {
 				order.getQuantity(),
 				order.getStatus(),
 				deliveryAddress);
-		OrderEvent orderEvent = new OrderEvent(order.getOrderID(),System.currentTimeMillis(),
-				EventType.OrderCreated,orderPayload);
+		OrderEvent orderEvent = new OrderEvent(order.getOrderID(),
+				System.currentTimeMillis(),
+				EventType.OrderCreated,
+				orderPayload);
 		
 		try {
 			logger.info("emit event for " + order.getOrderID());
