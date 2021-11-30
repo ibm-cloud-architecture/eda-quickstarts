@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app: qs-order-ms
     app.kubernetes.io/name: qs-order-ms
     app.kubernetes.io/version: 1.0.0
   name: qs-order-ms
@@ -14,6 +15,7 @@ spec:
   template:
     metadata:
       labels:
+        app: qs-order-ms
         app.kubernetes.io/name: qs-order-ms
         app.kubernetes.io/version: 1.0.0
     spec:
@@ -35,12 +37,12 @@ spec:
               fieldPath: metadata.namespace
         - name: JAVA_APP_JAR
           value: /deployments/quarkus-run.jar
-        - name: KAFKA_CERT_PWD
+        - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
               key: ca.password
               name: dev-cluster-ca-cert
-        - name: USER_CERT_PWD
+        - name: KAFKA_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
               key: user.password
@@ -48,31 +50,11 @@ spec:
         envFrom:
         - configMapRef:
             name: qs-order-mgr-cm
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /q/health/live
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 0
-          periodSeconds: 30
-          successThreshold: 1
-          timeoutSeconds: 10
         name: qs-order-ms
         ports:
         - containerPort: 8080
           name: http
           protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /q/health/ready
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 0
-          periodSeconds: 30
-          successThreshold: 1
-          timeoutSeconds: 10
         volumeMounts:
         - mountPath: /deployments/certs/server
           name: kafka-cert

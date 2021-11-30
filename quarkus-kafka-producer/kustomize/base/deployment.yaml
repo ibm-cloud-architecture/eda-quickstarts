@@ -1,8 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    app.quarkus.io/vcs-url: https://github.com/ibm-cloud-architecture/eda-quickstarts.git
   labels:
     app.kubernetes.io/name: order-ms
   name: order-ms
@@ -13,10 +11,7 @@ spec:
       app.kubernetes.io/name: order-ms
   template:
     metadata:
-      annotations:
-        app.quarkus.io/vcs-url: https://github.com/ibm-cloud-architecture/eda-quickstarts.git
       labels:
-        app.kubernetes.io/version: 1.0.0
         app.kubernetes.io/name: order-ms
     spec:
       containers:
@@ -27,7 +22,7 @@ spec:
         - /deployments/quarkus-run.jar
         command:
         - java
-        image: quay.io/ibmcase/order-mgr
+        image: quay.io/ibmcase/eda-qs-order-ms
         imagePullPolicy: Always
         # imagePullPolicy: IfNotPresent
         env:
@@ -41,7 +36,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: ca.password
-              name: my-kafka-cluster-ca-cert
+              name: dev-cluster-ca-cert
         - name: USER_CERT_PWD
           valueFrom:
             secretKeyRef:
@@ -90,7 +85,7 @@ spec:
         secret:
           defaultMode: 384
           optional: true
-          secretName: my-kafka-cluster-ca-cert
+          secretName: dev-cluster-ca-cert
       - name: user-cert
         secret:
           defaultMode: 384

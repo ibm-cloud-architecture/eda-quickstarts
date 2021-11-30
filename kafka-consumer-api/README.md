@@ -105,8 +105,6 @@ quarkus.container-image.version=0.0.1
 
 ## More reading
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
-
-[RESTEasy JAX-RS Guide]: https://quarkus.io/guides/rest-json
+If you want to learn more about Quarkus, please visit its website: https://quarkus.io.
 
 More On IBM Event Driven Architecture: https://ibm-cloud-architecture.github.io/refarch-eda/

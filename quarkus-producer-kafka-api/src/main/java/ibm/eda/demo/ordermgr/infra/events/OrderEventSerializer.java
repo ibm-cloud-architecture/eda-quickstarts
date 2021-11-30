@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.kafka.common.serialization.Serializer;
 
-public class OrderSerializer implements Serializer<OrderEvent> {
+public class OrderEventSerializer implements Serializer<OrderEvent> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public OrderSerializer(){}
+    public OrderEventSerializer(){}
 
     @Override public void close() {
     }

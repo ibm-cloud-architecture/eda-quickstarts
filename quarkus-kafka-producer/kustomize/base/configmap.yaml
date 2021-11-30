@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: order-mgr-cm
 data:
-  APP_VERSION: 0.0.2
-  KAFKA_BOOTSTRAP_SERVERS: my-kafka-kafka-bootstrap.mysandbox.svc:9093
+  APP_VERSION: 0.0.1
+  KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.smq-dev.svc:9093
   ORDER_TOPIC: orders
   KAFKA_SSL_PROTOCOL: TLSv1.2
   KAFKA_SSL_TRUSTSTORE_LOCATION: /deployments/certs/server/ca.p12
@@ -12,7 +12,6 @@ data:
   KAFKA_SSL_KEYSTORE_LOCATION: /deployments/certs/user/user.p12
   KAFKA_SSL_KEYSTORE_TYPE: PKCS12
   KAFKA_SECURITY_PROTOCOL: SSL
-  KAFKA_VALUE_SERIALIZER: io.quarkus.kafka.client.serialization.ObjectMapperSerializer
   
 
   

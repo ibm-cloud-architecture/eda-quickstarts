@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 /**
@@ -20,12 +21,41 @@ import org.jboss.logging.Logger;
 public class KafkaConfiguration {
     protected static final Logger logger = Logger.getLogger(KafkaConfiguration.class.getName());
 
+    @ConfigProperty(name = "kafka.topic.name")
     public  String mainTopicName = "orders";
+    @ConfigProperty(name = "kafka.bootstrap.servers")
+    public  String bootstrapServers = "localhost:9092"; 
+    @ConfigProperty(name = "kafka.security.protocol")
+    public String securityProtocol;
+    @ConfigProperty(name = "kafka.sasl.mechanism")
+    public String saslMechanism;
+    @ConfigProperty(name = "kafka.sasl.jaas.config")
+    public String saslJaasConfig;
+    @ConfigProperty(name = "kafka.ssl.truststore.location")
+    public  String truststoreLocation;
+    @ConfigProperty(name = "kafka.ssl.truststore.password")
+    public  String truststorePassword = "";
+    @ConfigProperty(name = "kafka.ssl.keystore.location")
+    public  String keystoreLocation;
+    @ConfigProperty(name = "kafka.ssl.keystore.password")
+    public  String keystorePassword;
+    // Producer specifics
+    @ConfigProperty(name = "kafka.producer.timeout.sec")
+    public  Long producerTimeout;
+    @ConfigProperty(name = "kafka.producer.acks")
+    public String producerAck;
+    @ConfigProperty(name = "kafka.producer.clientID")
+    public String clientID = "qs-prod-01";
+    @ConfigProperty(name = "kafka.producer.idempotence")
+    public Boolean enableIdempotence= false;
+    @ConfigProperty(name = "kafka.producer.retries")
+    public Integer producerRetries = 0;
+    @ConfigProperty(name = "kafka.key.serializer")
+    public String keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
+    @ConfigProperty(name = "kafka.value.serializer")
+    public String valueSerializer = "org.apache.kafka.common.serialization.StringSerializer";
     public  String schemaName = "Order";
     public  String schemaVersion = "1.0.0";
-    public  String truststoreLocation = "";
-    public  String truststorePassword = "";
-    public  String bootstrapServers = null; 
     public  String schemaRegistryURL = null;
 
     public KafkaConfiguration(){}
@@ -45,55 +75,36 @@ public class KafkaConfiguration {
     private  Properties buildCommonProperties() {
         Properties properties = new Properties();
 
-        Optional<String> topic = ConfigProvider.getConfig().getOptionalValue("kafka.topic.name", String.class);
-        if (topic.isPresent()) {
-            mainTopicName = topic.get();
-        }
-
-        if (bootstrapServers == null) {
-            bootstrapServers = ConfigProvider.getConfig().getValue("kafka.bootstrap.servers", String.class);
-        }
-
         properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         
-        
-        Optional<String> v = ConfigProvider.getConfig().getOptionalValue("kafka.security.protocol", String.class);
-        if (v.isPresent()) {
-            properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, v.get());
+        if (securityProtocol != null) {
+            properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, securityProtocol);
         }
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.sasl.mechanism", String.class);
-        if (v.isPresent()) {
-            properties.put(SaslConfigs.SASL_MECHANISM, v.get());
+        if (saslMechanism != null) {
+            properties.put(SaslConfigs.SASL_MECHANISM,saslMechanism );
         }
       
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.sasl.jaas.config", String.class);
-        if (v.isPresent()) {
-            properties.put(SaslConfigs.SASL_JAAS_CONFIG, v.get());
+        if (saslJaasConfig != null) {
+            properties.put(SaslConfigs.SASL_JAAS_CONFIG, saslJaasConfig);
         }
         properties.put(SslConfigs.SSL_PROTOCOL_CONFIG, "TLSv1.2");
         properties.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2");
         properties.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "HTTPS");
         
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.truststore.location", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, v.get());
-            truststoreLocation = v.get();
+        if (truststoreLocation != null) {
+            properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation);
         }
 
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.truststore.password", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, v.get());
-            truststorePassword = v.get();
+        if (truststorePassword != null) {
+            properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword);
         }
 
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.keystore.location", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, v.get());
+        if (keystoreLocation != null) {
+            properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation);
         }
 
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.keystore.password", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, v.get());
+        if (keystorePassword != null) {
+            properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword);
         }
       
         return properties;
@@ -102,48 +113,27 @@ public class KafkaConfiguration {
 
 
    
-    public  Properties getProducerProperties(String clientID) {
+    public  Properties getProducerProperties() {
         Properties properties = buildCommonProperties();
         
-        Optional<Long> v = ConfigProvider.getConfig().getOptionalValue("kafka.producer.timeout.sec", Long.class);
-        if (v.isPresent()) {
-            properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, v.get());
+        if (producerTimeout != null) {
+            properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, producerTimeout);
         }
 
-        Optional<String> vs = ConfigProvider.getConfig().getOptionalValue("kafka.producer.acks", String.class);
-        if (vs.isPresent()) {
-            properties.put(ProducerConfig.ACKS_CONFIG, vs.get());
+        if (producerAck != null) {
+            properties.put(ProducerConfig.ACKS_CONFIG, producerAck);
         } else {
             properties.put(ProducerConfig.ACKS_CONFIG, "all");
         }
     
-        Optional<Boolean> vb = ConfigProvider.getConfig().getOptionalValue("kafka.producer.idempotence", Boolean.class);
-        if (vb.isPresent()) {
-            properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, vb.get());
-        } else {
-            properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
-        }
-    
-        Optional<Integer> vi = ConfigProvider.getConfig().getOptionalValue("kafka.producer.retries", Integer.class);
-        if (vi.isPresent()) {
-            properties.put(ProducerConfig.RETRIES_CONFIG, vi.get());
-        } else {
-            properties.put(ProducerConfig.RETRIES_CONFIG, 0);
-        }
-     
-        vs = ConfigProvider.getConfig().getOptionalValue("kafka.key.serializer", String.class);
-        if (vs.isPresent()) {
-            properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, vs.get());
-        } else {
-            properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        }
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, enableIdempotence);
+      
+        //Optional<Integer> vi = ConfigProvider.getConfig().getOptionalValue("kafka.producer.retries", Integer.class);
+        properties.put(ProducerConfig.RETRIES_CONFIG, producerRetries);
+       
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
 
-        vs = ConfigProvider.getConfig().getOptionalValue("kafka.value.serializer", String.class);
-        if (vs.isPresent()) {
-            properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, vs.get());
-        } else {
-            properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        }
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
         
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID);
        

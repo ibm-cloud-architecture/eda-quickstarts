@@ -64,30 +64,30 @@ This approach fits well into the event sourcing pattern where one topic contains
 
 The pom.xml has declarations to get the event generated as Java classes under the package: `ibm.eda.demo.infrastructure.events`. The order of the imports is important as Cloud Event will include all schemas defining the Payload. 
 
-```
+```xml
 <plugin>
-				<groupId>org.apache.avro</groupId>
-				<artifactId>avro-maven-plugin</artifactId>
-				<version>${avro.version}</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>schema</goal>
-						</goals>
-						<configuration>
-							<sourceDirectory>src/main/avro/</sourceDirectory>
-							<outputDirectory>src/main/java/</outputDirectory>
-							<!-- need to specify order for dependencies -->
-							<imports>
-								<import>src/main/avro/OrderEvent.avsc</import>
-								<import>src/main/avro/CloudEvent.avsc</import>
-							</imports>
-							<stringType>String</stringType>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+    <groupId>org.apache.avro</groupId>
+    <artifactId>avro-maven-plugin</artifactId>
+    <version>${avro.version}</version>
+    <executions>
+        <execution>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>schema</goal>
+            </goals>
+            <configuration>
+                <sourceDirectory>src/main/avro/</sourceDirectory>
+                <outputDirectory>src/main/java/</outputDirectory>
+                <!-- need to specify order for dependencies -->
+                <imports>
+                    <import>src/main/avro/OrderEvent.avsc</import>
+                    <import>src/main/avro/CloudEvent.avsc</import>
+                </imports>
+                <stringType>String</stringType>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
 ```
 
 
@@ -99,7 +99,7 @@ The following figure illustrates the current docker compose environment with Kaf
 
 For external to docker network connection we will use localhost:9092, and any other internal to docker network app will use `kafka:29092` connection. The docker compose for the kafka container configure the internal and external listerner as:
 
-```
+```yaml
 KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
 KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
 KAFKA_LISTENERS: EXTERNAL://0.0.0.0:9092,INTERNAL://kafka:29092

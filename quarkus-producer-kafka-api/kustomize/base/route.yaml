@@ -6,9 +6,8 @@ metadata:
   name: qs-order-ms
 spec:
   host: ""
-  path: /
   port:
     targetPort: 8080
   to:
     kind: Service
-    name: qs-order-ms
+    name: eda-qs-order-ms
