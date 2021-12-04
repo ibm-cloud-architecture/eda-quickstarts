@@ -1,4 +1,4 @@
-kafka-producer-node/env.sh
+quarkus-producer-kafka-api/target
 kafka-producer-node/package-lock.json
 kafka-producer-node/node_modules/.package-lock.json
 node/env.sh
@@ -8,3 +8,5 @@ node/package-lock.json
 kafka-consumer/env.sh
 kafka-consumer/env.sh
 reefer-ms/
+**/*.p12
+**/target/

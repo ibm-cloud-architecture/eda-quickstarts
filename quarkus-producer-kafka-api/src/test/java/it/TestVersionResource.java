@@ -13,7 +13,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestMethodOrder(OrderAnnotation.class)
 public class TestVersionResource {
-    String basicURL = "/api/v1/orders";
+    String basicURL = "/api/v1";
 
 
     @Test

@@ -15,20 +15,22 @@ The main project includes the environment folder which supports different deploy
 
 * to run Strimzi Kafka and Apicurio locally on your laptop using docker compose
 * to deploy strimzi on OpenShift with kustomize 
-* to deploy event streams on OpenShift with kustomize
+* to deploy event streams on OpenShift with kustomize see the [eda-gitops-catalog](https://github.com/ibm-cloud-architecture/eda-gitops-catalog)
 
 Then each project includes:
 
 * Github action workflow to build with maven, build jvm docker image and push the image to an image registry
-* Kustomize folder for yaml and kustomization for the different deployment environment
+* Kustomize folder for yamls to deploy to OpenShift cluster.
 
 ## Java templates
 
 We are adopting Quarkus (current version is 2.5) as our main Java Microprofile framework, for the development experience, and the excellent performance to start in Kubernetes.
 
-* [Quarkus app with Kafka Producer API](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/quarkus-producer-kafka-api)
+* [Quarkus app with Kafka Producer API](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/quarkus-producer-kafka-api): OpenAPI, metrics, health, RESTeasy, Kafka API
+* [Quarkus app with Kafka Consumer API](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/quarkus-consumer-kafka-api): OpenAPI, metrics, health, RESTeasy, Kafka API, to consume 'product' events. Deployable on OpenShift with source to image, with configMap to tune the EventStreams or Kafka client settings.
+
+
 * [Quarkus app with Kafka Producer API and Avro schema](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/)
-* [Quarkus app with Kafka Consumer API](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/kafka-consumer-api): OpenAPI, metrics, health, RESTeasy, Kafka API, to consume 'product' events. Deployable on OpenShift with source to image, with configMap to tune the EventStreams or Kafka client settings.
 * [Quarkus Kafka producer - command part of CQRS](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/quarkus-kafka-producer) is to use Microprofile reactive messaging outbound channel which produces `create events` when data is pushed via REST POST end point. The basic Order entity is here as a placeholder to support REST operation, event creation and persistence. The repository is a Postgresql access layer using Quarkus Panache and hibernate ORM. The code generates to `orders` topic.
 * [Spring Cloud Stream](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/spring-cloud-stream)
 * [Reactive messaging consumer](https://github.com/ibm-cloud-architecture/eda-quickstarts/tree/main/kafka-consumer-reactive-msg)

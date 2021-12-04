@@ -5,7 +5,7 @@ metadata:
 data:
   APP_VERSION: 0.0.1
   KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.smq-dev.svc:9093
-  ORDER_TOPIC: qs-orders
+  KAFKA_TOPIC_NAME: qs-orders
   KAFKA_SSL_PROTOCOL: TLSv1.2
   KAFKA_SSL_TRUSTSTORE_LOCATION: /deployments/certs/server/ca.p12
   KAFKA_SSL_TRUSTSTORE_TYPE: PKCS12

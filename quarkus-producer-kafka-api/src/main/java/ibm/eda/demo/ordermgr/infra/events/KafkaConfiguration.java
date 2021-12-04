@@ -2,8 +2,10 @@ package ibm.eda.demo.ordermgr.infra.events;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.UUID;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -17,33 +19,34 @@ import org.jboss.logging.Logger;
  * Centralize in one class the Kafka Configuration. Useful when app has producer
  * and consumer
  */
-@Singleton
+@ApplicationScoped
 public class KafkaConfiguration {
     protected static final Logger logger = Logger.getLogger(KafkaConfiguration.class.getName());
 
-    @ConfigProperty(name = "kafka.topic.name")
-    public  String mainTopicName = "orders";
+    @ConfigProperty(name = "kafka.topic.name", defaultValue="orders")
+    public  String mainTopicName;
+    @Inject
     @ConfigProperty(name = "kafka.bootstrap.servers")
-    public  String bootstrapServers = "localhost:9092"; 
+    public  String bootstrapServers; 
     @ConfigProperty(name = "kafka.security.protocol")
     public String securityProtocol;
     @ConfigProperty(name = "kafka.sasl.mechanism")
-    public String saslMechanism;
+    public Optional<String> saslMechanism;
     @ConfigProperty(name = "kafka.sasl.jaas.config")
-    public String saslJaasConfig;
+    public Optional<String> saslJaasConfig;
     @ConfigProperty(name = "kafka.ssl.truststore.location")
-    public  String truststoreLocation;
+    public  Optional<String> truststoreLocation;
     @ConfigProperty(name = "kafka.ssl.truststore.password")
-    public  String truststorePassword = "";
+    public  Optional<String> truststorePassword;
     @ConfigProperty(name = "kafka.ssl.keystore.location")
-    public  String keystoreLocation;
+    public  Optional<String> keystoreLocation;
     @ConfigProperty(name = "kafka.ssl.keystore.password")
-    public  String keystorePassword;
+    public  Optional<String> keystorePassword;
     // Producer specifics
     @ConfigProperty(name = "kafka.producer.timeout.sec")
     public  Long producerTimeout;
-    @ConfigProperty(name = "kafka.producer.acks")
-    public String producerAck;
+    @ConfigProperty(name = "kafka.producer.acks", defaultValue = "all")
+    public Optional<String> producerAck;
     @ConfigProperty(name = "kafka.producer.clientID")
     public String clientID = "qs-prod-01";
     @ConfigProperty(name = "kafka.producer.idempotence")
@@ -53,7 +56,7 @@ public class KafkaConfiguration {
     @ConfigProperty(name = "kafka.key.serializer")
     public String keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
     @ConfigProperty(name = "kafka.value.serializer")
-    public String valueSerializer = "org.apache.kafka.common.serialization.StringSerializer";
+    public String valueSerializer = "ibm.eda.demo.ordermgr.infra.events.OrderEventSerializer";
     public  String schemaName = "Order";
     public  String schemaVersion = "1.0.0";
     public  String schemaRegistryURL = null;
@@ -75,6 +78,13 @@ public class KafkaConfiguration {
     private  Properties buildCommonProperties() {
         Properties properties = new Properties();
 
+        if (bootstrapServers == null) {
+            bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+            if (bootstrapServers == null) {
+                bootstrapServers = ConfigProvider.getConfig().getValue("kafka.bootstrap.servers", String.class);
+        
+            }
+        }
         properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         
         if (securityProtocol != null) {
@@ -135,7 +145,7 @@ public class KafkaConfiguration {
 
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
         
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID);
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID + UUID.randomUUID().toString());
        
         properties.forEach((k, val) -> logger.info(k + " : " + val));
         return properties;

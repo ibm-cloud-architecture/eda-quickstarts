@@ -47,9 +47,16 @@ spec:
             secretKeyRef:
               key: user.password
               name: tls-user
-        envFrom:
-        - configMapRef:
-            name: qs-order-mgr-cm
+        - name: KAFKA_TOPIC_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: qs-order-mgr-cm
+              key: KAFKA_TOPIC_NAME
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          valueFrom:
+            configMapKeyRef:
+              name: qs-order-mgr-cm
+              key: KAFKA_BOOTSTRAP_SERVERS
         name: qs-order-ms
         ports:
         - containerPort: 8080
