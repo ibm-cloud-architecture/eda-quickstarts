@@ -1,0 +1,8 @@
+resources:
+  - ./environment/es/topic.yaml
+  - ./base/serviceaccount.yaml
+  - ./base/service.yaml
+  - ./base/configmap.yaml
+  - ./base/route.yaml
+  - ./base/rolebinding.yaml
+  - ./base/deployment.yaml

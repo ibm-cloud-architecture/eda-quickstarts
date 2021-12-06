@@ -1,0 +1,119 @@
+[
+    {
+        "namespace": "ibm.eda.demo.ordermgr.infra.events",
+        "name": "Address",
+        "type": "record",
+        "fields": [
+            {
+                "name": "city",
+                "type": "string"
+            },
+            {
+                "name": "country",
+                "type": "string"
+            },
+            {
+                "name": "state",
+                "type": "string"
+            },
+            {
+                "name": "street",
+                "type": "string"
+            },
+            {
+                "name": "zipcode",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "namespace": "ibm.eda.demo.ordermgr.infra.events",
+        "type": "record",
+        "name": "OrderCreatedEvent",
+        "fields": [
+            {
+                "name": "orderID",
+                "type": "string",
+                "doc": "Unique ID from source system"
+            },
+            {
+                "name": "productID",
+                "type": "string",
+                "doc": "Unique ID for the product as defined in product catalog"
+            },
+            {
+                "name": "customerID",
+                "type": "string",
+                "doc": "Unique ID for the customer organization"
+            },
+            {
+                "name": "quantity",
+                "type": "int",
+                "default": -1,
+                "doc": "Quantity ordered"
+            },
+            {
+                "name": "status",
+                "type": "string",
+                "default": "Pending",
+                "doc": "Status of the order."
+            },
+            {
+                "name": "shippingAddress",
+                "type": [
+                    "ibm.eda.demo.ordermgr.infra.events.Address"
+                ]
+            }
+        ]
+    },
+    {
+        "namespace": "ibm.eda.demo.ordermgr.infra.events",
+        "doc": "Avro data schema for Order managment related events",
+        "type": "record",
+        "name": "OrderCloudEvent",
+        "fields": [
+            {
+                "name": "type",
+                "type": "string",
+                "doc": "Type of event"
+            },
+            {
+                "name": "specversion",
+                "type": "string",
+                "doc": "CloudEvents specVersion"
+            },
+            {
+                "name": "source",
+                "type": "string",
+                "doc": "The source where this event comes from"
+            },
+            {
+                "name": "id",
+                "type": "string",
+                "doc": "CloudEvents event uniquely id"
+            },
+            {
+                "name": "time",
+                "type": "string",
+                "doc": "Time when this event was created"
+            },
+            {
+                "name": "dataschema",
+                "type": "string",
+                "doc": "Location of the events Avro data schema"
+            },
+            {
+                "name": "datacontenttype",
+                "type": "string",
+                "doc": "Type of the data attributes content"
+            },
+            {
+                "name": "data",
+                "type": [
+                    "ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent"
+                ],
+                "doc": "The event"
+            }
+        ]
+    }
+]

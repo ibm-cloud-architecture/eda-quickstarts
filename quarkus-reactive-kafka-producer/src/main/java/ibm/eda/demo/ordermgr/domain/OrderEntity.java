@@ -15,7 +15,7 @@ public class OrderEntity {
     public String orderID;
     public String productID;
     public String customerID;
-    public int quantity;
+    public Integer quantity;
     public Address deliveryAddress;
     public String status;
     

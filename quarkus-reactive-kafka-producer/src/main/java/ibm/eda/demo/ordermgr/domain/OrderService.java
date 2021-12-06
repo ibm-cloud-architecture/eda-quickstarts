@@ -1,5 +1,6 @@
 package ibm.eda.demo.ordermgr.domain;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,9 +10,9 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-import ibm.eda.demo.ordermgr.infra.events.EventType;
+import ibm.eda.demo.ordermgr.infra.events.Address;
+import ibm.eda.demo.ordermgr.infra.events.OrderCloudEvent;
 import ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent;
-import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
 import ibm.eda.demo.ordermgr.infra.repo.OrderRepository;
 
 
@@ -22,7 +23,7 @@ public class OrderService {
 	@Inject
 	public OrderRepository repository;
     @Channel("orders")
-	public Emitter<OrderEvent> eventProducer;
+	public Emitter<OrderCloudEvent> eventProducer;
 	
 	public OrderService(){}
 	
@@ -33,17 +34,22 @@ public class OrderService {
 				,order.getDeliveryAddress().getCountry()
 				,order.getDeliveryAddress().getState(),
 				order.getDeliveryAddress().getZipcode());
-		OrderCreatedEvent orderPayload = new OrderCreatedEvent(order.getOrderID(),
+		OrderCreatedEvent orderPayload =
+		 new OrderCreatedEvent(order.getOrderID(),
 				order.getProductID(),
 				order.getCustomerID(),
 				order.getQuantity(),
 				order.getStatus(),
 				deliveryAddress);
-		OrderEvent orderEvent = new OrderEvent(order.getOrderID(),
-				System.currentTimeMillis(),
-				EventType.OrderCreated,
-				orderPayload);
-		
+		OrderCloudEvent orderEvent = new OrderCloudEvent(
+			"ibm.eda.demo.ordermgr.infra.events.OrderCloudEvent",
+			"1.0.0",
+			"OrderManagerService",
+			order.getOrderID(),
+			Instant.now().toString(),
+			"ibm.eda.demo.ordermgr.infra.events",
+			"ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent",
+				orderPayload);		
 		try {
 			logger.info("emit event for " + order.getOrderID());
 			eventProducer.send(orderEvent);

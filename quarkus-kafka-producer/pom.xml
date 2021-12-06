@@ -6,7 +6,7 @@
   <version>1.0.0</version>
   <properties>
     <registry.version>2.0.0.Final</registry.version>
-    <avro.version>1.10.2</avro.version>
+    <avro.version>1.11.0</avro.version>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>11</maven.compiler.source>
@@ -15,7 +15,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.5.0.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.5.1.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
   
   </properties>

@@ -43,19 +43,8 @@ your business logic. See next sections to run the application in development mod
 
 ## Avro schemas
 
-Define .avsc file (JSON doc) for each type. See declarations in `src/main/avro` folder.
-To get Avro to Java bean we add the following dependencies
-
-```xml
-<dependency>
-    <groupId>org.apache.avro</groupId>
-    <artifactId>avro</artifactId>
-    <version>1.11.0</version>
-</dependency>
-```
-
-And then declare the maven plugin. (see pom file)
-
+Define .avsc file (JSON doc) for each type. See declarations in `src/main/avro` folder. With Quarkus 2.x the
+plugin is generating java beans to the `target/generated-sources/avsc` folder which is in IDE path.
 
 ## Running the application in dev mode with redpanda
 
@@ -64,6 +53,7 @@ And then declare the maven plugin. (see pom file)
 ```shell script
 quarkus dev
 ```
+As there is kafka library it starts RedPanda container and as there is apicurio it also starts an apicur.io docker container.
 
 * Post an order 
 
@@ -134,7 +124,7 @@ You can run your application in dev mode that enables live coding using:
 quarkus dev
 ```
 
-* As before validate the GET /orders and then POST.
+* As before validate the GET /orders and then do POST with one order.
 
 
 

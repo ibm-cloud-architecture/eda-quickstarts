@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app.kubernetes.io/name: qs-order-rms
+  name: qs-order-rms
+spec:
+  host: ""
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: eda-qs-order-rms
