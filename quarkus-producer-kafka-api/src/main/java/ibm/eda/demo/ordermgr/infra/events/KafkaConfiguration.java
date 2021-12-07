@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -14,6 +15,9 @@ import org.apache.kafka.common.config.SslConfigs;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
+
+import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.StartupEvent;
 
 /**
  * Centralize in one class the Kafka Configuration. Useful when app has producer
@@ -70,6 +74,15 @@ public class KafkaConfiguration {
     public KafkaConfiguration(String bootstrapServers, String schemaRegistryURL) {
         this.bootstrapServers = bootstrapServers;
         this.schemaRegistryURL = schemaRegistryURL;
+    }
+
+    void onStart(@Observes StartupEvent ev) {
+        logger.info("The application is starting...");
+        getTopicName();
+    }
+
+    void onStop(@Observes ShutdownEvent ev) {
+        logger.info("The application is stopping...");
     }
 
     /**
