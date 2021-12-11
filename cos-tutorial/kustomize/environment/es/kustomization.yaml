@@ -1,6 +1,0 @@
-
-resources:
-  - ./eventstreams-dev.yaml
-  - ./scram-user.yaml
-  - ./tls-user.yaml
-  - ./topic.yaml

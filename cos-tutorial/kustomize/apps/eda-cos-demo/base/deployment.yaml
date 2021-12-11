@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: eda-cos-demo
+    app.kubernetes.io/name: eda-cos-demo
+    app.kubernetes.io/version: 1.0.0
+  name: eda-cos-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eda-cos-demo
+      app.kubernetes.io/version: 1.0.0
+  template:
+    metadata:
+      labels:
+        app: eda-cos-demo
+        app.kubernetes.io/name: eda-cos-demo
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - args:
+        - -Dquarkus.http.host=0.0.0.0
+        - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+        - -jar
+        - /deployments/quarkus-run.jar
+        command:
+        - java
+        image: quay.io/ibmcase/eda-cos-demo
+        imagePullPolicy: Always
+        # imagePullPolicy: IfNotPresent
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JAVA_APP_JAR
+          value: /deployments/quarkus-run.jar
+        - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ca.password
+              name: dev-cluster-ca-cert
+        - name: JAAS_CFG
+          valueFrom:
+            secretKeyRef:
+              key: sasl.jaas.config
+              name: scram-user
+        envFrom:
+        - configMapRef:
+            name: eda-cos-demo-cm
+        name: eda-cos-demo
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /deployments/certs/server
+          name: kafka-cert
+          readOnly: false
+          subPath: ""
+        - mountPath: /deployments/certs/user
+          name: user-cert
+          readOnly: false
+          subPath: ""
+      volumes:
+      - name: kafka-cert
+        secret:
+          optional: false
+          secretName: dev-cluster-ca-cert
+      - name: user-cert
+        secret:
+          optional: false
+          secretName: scram-user

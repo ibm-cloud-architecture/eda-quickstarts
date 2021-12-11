@@ -1,0 +1,44 @@
+apiVersion: eventstreams.ibm.com/v1beta1
+kind: KafkaConnect
+metadata:
+  name: eda-cos-kconnect-cluster
+  annotations:
+    eventstreams.ibm.com/use-connector-resources: "true"
+spec:
+  version: 2.8.0
+  replicas: 1
+  bootstrapServers: dev-kafka-bootstrap.eda-cos.svc:9092
+  image: quay.io/ibmcase/eda-cos-kconnect-cluster-image:latest
+  template:
+    pod:
+      imagePullSecrets: []
+      metadata:
+        annotations:
+          eventstreams.production.type: CloudPakForIntegrationNonProduction
+          productID: 2a79e49111f44ec3acd89608e56138f5
+          productName: IBM Event Streams for Non Production
+          productVersion: 10.4.0
+          productMetric: VIRTUAL_PROCESSOR_CORE
+          productChargedContainers: eda-cos-kconnect-cluster-connect
+          cloudpakId: c8b82d189e7545f0892db9ef2731b90d
+          cloudpakName: IBM Cloud Pak for Integration
+          cloudpakVersion: 2021.3.1
+          productCloudpakRatio: "2:1"
+  config:
+    group.id: connect-cluster
+    offset.storage.topic: connect-cluster-offsets
+    config.storage.topic: connect-cluster-configs
+    status.storage.topic: connect-cluster-status
+    config.storage.replication.factor: 1
+    offset.storage.replication.factor: 1
+    status.storage.replication.factor: 1
+#  tls:
+#    trustedCertificates:
+#      - secretName: quickstart-cluster-ca-cert
+#        certificate: ca.crt
+#  authentication:
+#    type: scram-sha-512
+#    username: my-connect-user
+#    passwordSecret:
+#      secretName: my-connect-user
+#      password: my-connect-password-key

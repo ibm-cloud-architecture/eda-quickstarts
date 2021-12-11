@@ -1,5 +1,8 @@
+kafka-connect-ibmcos-sink/
+kustomize/services/kconnect/jb-kafka-cos-sink-connector.yaml
 #Maven
 target/
+
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

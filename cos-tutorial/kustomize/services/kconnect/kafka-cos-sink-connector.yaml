@@ -1,0 +1,21 @@
+apiVersion: eventstreams.ibm.com/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: cos-sink-connector
+  labels:
+    eventstreams.ibm.com/cluster: dev
+spec:
+  class: com.ibm.eventstreams.connect.cossink.COSSinkConnector
+  tasksMax: 1
+  config:
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    topics: edademo-orders
+    cos.api.key: IBM_COS_API_KEY
+    cos.bucket.location: IBM_COS_BUCKET_LOCATION
+    cos.bucket.name: IBM_COS_BUCKET_NAME
+    cos.bucket.resiliency: IBM_COS_RESILIENCY
+    cos.service.crn: "IBM_COS_CRM"
+    cos.object.records: 5
+    cos.object.deadline.seconds: 5
+    cos.object.interval.seconds: 5

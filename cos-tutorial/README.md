@@ -14,7 +14,7 @@ quarkus ext add  reactive-messaging-kafka, mutiny, openshift
 ```
 
 Then DemoController.java exposes two end points and use reactive messaging to produce
-random Order.
+random Order. It is wrapped into a [CloudEvent](https://cloudevents.io/).
 
 For OpenShift deployment the configuration is controlled via configuration map, kustomize.
 
@@ -38,7 +38,47 @@ curl -X 'POST' \
 
 ## Deploy on OpenShift
 
-* continuously deploy on OpenShift while developing
+As a pre-requisite you need one instance of Event Streams. The kustomize folder includes
+the simplest event streams cluster needed. 
+
+* Deploy in one dedicated project named: eda-cos
+
+  ```sh
+  oc apply -k kustomize/env/base
+  ```
+* Define the entitlement key for this project.
+
+```sh
+oc create secret docker-registry ibm-entitlement-key \
+    --docker-username=cp \
+    --docker-password=$key \
+    --docker-server=cp.icr.io \
+    --namespace=eda-cos
+```
+
+* Deploy Event Streams Cluster.
+ 
+ ```sh
+ oc apply -k kustomize/services/es 
+ # --> Results
+ eventstreams.eventstreams.ibm.com/dev created
+ kafkatopic.eventstreams.ibm.com/edademo-orders created
+ ```
+
+It will take sometime to get the cluster created. Monitor with `oc get pod -w`. You should
+get:
+
+```
+dev-entity-operator-6d7d94f68f-6lk86   3/3    
+dev-ibm-es-admapi-ffd89fdf-x99lq       1/1    
+dev-ibm-es-ui-74bf84dc67-qx9kk         2/2    
+dev-kafka-0                            1/1    
+dev-zookeeper-0                        1/1
+```
+
+With this deployment there is no external route, only on bootstrap URL: `dev-kafka-bootstrap.eda-cos.svc:9092`
+
+* continuously deploy this app on OpenShift while developing
 
 ```sh
 ./mvnw package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
@@ -46,9 +86,49 @@ curl -X 'POST' \
 
  Then get the routes for the `eda-code-demo` and use the swagger ui to start the demo.
 
-* Adopting a partial Gitops approach: 
+* Or adopt a partial Gitops approach: 
 
    * Build the image and push it to quay.io: `scripts/buildAdd.sh`. Update the image name to use your own registry.
-   * Deploy with the kustomize: `oc apply -k kustomize/`
+   * Deploy with the kustomize: `oc apply -k kustomize/apps/eda-cos-demo/base/`
    * The service, configmap, event stream topic, and app deployment resources are created, which means
    this `kustomize` folder could be copied in a GitOps folder created by kam.
+
+## Deploy Kafka connect
+
+We have already build a kafka connect image with the Cloud Object Storage jar so normally
+to deploy to the `eda-cos` we need to just do:
+
+```sh
+oc apply -f kustomize/services/kconnect/kafka-connect.yaml
+# Verify cluster is ready
+oc get kafkaconnect
+```
+
+## Deploy the cos sink connector
+
+Modify the kafka-cos-sink-connector.yaml with your Cloud Object Storage credential, URL, bucket...
+
+then deploy the connector:
+
+```sh
+
+```
+
+### For the maintainer of this tutorial
+
+Here are the needed steps as of 12/10/2021.
+
+```sh
+# clone source 
+git clone https://github.com/ibm-messaging/kafka-connect-ibmcos-sink
+cd kafka-connect-ibmcos-sink
+# Be sure to be on java 11 or 8 to avoid a class version exception
+sdk list java
+sdk use  java 8.0.292.j9-adpt 
+gradle shadowJar
+# mv create jars to plugin
+mv build/libs/kafka-connect-ibmcos-sink-1.0.0-all.jar kustomize/services/kconnect/my-plugins
+# Build the docker image
+docker build -t quay.io/ibmcase/eda-cos-kconnect-cluster-image .
+docker push quay.io/ibmcase/eda-cos-kconnect-cluster-image
+```
