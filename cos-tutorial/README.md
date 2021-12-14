@@ -13,20 +13,58 @@ cd cos-tutorial
 quarkus ext add  reactive-messaging-kafka, mutiny, openshift
 ```
 
-Then DemoController.java exposes two end points and use reactive messaging to produce
-random Order. It is wrapped into a [CloudEvent](https://cloudevents.io/).
+Then `DemoController.java` exposes two end points and use reactive messaging to produce
+random Order in a light version of a TLOG. It is wrapped into a [CloudEvent](https://cloudevents.io/)
+using Quarkus reactive messaging.
 
-For OpenShift deployment the configuration is controlled via configuration map, kustomize.
+For OpenShift deployment the configuration is controlled via configuration map, and kustomize.
 
 ## Run locally
 
-for development purpose:
+For development purpose you can run with Quarkus dev, which will start a local Kafka (RedPanda):
 
 ```sh
 quarkus dev
 ```
 
-Go to the swagger UI to start the demo:
+* Go to the swagger UI http://localhost:8080/q/swagger-ui to start the demo and use the `/api/v1/start` API:
+
+![](docs/swagger-ui.png)
+
+* Verify the generated message in the kafka topic:
+
+```sh
+docker exect -ti kafka bash
+$ cd /opt/kafka/bin
+$ ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic edademo-orders --from-beginning
+```
+
+## End to end demo
+
+We have done a docker compose to demonstrate on your laptop this demonstration,
+As a pre-requisite you need an IBM Cloud Object Storage service provisioned. See the
+[Create an IBM COS Service and COS Bucket article](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/connect-cos/#create-an-ibm-cos-service-and-cos-bucket).
+
+Be sure to have docker daemon running and docker compose. 
+
+* Modify the file `kustomize/services/kconnect/local/kafka-cos-sink-standalone.properties`
+with the properties to connect to cloud object storage
+
+```
+cos.api.key=IBM_COS_API_KEY
+cos.bucket.location=IBM_COS_BUCKET_LOCATION
+cos.bucket.name=IBM_COS_BUCKET_NAME
+cos.bucket.resiliency=IBM_COS_RESILIENCY
+cos.service.crn="crn:IBM_COS_CRM"
+```
+
+* Start the environment
+
+```sh
+docker compose up &
+```
+
+* Start to send some TLOG orders
 
 ```sh
 curl -X 'POST' \
@@ -36,17 +74,30 @@ curl -X 'POST' \
   -d '10'
 ```
 
+* Go to the Cloud Object Storage user interface and the `eda-demo`, you should see new record added.
+
+![](docs/cos-eda-demo-bucket.png)
+
+You can download those records or use SQL query to access them.
+
+* Stop everything:
+
+```sh
+docker compose down
+```
+
 ## Deploy on OpenShift
 
 As a pre-requisite you need one instance of Event Streams. The kustomize folder includes
 the simplest event streams cluster needed. 
 
-* Deploy in one dedicated project named: eda-cos
+* Create an OpenShift project (k8s namespace) named: eda-cos
 
   ```sh
   oc apply -k kustomize/env/base
   ```
-* Define the entitlement key for this project.
+
+* Define your [entitlement key]() for this project.
 
 ```sh
 oc create secret docker-registry ibm-entitlement-key \
@@ -78,7 +129,13 @@ dev-zookeeper-0                        1/1
 
 With this deployment there is no external route, only on bootstrap URL: `dev-kafka-bootstrap.eda-cos.svc:9092`
 
-* continuously deploy this app on OpenShift while developing
+* Deploy the application using:
+
+```sh
+oc apply -k kustomize/apps/eda-cos-demo/base/
+```
+
+* During the application development we can do continuously deployment with:
 
 ```sh
 ./mvnw package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
@@ -86,12 +143,11 @@ With this deployment there is no external route, only on bootstrap URL: `dev-kaf
 
  Then get the routes for the `eda-code-demo` and use the swagger ui to start the demo.
 
-* Or adopt a partial Gitops approach: 
+When adopting Gitops approach you can: 
 
    * Build the image and push it to quay.io: `scripts/buildAdd.sh`. Update the image name to use your own registry.
-   * Deploy with the kustomize: `oc apply -k kustomize/apps/eda-cos-demo/base/`
    * The service, configmap, event stream topic, and app deployment resources are created, which means
-   this `kustomize` folder could be copied in a GitOps folder created by kam.
+   this `kustomize/apps` folder could be copied in a GitOps folder created by kam.
 
 ## Deploy Kafka connect
 
@@ -111,7 +167,7 @@ Modify the kafka-cos-sink-connector.yaml with your Cloud Object Storage credenti
 then deploy the connector:
 
 ```sh
-
+oc apply -f kustomize/services/kconnect/kafka-cos-sink-connector.yaml
 ```
 
 ### For the maintainer of this tutorial
