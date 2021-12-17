@@ -13,15 +13,15 @@ cd cos-tutorial
 quarkus ext add  reactive-messaging-kafka, mutiny, openshift
 ```
 
-Then `DemoController.java` exposes two end points and use reactive messaging to produce
-random Order in a light version of a TLOG. It is wrapped into a [CloudEvent](https://cloudevents.io/)
+Then `DemoController.java` exposes two end points and uses reactive messaging to produce
+random Sale Transaction in a light version of a [TLOG](https://github.com/DFDLSchemas/IBM4690-TLOG). It is wrapped into a [CloudEvent](https://cloudevents.io/)
 using Quarkus reactive messaging.
 
-For OpenShift deployment the configuration is controlled via configuration map, and kustomize.
+For OpenShift deployment the configuration is controlled via configuration map, and kustomize defined under `kustomize` folder.
 
 ## Run locally
 
-For development purpose you can run with Quarkus dev, which will start a local Kafka (RedPanda):
+For development purpose you can run with Quarkus dev, which starts a local Kafka (RedPanda):
 
 ```sh
 quarkus dev
@@ -41,16 +41,17 @@ $ ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic edademo-
 
 ## End to end demo
 
-We have done a docker compose to demonstrate on your laptop this demonstration,
+We also have defined a docker compose file to demonstrate on your laptop.
+
 As a pre-requisite you need an IBM Cloud Object Storage service provisioned. See the
 [Create an IBM COS Service and COS Bucket article](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/connect-cos/#create-an-ibm-cos-service-and-cos-bucket).
 
-Be sure to have docker daemon running and docker compose. 
+Be sure to have docker daemon running and docker compose. If you are using Minikube
 
 * Modify the file `kustomize/services/kconnect/local/kafka-cos-sink-standalone.properties`
-with the properties to connect to cloud object storage
+with the properties to connect to your own IBM Cloud Object Storage service:
 
-```
+```sh
 cos.api.key=IBM_COS_API_KEY
 cos.bucket.location=IBM_COS_BUCKET_LOCATION
 cos.bucket.name=IBM_COS_BUCKET_NAME
@@ -97,12 +98,14 @@ the simplest event streams cluster needed.
   oc apply -k kustomize/env/base
   ```
 
-* Define your [entitlement key]() for this project.
+* Using [IBM entitled registry entitlement key](https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.2?topic=installation-entitled-registry-entitlement-keys) 
+ define your a secret so deployment process can download IBM Event Streams images:
 
 ```sh
+KEY=<yourentitlementkey>
 oc create secret docker-registry ibm-entitlement-key \
     --docker-username=cp \
-    --docker-password=$key \
+    --docker-password=$KEY \
     --docker-server=cp.icr.io \
     --namespace=eda-cos
 ```
@@ -127,23 +130,38 @@ dev-kafka-0                            1/1
 dev-zookeeper-0                        1/1
 ```
 
-With this deployment there is no external route, only on bootstrap URL: `dev-kafka-bootstrap.eda-cos.svc:9092`
+With this deployment there is no external route, only on bootstrap URL: `dev-kafka-bootstrap.eda-cos.svc:9092`. The Kafka listener
+is using PLAINTEXT connection. So no SSL encryption and no authentication.
 
-* Deploy the application using:
+* Deploy the existing application (the image we built is in quay.io/ibmcase) using:
 
 ```sh
 oc apply -k kustomize/apps/eda-cos-demo/base/
 ```
 
-* During the application development we can do continuously deployment with:
+* Test by going to the route and the swagger UI and post 5 or 10 messages. The messages should be visible in the `edademo-orders` queue.
+Another way is to use curl and replace with your own deployment:
+
+  ```sh
+  URL='http://eda-cos-demo-eda-cos.cp4i-es-mq-1e......containers.appdomain.cloud/api/v1/start'
+  curl -X 'POST' \
+   $URL \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '10'
+  ```
+
+* As another way, you can use quarkus deployment capability:
 
 ```sh
+# Be sure to have created the configmap
+oc apply -f kustomize/apps/eda-cos-demo/base/configmap.yaml 
 ./mvnw package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
 ```
 
- Then get the routes for the `eda-code-demo` and use the swagger ui to start the demo.
+Then get the routes for the `eda-code-demo` and use the swagger ui to start the demo.
 
-When adopting Gitops approach you can: 
+* If you plan to use a Gitops approach you can: 
 
    * Build the image and push it to quay.io: `scripts/buildAdd.sh`. Update the image name to use your own registry.
    * The service, configmap, event stream topic, and app deployment resources are created, which means
@@ -169,6 +187,18 @@ then deploy the connector:
 ```sh
 oc apply -f kustomize/services/kconnect/kafka-cos-sink-connector.yaml
 ```
+
+You can verify the connector is running by going to the connect instance
+
+```sh
+oc get pods | grep kconnect
+oc exec -ti <podid> bash
+# in the pod
+curl localhost:8083/connectors
+```
+## Verify in COS the replicated records
+
+![](docs/cos-eda-demo-bucket.png)
 
 ### For the maintainer of this tutorial
 

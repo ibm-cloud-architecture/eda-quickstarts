@@ -34,9 +34,12 @@ spec:
         - name: KUBERNETES_NAMESPACE
           valueFrom:
             fieldRef:
+              apiVersion: v1
               fieldPath: metadata.namespace
         - name: JAVA_APP_JAR
           value: /deployments/quarkus-run.jar
+        - name: SECURE_PROTOCOL
+          value: PLAINTEXT
         - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -70,19 +73,18 @@ spec:
             path: /q/health/live
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 0
+          initialDelaySeconds: 2
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 10
         readinessProbe:
-          failureThreshold: 3
           httpGet:
             path: /q/health/ready
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 0
           periodSeconds: 30
           successThreshold: 1
+          failureThreshold: 3
           timeoutSeconds: 10
       volumes:
       - name: kafka-cert

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
+import java.util.logging.Logger;
 import org.jboss.logging.annotations.Param;
 
 import io.smallrye.mutiny.Multi;
@@ -30,6 +31,7 @@ import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class DemoController {
+    Logger logger = Logger.getLogger(DemoController.class.getName());
     @Inject
     @Channel("orders")
     Emitter<Order> emitter;
@@ -53,14 +55,16 @@ public class DemoController {
     @Path("/start")
     public Uni<String> startDemo(@Param int numberOfRecords) {
       Multi.createFrom().items(buildOrders(numberOfRecords).stream())
-      .subscribe().with( item -> {
-  
-          //KafkaRecord<String, Item> record = KafkaRecord.of(item.sku,item);
-          CompletionStage<Void> acked = emitter.send(item);
-          System.out.println("Send order to kafka");
-          acked.toCompletableFuture().join();
+      .subscribe().with( 
+        item -> {
+          Message<Order> record = KafkaRecord.of(item.store_num,item);
+          emitter.send(record);
+          logger.info("Send order to kafka");
           },
-          failure -> System.out.println("Failed with " + failure.getMessage()));
+          failure -> {
+            logger.severe("Failed with " + failure.getMessage());
+            Uni.createFrom().item("{ \"status\": \"Failed\"}");
+          });
         return Uni.createFrom().item("{ \"status\": \"Succeed\"}");
     }
 

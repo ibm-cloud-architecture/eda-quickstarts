@@ -17,5 +17,7 @@ spec:
     cos.bucket.resiliency: IBM_COS_RESILIENCY
     cos.service.crn: "IBM_COS_CRM"
     cos.object.records: 5
-    cos.object.deadline.seconds: 5
+    # As try to have exactly one delivery: cos.object.deadline.seconds: 5
     cos.object.interval.seconds: 5
+    # The connector uses the following scheme to name Cloud Object Storage objects:
+    # topic/partition/firstoffset-lastoffset

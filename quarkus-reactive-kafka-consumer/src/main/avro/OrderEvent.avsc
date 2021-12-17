@@ -1,0 +1,82 @@
+[
+    {
+        "namespace": "ibm.eda.demo.ordermgr.infra.events",
+        "name": "Address",
+        "type": "record",
+        "fields": [
+            {
+                "name": "city",
+                "type": "string"
+            },
+            {
+                "name": "country",
+                "type": "string"
+            },
+            {
+                "name": "state",
+                "type": "string"
+            },
+            {
+                "name": "street",
+                "type": "string"
+            },
+            {
+                "name": "zipcode",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "namespace": "ibm.eda.demo.ordermgr.infra.events",
+        "type": "record",
+        "name": "OrderEvent",
+        "fields": [
+            {
+                "name": "orderID",
+                "type": "string",
+                "doc": "Unique ID from source system"
+            },
+            {
+                "name": "productID",
+                "type": "string",
+                "doc": "Unique ID for the product as defined in product catalog"
+            },
+            {
+                "name": "customerID",
+                "type": "string",
+                "doc": "Unique ID for the customer organization"
+            },
+            {
+                "name": "quantity",
+                "type": "int",
+                "default": -1,
+                "doc": "Quantity ordered"
+            },
+            {
+                "name": "status",
+                "type": "string",
+                "default": "Pending",
+                "doc": "Status of the order."
+            },
+            {
+                "name": "creationDate",
+                "type": "string"
+            },
+            {
+                "name": "updateDate",
+                "type": "string"
+            },
+            {
+                "name": "shippingAddress",
+                "type": [
+                    "ibm.eda.demo.ordermgr.infra.events.Address"
+                ]
+            },
+            {
+                "type": "string",
+                "name": "eventType",
+                "default": "OrderCreatedEvent"
+            }
+        ]
+    }
+]

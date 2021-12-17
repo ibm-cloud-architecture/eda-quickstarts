@@ -17,10 +17,9 @@ public class Consumer {
  * @param priceInUsd data sent to topic. data sent to topic should be of type double otherwise deserialization will fail
  * @return 
  */
-    @Incoming("my-data-stream")                    
+    @Incoming("order-stream")                    
     public void process(double priceInUsd) {
-        // simple pring
-        System.out.println("-Message Received! from kafa-");
+        System.out.println("-Message Received! from kafka-");
         System.out.println(priceInUsd);
     }
 }
