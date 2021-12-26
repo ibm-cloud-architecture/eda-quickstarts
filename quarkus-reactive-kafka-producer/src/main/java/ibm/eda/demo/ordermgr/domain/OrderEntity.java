@@ -18,10 +18,17 @@ public class OrderEntity {
     public Integer quantity;
     public Address deliveryAddress;
     public String status;
+	public String creationDate;
+	public String updateDate;
     
 	public OrderEntity(){}
 	
-	public OrderEntity(String orderID, String productID, String customerID, int quantity, Address deliveryAddress,
+	public OrderEntity(String orderID, 
+			String productID, 
+			String customerID, 
+			int quantity, 
+			Address deliveryAddress,
+			String creation,
 			String status) {
 		super();
 		this.orderID = orderID;
@@ -30,6 +37,7 @@ public class OrderEntity {
 		this.quantity = quantity;
 		this.deliveryAddress = deliveryAddress;
 		this.status = status;
+		this.creationDate = creation;
 	}
 	
 	public static OrderEntity from(OrderDTO orderDTO) {
@@ -38,6 +46,7 @@ public class OrderEntity {
 		orderDTO.getCustomerID(),
 		orderDTO.getQuantity(),
 		orderDTO.getDestinationAddress(),
+		orderDTO.getCreationDate(),
         OrderEntity.PENDING_STATUS);
 		return orderEntity;
 	}

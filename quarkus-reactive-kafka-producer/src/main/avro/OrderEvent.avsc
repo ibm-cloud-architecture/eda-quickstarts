@@ -1,0 +1,96 @@
+{
+    "namespace": "ibm.eda.demo.ordermgr.infra.events",
+    "type": "record",
+    "name": "OrderEvent",
+    "fields": [
+        {
+            "name": "orderID",
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            },
+            "doc": "Unique ID from source system"
+        },
+        {
+            "name": "productID",
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            },
+            "doc": "Unique ID for the product as defined in product catalog"
+        },
+        {
+            "name": "customerID",
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            },
+            "doc": "Unique ID for the customer organization"
+        },
+        {
+            "name": "quantity",
+            "type": "int",
+            "default": -1,
+            "doc": "Quantity ordered"
+        },
+        {
+            "name": "status",
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            },
+            "doc": "Status of the order."
+        },
+        {
+            "name": "creationDate",
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            }
+        },
+        {
+            "name": "updateDate",
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            }
+        },
+        {
+            "name": "shippingAddress",
+            "type": {
+                "name": "Address",
+                "type": "record",
+                "fields": [
+                    {
+                        "name": "city",
+                        "type": "string"
+                    },
+                    {
+                        "name": "country",
+                        "type": "string"
+                    },
+                    {
+                        "name": "state",
+                        "type": "string"
+                    },
+                    {
+                        "name": "street",
+                        "type": "string"
+                    },
+                    {
+                        "name": "zipcode",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        {
+            "type": {
+                "type": "string",
+                "avro.java.string": "String"
+            },
+            "name": "eventType"
+        
+        }
+    ]
+}

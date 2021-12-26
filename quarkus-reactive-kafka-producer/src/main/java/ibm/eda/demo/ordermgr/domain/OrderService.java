@@ -1,6 +1,6 @@
 package ibm.eda.demo.ordermgr.domain;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,11 +9,12 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
 
 import ibm.eda.demo.ordermgr.infra.events.Address;
-import ibm.eda.demo.ordermgr.infra.events.OrderCloudEvent;
-import ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent;
+import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
 import ibm.eda.demo.ordermgr.infra.repo.OrderRepository;
+import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 
 
 @ApplicationScoped
@@ -23,36 +24,36 @@ public class OrderService {
 	@Inject
 	public OrderRepository repository;
     @Channel("orders")
-	public Emitter<OrderCloudEvent> eventProducer;
+	public Emitter<OrderEvent> eventProducer;
 	
 	public OrderService(){}
 	
 	public OrderEntity createOrder(OrderEntity order) {
+		if (order.creationDate == null) {
+			order.creationDate = LocalDate.now().toString();
+		}
+		order.updateDate= order.creationDate;
 		repository.addOrder(order);
 		Address deliveryAddress = new Address(order.getDeliveryAddress().getStreet()
 				,order.getDeliveryAddress().getCity()
 				,order.getDeliveryAddress().getCountry()
 				,order.getDeliveryAddress().getState(),
 				order.getDeliveryAddress().getZipcode());
-		OrderCreatedEvent orderPayload =
-		 new OrderCreatedEvent(order.getOrderID(),
+		OrderEvent orderPayload =
+		 new OrderEvent(order.getOrderID(),
 				order.getProductID(),
 				order.getCustomerID(),
 				order.getQuantity(),
 				order.getStatus(),
-				deliveryAddress);
-		OrderCloudEvent orderEvent = new OrderCloudEvent(
-			"ibm.eda.demo.ordermgr.infra.events.OrderCloudEvent",
-			"1.0.0",
-			"OrderManagerService",
-			order.getOrderID(),
-			Instant.now().toString(),
-			"ibm.eda.demo.ordermgr.infra.events",
-			"ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent",
-				orderPayload);		
+		        order.creationDate,
+				order.updateDate,
+				deliveryAddress,
+				"OrderCreatedEvent");	
 		try {
-			logger.info("emit event for " + order.getOrderID());
-			eventProducer.send(orderEvent);
+			
+			Message<OrderEvent> record = KafkaRecord.of(order.getOrderID(),orderPayload);
+			eventProducer.send(record);
+			logger.info("order created event sent for " + order.getOrderID());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,9 +64,36 @@ public class OrderService {
 		return repository.getAll();
 	}
 
-    public void updateOrder(OrderEntity entity) {
-		repository.updateOrder(entity);
-		// add update event
+    public OrderEntity updateOrder(OrderEntity order) {
+		order.updateDate = LocalDate.now().toString();
+		repository.updateOrder(order);
+		Address deliveryAddress = null;
+		if (order.getDeliveryAddress() !=null) {
+			deliveryAddress = new Address(order.getDeliveryAddress().getStreet()
+			,order.getDeliveryAddress().getCity()
+			,order.getDeliveryAddress().getCountry()
+			,order.getDeliveryAddress().getState(),
+			order.getDeliveryAddress().getZipcode());
+		}
+		
+		OrderEvent orderPayload =
+		 new OrderEvent(order.getOrderID(),
+				order.getProductID(),
+				order.getCustomerID(),
+				order.getQuantity(),
+				order.getStatus(),
+		        order.creationDate,
+				order.updateDate,
+				deliveryAddress,
+				"OrderUpdateEvent");	
+			try {
+				logger.info("emit order updated event for " + order.getOrderID());
+				eventProducer.send(orderPayload);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return order;
     }
 
+	
 }

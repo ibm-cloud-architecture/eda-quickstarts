@@ -4,7 +4,6 @@
 
 * Use Quarkus and Microprofile 3.0 for health, metrics and open API extensions
 * Use Microprofile reactive messaging API, with Json schema and Avro serialization
-* Use [Avro maven plugin](https://avro.apache.org/docs/current/gettingstartedjava.html#Serializing+and+deserializing+without+code+generation) to generate code from Avro definitions, taking into account the order of import to manage schema dependencies
 * Use Apicurio schema registry and the maven plugin to upload new definition to the connected registry.
 * Support Domain driven design practices
 
@@ -13,6 +12,8 @@ The applications was created with the following extensions:
 ```sh
 quarkus ext add resteasy-mutiny resteasy-jackson smallrye-openapi smallrye-health openshift reactive-messaging-kafka apicurio-registry-avro
 ```
+`apicurio-registry-avro` automatically creates Java Beans from avsc files saved in `src/main/avro` to the folder `target/generated-sources/avsc` which
+should be in the IDE java source path so you own class  can import those beans.
 
 ## Code structure
 
@@ -24,9 +25,9 @@ The code is reusing the Domain Driven Design approach of layers to organize the 
 
 Normally events can be considered at the domain level, as it is a business decision to 
 define what data elements to share with other. It is also fine to consider them at the 
-infrastructure level. In this template the avro schemas in src/main/avro use the package 
+infrastructure level. In this template the avro schemas in `src/main/avro` use the package 
 namespace: `ibm.eda.demo.ordermgr.infra.events` but this could be changed to 
-be `ibm.eda.demo.ordermgr.domain.events`
+be `ibm.eda.demo.ordermgr.domain.events`.
 
 The REST resource delegates to a service where you may want to implement the business logic
  with the domain entities. The service class should be tested by isolation. 

@@ -1,6 +1,6 @@
 package ibm.eda.demo.ordermgr.infra.api.dto;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
+import java.util.UUID;
 
 import ibm.eda.demo.ordermgr.domain.Address;
 import ibm.eda.demo.ordermgr.domain.OrderEntity;
@@ -11,6 +11,7 @@ public class OrderDTO {
 	public String productID;
 	public int quantity;
 	public Address destinationAddress;
+	public String creationDate;
 	
 	
 	public OrderDTO() {
@@ -25,14 +26,38 @@ public class OrderDTO {
 		this.destinationAddress = destinationAddress;
 	}
 	
-	public static OrderDTO from(OrderEntity order){
+	public static OrderDTO fromEntity(OrderEntity order){
 		OrderDTO dto = new OrderDTO();
 		dto.orderID = order.orderID;
 		dto.customerID = order.customerID;
 		dto.productID = order.productID;
 		dto.destinationAddress = order.deliveryAddress;
 		dto.quantity = order.quantity;
+		dto.creationDate = order.creationDate;
 		return dto;
+	}
+
+	public static OrderEntity toEntity(OrderDTO orderDTO) {
+		OrderEntity orderEntity;
+		if (orderDTO.orderID == null) {
+			orderEntity = new OrderEntity(UUID.randomUUID().toString(),
+								orderDTO.getProductID(),
+								orderDTO.getCustomerID(),
+								orderDTO.getQuantity(),
+								orderDTO.getDestinationAddress(),
+								orderDTO.creationDate,
+								OrderEntity.PENDING_STATUS);
+		} else {
+			orderEntity = new OrderEntity(
+								orderDTO.orderID,
+								orderDTO.getProductID(),
+								orderDTO.getCustomerID(),
+								orderDTO.getQuantity(),
+								orderDTO.getDestinationAddress(),
+								orderDTO.creationDate,
+								OrderEntity.PENDING_STATUS);
+		}
+		return orderEntity;
 	}
 
 	public String toString(){
@@ -62,5 +87,9 @@ public class OrderDTO {
 	}
 	public void setDestinationAddress(Address destinationAddress) {
 		this.destinationAddress = destinationAddress;
+	}
+
+	public String getCreationDate(){
+		return creationDate;
 	}
 }
