@@ -1,7 +1,5 @@
 package ibm.eda.demo.ordermgr.infra.api.dto;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
-
 import ibm.eda.demo.ordermgr.domain.Address;
 import ibm.eda.demo.ordermgr.domain.OrderEntity;
 

@@ -5,8 +5,7 @@
   <artifactId>order-ms</artifactId>
   <version>1.0.0</version>
   <properties>
-    <registry.version>2.0.0.Final</registry.version>
-    <avro.version>1.11.0</avro.version>
+    
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>11</maven.compiler.source>
@@ -15,9 +14,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.5.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.6.1.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-  
+    <testcontainer.version>1.16.2</testcontainer.version>
+    <registry.version>2.0.0.Final</registry.version>
+    <avro.version>1.11.0</avro.version>
+    <apicurio-registry.version>1.3.2.Final</apicurio-registry.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -33,6 +35,10 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-arc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kafka-client</artifactId>
     </dependency>
     <dependency>
@@ -45,6 +51,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
     <dependency>
@@ -52,9 +62,28 @@
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
-    </dependency>
+      <groupId>io.apicurio</groupId>
+      <artifactId>apicurio-registry-maven-plugin</artifactId>
+      <version>${apicurio-registry.version}</version>
+      <scope>test</scope>
+  </dependency>
+  <dependency>
+      <groupId>io.apicurio</groupId>
+      <artifactId>apicurio-registry-utils-serde</artifactId>
+      <version>${apicurio-registry.version}</version>
+  </dependency>
+    <dependency>
+      <groupId>io.apicurio</groupId>
+      <artifactId>apicurio-registry-client</artifactId>
+      <version>${apicurio-registry.version}</version>
+  </dependency>
+     <!--
+ <dependency>
+  <groupId>io.apicurio</groupId>
+  <artifactId>apicurio-common-rest-client-jdk</artifactId>
+  <version>0.1.5.Final</version>
+</dependency>
+-->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -66,38 +95,30 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <version>${testcontainer.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+
+
+    <!-- 
+      in case you prefer doing avro outside of quarkus
+       <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
       <version>${avro.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.apicurio</groupId>
-      <artifactId>apicurio-registry-client</artifactId>
-      <version>2.0.0.Final</version>
+    // For version 2.3.x
+        <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-apicurio-registry-avro</artifactId>
     </dependency>
-    <dependency>
+     <dependency>
       <groupId>io.apicurio</groupId>
-      <artifactId>apicurio-registry-common</artifactId>
-      <version>2.0.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>io.apicurio</groupId>
-      <artifactId>apicurio-registry-serdes-avro-serde</artifactId>
-      <version>2.0.0.Final</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.interceptor</groupId>
-          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-
-    <!-- 
-       <dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-avro-serializer</artifactId>
-      <version>6.0.1</version>
+      <artifactId>apicurio-registry-utils-serde</artifactId>
+      <version>${apicurio-registry.version}</version>
     </dependency>
     -->
   </dependencies>
@@ -145,13 +166,8 @@
             <configuration>
               <sourceDirectory>src/main/avro/</sourceDirectory>
               <outputDirectory>src/main/java/</outputDirectory>
-              <!-- need to specify order for dependencies -->
+              
               <imports>
-                <!--
-                <import>src/main/avro/Address.avsc</import>
-                <import>src/main/avro/OrderCreatedEvent.avsc</import>
-                -->
-
                 <import>src/main/avro/OrderEvent.avsc</import>
               </imports>
               <stringType>String</stringType>
@@ -159,7 +175,6 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
   <profiles>

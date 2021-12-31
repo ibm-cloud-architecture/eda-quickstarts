@@ -2,10 +2,10 @@
 
 ## What the template does
 
-* Use Quarkus and Microprofile 3.0 for health, metrics and open API extensions
+* Use Quarkus 2.5.1 and Microprofile 3.0 for health, metrics and open API extensions
 * Use Kafka producer API, with Json schema and Avro serialization
-* Use [Avro maven plugin](https://avro.apache.org/docs/current/gettingstartedjava.html#Serializing+and+deserializing+without+code+generation) to generate code from Avro definitions, taking into account the order of import to manage schema dependencies
-* Use Apicurio schema registry and the maven plugin to upload new definition to the connected registry.
+* Use Apicurio schema registry Version 1.3.3 to be compatible with Event Streams Schema Registry. 
+As quarkus deev 2.5.x is using Apicurio 2.1.x, we use docker compose and the apicurio maven plugin to upload new definition(s) to the connected registry.
 * Support Domain driven design practices
 * Use a Strimzi-Kafka test container class 
 
@@ -21,13 +21,14 @@ Normally events can be considered at the domain level, as it is a business decis
 It is also fine to consider them at the infrastructure level. In this template the avro schemas in `src/main/avro` use the package namespace: `ibm.eda.demo.ordermgr.infra.events` but this could
 be changed to be `ibm.eda.demo.ordermgr.domain.events`
 
-The REST resource delegates to a service where you may want to implement the business logic with the domain entities. The service class should be tested by isolation. 
+The REST resource delegates to a service where you may want to implement the business logic with the domain entities. 
+Will the service class it is easier to unit test the business logic by isolation. 
 The Resource class supports JAXRS and Microprofile annotation and is doing simple data mapping between the DTOs and the business entities. 
 
 The repository is a mockup, and it is using HashMap to keep the data, it helps to start quickly to demonstrate the application. 
 The event producer is using Avro schema and the pattern of writing to the topic immediately once the order is received at the API level. 
 
-The code proposes two KafkaProducers, one with avro, one without. 
+The code proposes two KafkaProducers, one with schema registry integration, one without. 
 
 Each producer is annotated with a CDI name, 
 
@@ -38,7 +39,7 @@ public class OrderEventAvroProducer implements EventEmitter {
 ..
 ```
 
-andthe injection is controlled in the service using the producer as:
+and the injection is controlled in the service using the producer as:
 
 ```java
 @Inject
@@ -48,8 +49,8 @@ public EventEmitter eventProducer;
 
 ## How to use this template
 
-Clone this repository and start updating tests and business entities in the domain to support
-your business logic.
+Clone this repository and start updating tests and business entities in the domain 
+to support your own business logic.
 
 ## Run and build locally
 
@@ -97,13 +98,13 @@ In docker compose we are using Apicurio with Kafka persistence. So the `kafkasql
 
 You can run your application in dev mode which enables live coding using:
 
-```
+```sh
+quarkus dev
+# or the older way
 ./mvnw quarkus:dev
 ```
 
-Use the Swagger UI to access existing orders (loaded from the `resources/orders.json` file) and to post new order.
-
-Use the [http://localhost:8080/q/swagger-ui/](http://localhost:8080/q/swagger-ui/) to trigger some API calls.
+Use the [Swagger UI](http://localhost:8080/q/swagger-ui/) to access existing orders (loaded from the `resources/orders.json` file) and to post new order.
 
 Use [apicurio user interface](http://localhost:8090/ui/) to verify the order group order event schema was uploaded.
 
@@ -140,5 +141,5 @@ Two mode of deployment:
 ### Deploy using Kustomize
 
 ```sh
-oc apply -k 
+oc apply -k kustomize
 ```

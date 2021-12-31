@@ -1,0 +1,12 @@
+{
+    "productID": "P01",
+    "customerID": "C01",
+    "quantity": 30,
+    "destinationAddress": {
+        "street": "12 main street",
+        "city": "san francisco",
+        "country": "USA",
+        "state": "CA",
+        "zipcode": "92000"
+    }
+}

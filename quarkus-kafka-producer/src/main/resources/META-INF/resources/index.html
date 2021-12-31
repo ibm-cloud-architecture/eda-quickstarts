@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>order-mgr - 1.0-SNAPSHOT</title>
+    <title>Event Driven Kafka Producer API example</title>
     <style>
         h1, h2, h3, h4, h5, h6 {
             margin-bottom: 0.5rem;
@@ -20,6 +20,7 @@
 
         h3 {
             font-size: 1.75rem
+
         }
 
         h4 {
@@ -43,7 +44,7 @@
             font-size: 2.7rem;
             margin: 0;
             padding: 2rem 1rem;
-            background-color: #00A1E2;
+            background-color: #0d1c2c;
             color: white;
         }
 
@@ -90,66 +91,75 @@
         }
 
         .right-section ul {
-            border-left: 0.3rem solid #00A1E2;
+            border-left: 0.3rem solid #71aeef;
             list-style-type: none;
             padding-left: 0;
         }
 
+        .provided-code {
+            border-left: 0.3rem solid #71aeef;
+            padding-left: 10px;
+        }
+
+        .provided-code h3 {
+            font-weight: 200;
+        }
     </style>
 </head>
 <body>
 
 <div class="banner lead">
-    Your new Cloud-Native application is ready!
+    Your new Event Driven Kafka Producer API example is ready!
 </div>
 
 <div class="container">
     <div class="left-column">
-        <p class="lead"> Congratulations, you have created a new Quarkus application.</p>
-
-        <h2>Why do you see this?</h2>
+        <p class="lead"> Congratulations, you have created a new Event Driven Quarkus cloud application.</p>
 
         <p>This page is served by Quarkus. The source is in
             <code>src/main/resources/META-INF/resources/index.html</code>.</p>
 
-        <h2>What can I do from here?</h2>
+        <h2>What are your next steps?</h2>
 
-        <p>If not already done, run the application in <em>dev mode</em> using: <code>mvn compile quarkus:dev</code>.
+        <p>If not already done, run the application in <em>dev mode</em> using: <code>./mvnw compile quarkus:dev</code>.
         </p>
         <ul>
-            <li>Add REST resources, Servlets, functions and other services in <code>src/main/java</code>.</li>
             <li>Your static assets are located in <code>src/main/resources/META-INF/resources</code>.</li>
-            <li>Configure your application in <code>src/main/resources/application.properties</code>.
-            </li>
+            <li>Configure your application in <code>src/main/resources/application.properties</code>.</li>
+            <li>Quarkus now ships with a <a href="/q/dev/">Dev UI</a> (available in dev mode only)</li>
+            <li>Play with the provided code located in <code>src/main/java</code>:</li>
         </ul>
+                <div class="provided-code">
+            <h3>RESTEasy JAX-RS</h3>
+            <p>Easily start your RESTful Web Services by looking at the app version</p>
+            <p><code>@Path: <a href="/api/v1/version" class="path-link" target="_blank">/api/v1/version</a></code></p>
+            <p>Or better use the Swagger UI</p>
+            <p><code>@Path: <a href="/q/swagger-ui" class="path-link" target="_blank">/q/swagger-ui</a></code></p>
+            
+            <p><a href="https://quarkus.io/guides/getting-started#the-jax-rs-resources" class="guide-link" target="_blank">Related guide section...</a></p>
+        </div>
 
-        <h2>Do you like Quarkus?</h2>
-        <p>Go give it a star on <a href="https://github.com/quarkusio/quarkus">GitHub</a>.</p>
-
-        <h2>How do I get rid of this page?</h2>
-        <p>Just delete the <code>src/main/resources/META-INF/resources/index.html</code> file.</p>
     </div>
     <div class="right-column">
         <div class="right-section">
             <h3>Application</h3>
             <ul>
-                <li>GroupId: ibm.tsa.eda</li>
-                <li>ArtifactId: order-mgr</li>
-                <li>Version: 1.0-SNAPSHOT</li>
-                <li>Quarkus Version: 1.9.2.Final</li>
+                <li>GroupId: <code>ibm.eda.demo</code></li>
+                <li>ArtifactId: <code>eda-qs-order-ms</code></li>
+                <li>Version: <code>1.0.0</code></li>
+                <li>Quarkus Version: <code>2.5.3.Final</code></li>
             </ul>
         </div>
         <div class="right-section">
-            <h3>Next steps</h3>
+            <h3>More reading</h3>
             <ul>
-                <li><a href="https://quarkus.io/guides/maven-tooling.html" target="_blank">Setup your IDE</a></li>
-                <li><a href="https://quarkus.io/guides/getting-started.html" target="_blank">Getting started</a></li>
+                <li><a href="https://quarkus.io/guides/maven-tooling" target="_blank">Setup your IDE</a></li>
+                <li><a href="https://quarkus.io/guides/getting-started" target="_blank">Getting started</a></li>
+                <li><a href="https://quarkus.io/guides/" target="_blank">All guides</a></li>
                 <li><a href="https://quarkus.io" target="_blank">Quarkus Web Site</a></li>
             </ul>
         </div>
     </div>
 </div>
-
-
 </body>
 </html>

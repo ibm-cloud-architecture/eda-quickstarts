@@ -15,10 +15,12 @@ import org.apache.avro.message.SchemaStore;
 @org.apache.avro.specific.AvroGenerated
 public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
   private static final long serialVersionUID = 6400768986236913486L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderCreatedEvent\",\"namespace\":\"ibm.eda.demo.ordermgr.infra.events\",\"fields\":[{\"name\":\"orderID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID from source system\"},{\"name\":\"productID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the product as defined in product catalog\"},{\"name\":\"customerID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the customer organization\"},{\"name\":\"quantity\",\"type\":\"int\",\"doc\":\"Quantity ordered\",\"default\":-1},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Status of the order.\",\"default\":\"Pending\"},{\"name\":\"shippingAddress\",\"type\":{\"type\":\"record\",\"name\":\"Address\",\"fields\":[{\"name\":\"street\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Street name with number within the street\"},{\"name\":\"city\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"city\"},{\"name\":\"state\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"State code or name\"},{\"name\":\"country\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Country\"},{\"name\":\"zipcode\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Zipcode\"}]},\"doc\":\"Address to ship the ordered items\",\"namespace\":\"ibm.eda.demo.ordermgr.infra.events\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
-  private static SpecificData MODEL$ = new SpecificData();
+  private static final SpecificData MODEL$ = new SpecificData();
 
   private static final BinaryMessageEncoder<OrderCreatedEvent> ENCODER =
       new BinaryMessageEncoder<OrderCreatedEvent>(MODEL$, SCHEMA$);
@@ -72,17 +74,17 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
   }
 
   /** Unique ID from source system */
-   private java.lang.String orderID;
+  private java.lang.String orderID;
   /** Unique ID for the product as defined in product catalog */
-   private java.lang.String productID;
+  private java.lang.String productID;
   /** Unique ID for the customer organization */
-   private java.lang.String customerID;
+  private java.lang.String customerID;
   /** Quantity ordered */
-   private int quantity;
+  private int quantity;
   /** Status of the order. */
-   private java.lang.String status;
+  private java.lang.String status;
   /** Address to ship the ordered items */
-   private ibm.eda.demo.ordermgr.infra.events.Address shippingAddress;
+  private ibm.eda.demo.ordermgr.infra.events.Address shippingAddress;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -303,7 +305,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -346,7 +348,7 @@ public class OrderCreatedEvent extends org.apache.avro.specific.SpecificRecordBa
      * @param other The existing instance to copy.
      */
     private Builder(ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent other) {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.orderID)) {
         this.orderID = data().deepCopy(fields()[0].schema(), other.orderID);
         fieldSetFlags()[0] = true;

@@ -16,10 +16,12 @@ import org.apache.avro.message.SchemaStore;
 @org.apache.avro.specific.AvroGenerated
 public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
   private static final long serialVersionUID = 9096132924334275025L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderEvent\",\"namespace\":\"ibm.eda.demo.ordermgr.infra.events\",\"doc\":\"Order events to report change to the Order entity. It can take different type and may have different payload per type used.\",\"fields\":[{\"name\":\"orderID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique order identifier\",\"default\":\"-1\"},{\"name\":\"timestampMillis\",\"type\":\"long\",\"doc\":\"time stamp of the order creation\"},{\"name\":\"type\",\"type\":{\"type\":\"enum\",\"name\":\"EventType\",\"doc\":\"The different types of events emitted\",\"symbols\":[\"OrderCreated\",\"OrderUpdated\",\"OrderInTransit\",\"OrderCompleted\",\"OrderRejected\",\"OrderCancelled\"],\"default\":\"OrderCreated\"},\"doc\":\"Type of event\"},{\"name\":\"payload\",\"type\":[{\"type\":\"record\",\"name\":\"OrderCreatedEvent\",\"fields\":[{\"name\":\"orderID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID from source system\"},{\"name\":\"productID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the product as defined in product catalog\"},{\"name\":\"customerID\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Unique ID for the customer organization\"},{\"name\":\"quantity\",\"type\":\"int\",\"doc\":\"Quantity ordered\",\"default\":-1},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Status of the order.\",\"default\":\"Pending\"},{\"name\":\"shippingAddress\",\"type\":{\"type\":\"record\",\"name\":\"Address\",\"fields\":[{\"name\":\"street\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Street name with number within the street\"},{\"name\":\"city\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"city\"},{\"name\":\"state\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"State code or name\"},{\"name\":\"country\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Country\"},{\"name\":\"zipcode\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Zipcode\"}]},\"doc\":\"Address to ship the ordered items\",\"namespace\":\"ibm.eda.demo.ordermgr.infra.events\"}]}],\"doc\":\"Different payload structure depending of event type\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
-  private static SpecificData MODEL$ = new SpecificData();
+  private static final SpecificData MODEL$ = new SpecificData();
 
   private static final BinaryMessageEncoder<OrderEvent> ENCODER =
       new BinaryMessageEncoder<OrderEvent>(MODEL$, SCHEMA$);
@@ -73,13 +75,13 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
   }
 
   /** Unique order identifier */
-   private java.lang.String orderID;
+  private java.lang.String orderID;
   /** time stamp of the order creation */
-   private long timestampMillis;
+  private long timestampMillis;
   /** Type of event */
-   private ibm.eda.demo.ordermgr.infra.events.EventType type;
+  private ibm.eda.demo.ordermgr.infra.events.EventType type;
   /** Different payload structure depending of event type */
-   private java.lang.Object payload;
+  private java.lang.Object payload;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -251,7 +253,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -283,7 +285,7 @@ public class OrderEvent extends org.apache.avro.specific.SpecificRecordBase impl
      * @param other The existing instance to copy.
      */
     private Builder(ibm.eda.demo.ordermgr.infra.events.OrderEvent other) {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.orderID)) {
         this.orderID = data().deepCopy(fields()[0].schema(), other.orderID);
         fieldSetFlags()[0] = true;

@@ -22,8 +22,8 @@ public class OrderService {
 	public OrderRepositoryMem repository;
 
 	@Inject
-	//@Named("avroProducer")
-	@Named("default")
+	@Named("avroProducer")
+	//@Named("default")
 	public EventEmitter eventProducer;
 	
 	public OrderService(){}

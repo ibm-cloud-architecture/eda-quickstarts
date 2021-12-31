@@ -1,15 +1,17 @@
 package ibm.eda.demo.ordermgr.infra;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -18,36 +20,65 @@ import org.jboss.logging.Logger;
 
 import ibm.eda.demo.ordermgr.infra.events.EventEmitter;
 import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
-import io.apicurio.registry.rest.client.RegistryClient;
-import io.apicurio.registry.rest.client.RegistryClientFactory;
+import io.apicurio.registry.client.RegistryRestClient;
+import io.apicurio.registry.client.RegistryRestClientFactory;
+import io.apicurio.registry.rest.beans.ArtifactMetaData;
+import io.apicurio.registry.rest.beans.IfExistsType;
+import io.apicurio.registry.types.ArtifactType;
 
 /**
  * Avro and schema registry based Kafka producer.
  */
-@Singleton
+@ApplicationScoped
 @Named("avroProducer")
-public class OrderEventAvroProducer implements EventEmitter {
-    Logger logger = Logger.getLogger(OrderEventAvroProducer.class.getName());
+public class OrderEventProducerWithSchema implements EventEmitter {
+    Logger logger = Logger.getLogger(OrderEventProducerWithSchema.class.getName());
 
     private KafkaProducer<String,OrderEvent> kafkaProducer = null;
     private KafkaWithSchemaRegistryConfiguration configuration = null;
     private Schema avroSchema;
    
 
-    public OrderEventAvroProducer() {
+    public OrderEventProducerWithSchema() {
         super();
         configuration = new KafkaWithSchemaRegistryConfiguration();
         
-        Properties props = configuration.getAvroProducerProperties("OrderProducer_1");
+        Properties props = configuration.getProducerPropertiesWithSchemaRegistry();
         kafkaProducer = new KafkaProducer<String, OrderEvent>(props);
         try {
             Map<String,Object> config = (Map)props; 
-            RegistryClient client = RegistryClientFactory.create(configuration.REGISTRY_URL, config);
-            avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(configuration.groupId,configuration.artifactId));
+            RegistryRestClient client = RegistryRestClientFactory.create(configuration.REGISTRY_URL, config);
+            
+            //avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(configuration.groupId,configuration.artifactId));
+            Schema.Parser schemaDefinitionParser = new Schema.Parser();
+            avroSchema = schemaDefinitionParser.parse(new File(configuration.getSchemaPath()));
             logger.info(avroSchema.toString());
+            InputStream content = new ByteArrayInputStream(avroSchema.toString().getBytes(StandardCharsets.UTF_8));
+            ArtifactMetaData metaData = client.createArtifact(configuration.getArtifactId(), ArtifactType.AVRO, IfExistsType.RETURN, content);
+           logger.info(metaData.toString());
         } catch(Exception e) {
             e.printStackTrace();
         }
+        
+    }
+
+    public void connectApicurio232(){
+        /**
+         * try {
+            Map<String,Object> config = (Map)props; 
+            RegistryClient client = RegistryClientFactory.create(configuration.REGISTRY_URL, config);
+            
+            //avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(configuration.groupId,configuration.artifactId));
+            Schema.Parser schemaDefinitionParser = new Schema.Parser();
+            avroSchema = schemaDefinitionParser.parse(new File(configuration.getSchemaPath()));
+            logger.info(avroSchema.toString());
+            InputStream content = new ByteArrayInputStream(avroSchema.toString().getBytes(StandardCharsets.UTF_8));
+            ArtifactMetaData metaData = client.createArtifact(configuration.getGroupId(), configuration.getArtifactId(), ArtifactType.AVRO,content);
+           logger.info(metaData.toString());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+         */
         
     }
 

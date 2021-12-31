@@ -15,10 +15,12 @@ import org.apache.avro.message.SchemaStore;
 @org.apache.avro.specific.AvroGenerated
 public class Address extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
   private static final long serialVersionUID = -1938206650050412146L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Address\",\"namespace\":\"ibm.eda.demo.ordermgr.infra.events\",\"fields\":[{\"name\":\"street\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Street name with number within the street\"},{\"name\":\"city\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"city\"},{\"name\":\"state\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"State code or name\"},{\"name\":\"country\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Country\"},{\"name\":\"zipcode\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"doc\":\"Zipcode\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
-  private static SpecificData MODEL$ = new SpecificData();
+  private static final SpecificData MODEL$ = new SpecificData();
 
   private static final BinaryMessageEncoder<Address> ENCODER =
       new BinaryMessageEncoder<Address>(MODEL$, SCHEMA$);
@@ -72,15 +74,15 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   /** Street name with number within the street */
-   private java.lang.String street;
+  private java.lang.String street;
   /** city */
-   private java.lang.String city;
+  private java.lang.String city;
   /** State code or name */
-   private java.lang.String state;
+  private java.lang.String state;
   /** Country */
-   private java.lang.String country;
+  private java.lang.String country;
   /** Zipcode */
-   private java.lang.String zipcode;
+  private java.lang.String zipcode;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -276,7 +278,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -312,7 +314,7 @@ public class Address extends org.apache.avro.specific.SpecificRecordBase impleme
      * @param other The existing instance to copy.
      */
     private Builder(ibm.eda.demo.ordermgr.infra.events.Address other) {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.street)) {
         this.street = data().deepCopy(fields()[0].schema(), other.street);
         fieldSetFlags()[0] = true;

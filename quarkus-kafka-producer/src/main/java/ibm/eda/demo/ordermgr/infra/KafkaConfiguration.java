@@ -2,26 +2,39 @@ package ibm.eda.demo.ordermgr.infra;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.UUID;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 /**
  * Centralize in one class the Kafka Configuration. Useful when app has producer
  * and consumer
  */
+@ApplicationScoped
 public class KafkaConfiguration {
     protected static final Logger logger = Logger.getLogger(KafkaConfiguration.class.getName());
 
-    public  String mainTopicName = "orders";
-    public  String schemaName = "Order";
+    @Inject
+    @ConfigProperty(name="kafka.topic.name")
+    public  String mainTopicName;
+    @Inject
+    @ConfigProperty(name="app.producer.prefix.clientid")
+    public String clientID;
+    public  String schemaName = "OrderEvent";
     public  String schemaVersion = "1.0.0";
     public  String truststoreLocation = "";
     public  String truststorePassword = "";
+    public  String keystoreLocation = "";
+    public  String keystorePassword = "";
     public  String bootstrapServers = null; 
     public  String schemaRegistryURL = null;
 
@@ -99,7 +112,7 @@ public class KafkaConfiguration {
 
 
    
-    public  Properties getProducerProperties(String clientID) {
+    public  Properties getProducerProperties() {
         Properties properties = buildCommonProperties();
         
         Optional<Long> v = ConfigProvider.getConfig().getOptionalValue("kafka.producer.timeout.sec", Long.class);
@@ -142,7 +155,7 @@ public class KafkaConfiguration {
             properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         }
         
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID);
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID + UUID.randomUUID());
        
         properties.forEach((k, val) -> logger.info(k + " : " + val));
         return properties;

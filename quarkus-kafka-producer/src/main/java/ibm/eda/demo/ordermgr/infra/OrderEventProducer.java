@@ -1,7 +1,6 @@
 package ibm.eda.demo.ordermgr.infra;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -30,12 +29,12 @@ public class OrderEventProducer implements EventEmitter {
     public OrderEventProducer() {
         super();
         configuration = new KafkaConfiguration();
-        kafkaProducer = new KafkaProducer<String, OrderEvent>(configuration.getProducerProperties("OrderProducer_" + UUID.randomUUID()));
+        kafkaProducer = new KafkaProducer<String, OrderEvent>(configuration.getProducerProperties());
     }
 
     public OrderEventProducer(KafkaConfiguration configuration) {
         this.configuration = configuration;
-        kafkaProducer = new KafkaProducer<String, OrderEvent>(configuration.getProducerProperties("OrderProducer_" + UUID.randomUUID()));
+        kafkaProducer = new KafkaProducer<String, OrderEvent>(configuration.getProducerProperties());
     
     }
 
