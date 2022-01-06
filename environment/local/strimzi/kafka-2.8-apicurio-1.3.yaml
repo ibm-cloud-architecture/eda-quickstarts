@@ -2,9 +2,15 @@ version: '2'
 services:
   apicurio:
     container_name: apicurio
-    image: apicurio/apicurio-registry-mem:latest-release
+    image: apicurio/apicurio-registry-mem:1.3.2.Final
     ports:
-      - 8090:8080
+      - 8091:8080
+    environment:
+      QUARKUS_PROFILE: prod
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      APPLICATION_ID: order_mgt_1
+    depends_on:
+      - kafka
   zookeeper:
     image: quay.io/strimzi/kafka:latest-kafka-2.8.1
     container_name: zookeeper
@@ -15,7 +21,11 @@ services:
     ports:
       - "2181:2181"
     environment:
-      LOG_DIR: /tmp/logs
+      - LOG_DIR=/tmp/logs
+      - ZOO_MY_ID=1
+      - ZOO_PORT=2181
+      - ZOO_SERVERS=server.1=zookeeper:2888:3888
+      - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka:
     image: quay.io/strimzi/kafka:latest-kafka-2.8.1
@@ -26,12 +36,14 @@ services:
       --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} \
       --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} \
       --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME} \
-      --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
+      --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} \
+      --override offsets.topic.replication.factor=$${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}"
     ]
     depends_on:
       - zookeeper
     ports:
       - "9092:9092"
+      - "29092:9092"
     environment:
       LOG_DIR: "/tmp/logs"
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092

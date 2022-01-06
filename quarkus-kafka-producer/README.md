@@ -4,7 +4,7 @@
 
 * Use Quarkus 2.5.1 and Microprofile 3.0 for health, metrics and open API extensions
 * Use Kafka producer API, with Json schema and Avro serialization
-* Use Apicurio schema registry Version 1.3.3 to be compatible with Event Streams Schema Registry. 
+* Use Apicurio schema registry Version 1.3.2 to be compatible with Event Streams Schema Registry. 
 As quarkus deev 2.5.x is using Apicurio 2.1.x, we use docker compose and the apicurio maven plugin to upload new definition(s) to the connected registry.
 * Support Domain driven design practices
 * Use a Strimzi-Kafka test container class 
@@ -35,7 +35,7 @@ Each producer is annotated with a CDI name,
 ```java
 @Singleton
 @Named("avroProducer")
-public class OrderEventAvroProducer implements EventEmitter {
+public class OrderEventProducerWithSchema implements EventEmitter {
 ..
 ```
 
@@ -59,13 +59,24 @@ to support your own business logic.
 For development purpose you can run the following command to start one kafka, one zookeeper and Apicurio for schema registry on port 8090.
 
 ```shell
-docker-compose up -d
+# under eda-quickstart/environment/local/strimzi 
+docker-compose -f kafka-2.8-apicurio-1.3.yaml up -d
 ```
 
-To create the Kafka topic, you may need to update this script: `scripts/createTopics.sh` and change the topic name or add more line for other topics
+you should see four containers running:
+
+```
+ ⠿ Container apicurio       Started                                                                                                                     1.0s
+ ⠿ Container zookeeper      Started                                                                                                                     1.0s
+ ⠿ Container kafka          Started                                                                                                                     1.9s
+ ⠿ Container kafdrop        Started  
+```
+
+To create the Kafka `orders` topic:
 
 ```shell
-./scripts/createTopics.sh
+# under eda-quickstart/environment/local/strimzi 
+./createTopics.sh
 ```
 
 Package the application and upload schema defined in `src/main/avro` to Apicurio registry with:
@@ -105,6 +116,11 @@ quarkus dev
 ```
 
 Use the [Swagger UI](http://localhost:8080/q/swagger-ui/) to access existing orders (loaded from the `resources/orders.json` file) and to post new order.
+Or use the following calls to get the connection to Kafka started:
+
+```sh
+curl -X 'GET' 'http://localhost:8080/api/v1/orders' -H 'accept: application/json'
+```
 
 Use [apicurio user interface](http://localhost:8090/ui/) to verify the order group order event schema was uploaded.
 
@@ -114,19 +130,33 @@ If you create an order via a POST, verify the order events is in the topic using
 ./scripts/verifyOrderTopicContent.sh
 ```
 
+* Go to Kafdrop console [http://localhost:9000/](http://localhost:9000/) to see messages in topic.
+
+
+> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+
+
 ### Packaging the application and push to Image repository
 
 The script: `./scripts/buildAll.sh` do the maven packaging and then build a docker images.
 
 ### Creating a native executable
 
-You can create a native executable using: `./mvnw package -Pnative`.
+You can create a native executable using: 
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `./mvnw package -Pnative -Dquarkus.native.container-build=true`.
+```shell script
+./mvnw package -Pnative
+```
 
-You can then execute your native executable with: `./target/order-mgr-1.0-SNAPSHOT-runner`
+Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+```shell script
+./mvnw package -Pnative -Dquarkus.native.container-build=true
+```
+
+You can then execute your native executable with: `./target/order-ms-1.0.0-runner`
+
+If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
 
 ## Deploy to Openshift
 
@@ -143,3 +173,74 @@ Two mode of deployment:
 ```sh
 oc apply -k kustomize
 ```
+
+## Integrating with GitOps
+
+
+In the `kustomize` folder we have defined configmap, deployment,... that you can reuse to
+deploy your app to OpenShift. 
+Update the `deployment.yaml` to reflect the secret names you are using for TLS user and ca cert.
+
+Doing an `oc apply -k kustomize` will deploy the current
+`quay.io/ibmcase/eda-qs-order-ms` image to an OpenShift project. 
+
+The following elements are created:
+
+```
+serviceaccount/qs-prod-sa created
+rolebinding.rbac.authorization.k8s.io/app-sa-view created
+configmap/qs-order-mgr-cm created
+service/eda-qs-order-ms created
+deployment.apps/qs-order-ms created
+kafkatopic.eventstreams.ibm.com/qs-orders created
+route.route.openshift.io/qs-order-ms created
+```
+
+
+If you use OpenShift GitOps to deploy your solution, you can create your GitOps project with the kam CLI 
+and then create a folder in the `environment/dev/apps` with the name
+of your app based on this code, then copy the `kustomize` folder content under this newly
+created folder. After that you need to add an Argocd app under the `config` folder.
+
+
+
+### Build and deploy on OpenShift using source to image
+
+We assume you have Event Streams  or Strimzi cluster deployed.
+
+* Create a OpenShift project: `oc new-project estest`
+* Copy secrets for ca-certificates and tls-user
+
+  ```sh
+    # use namespace where kafka runs
+    NSSRC=eventstreams NSTGT=estest SECRET=tlsuser \
+  	oc get secret $SECRET --namespace=$NSSRC -o json \
+	| jq  'del(.metadata.uid, .metadata.selfLink, .metadata.creationTimestamp, .metadata.ownerReferences)' \
+	| jq -r '.metadata.namespace="'${NSTGT}'"' \
+	 | oc apply --namespace=$NSTGT -f -
+   # do the same with secret for the Kafka cluster ca cert. SECRET=dev-cluster-ca-cert  
+  ```
+
+* Build and deploy
+
+```sh
+mvn clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -DskipTests
+```
+* Get the application route: `oc get route da-qs-order-ms`
+* Send one order via the POST orders end point:
+
+```sh
+ {  "customerID": "C01",
+    "productID": "P02",
+    "quantity": 15,
+    "destinationAddress": {
+      "street": "12 main street",
+      "city": "san francisco",
+      "country": "USA",
+      "state": "CA",
+      "zipcode": "92000"
+    }
+}
+```
+
+* Verify messages are published to the topic, by getting to the Event Streams console.

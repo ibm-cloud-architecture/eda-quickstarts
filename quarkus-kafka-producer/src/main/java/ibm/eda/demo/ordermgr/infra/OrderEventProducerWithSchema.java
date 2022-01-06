@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.avro.Schema;
@@ -34,32 +35,14 @@ import io.apicurio.registry.types.ArtifactType;
 public class OrderEventProducerWithSchema implements EventEmitter {
     Logger logger = Logger.getLogger(OrderEventProducerWithSchema.class.getName());
 
-    private KafkaProducer<String,OrderEvent> kafkaProducer = null;
-    private KafkaWithSchemaRegistryConfiguration configuration = null;
-    private Schema avroSchema;
+    protected KafkaProducer<String,OrderEvent> kafkaProducer = null;
+    @Inject
+    protected KafkaConfiguration configuration;
+    protected Schema avroSchema;
    
 
     public OrderEventProducerWithSchema() {
-        super();
-        configuration = new KafkaWithSchemaRegistryConfiguration();
-        
-        Properties props = configuration.getProducerPropertiesWithSchemaRegistry();
-        kafkaProducer = new KafkaProducer<String, OrderEvent>(props);
-        try {
-            Map<String,Object> config = (Map)props; 
-            RegistryRestClient client = RegistryRestClientFactory.create(configuration.REGISTRY_URL, config);
-            
-            //avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(configuration.groupId,configuration.artifactId));
-            Schema.Parser schemaDefinitionParser = new Schema.Parser();
-            avroSchema = schemaDefinitionParser.parse(new File(configuration.getSchemaPath()));
-            logger.info(avroSchema.toString());
-            InputStream content = new ByteArrayInputStream(avroSchema.toString().getBytes(StandardCharsets.UTF_8));
-            ArtifactMetaData metaData = client.createArtifact(configuration.getArtifactId(), ArtifactType.AVRO, IfExistsType.RETURN, content);
-           logger.info(metaData.toString());
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        
+        super();   
     }
 
     public void connectApicurio232(){
@@ -92,7 +75,7 @@ public class OrderEventProducerWithSchema implements EventEmitter {
         ProducerRecord<String, OrderEvent> producerRecord = new ProducerRecord<String, OrderEvent>(
                 configuration.getTopicName(), oevent.getOrderID(), oevent);
        
-        logger.info("sending to " + configuration.getTopicName() + " item " + producerRecord
+        logger.info("sending to " + getConfiguration().getTopicName() + " item " + producerRecord
         .toString());
         try {
             this.kafkaProducer.send(producerRecord, new Callback() {
@@ -122,4 +105,34 @@ public class OrderEventProducerWithSchema implements EventEmitter {
         kafkaProducer = null;
     }
 
+    
+
+    public KafkaConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public void init() {
+        Properties props = getConfiguration().getProducerProperties();
+        kafkaProducer = new KafkaProducer<String, OrderEvent>(props);
+        try {
+            Map<String,Object> config = (Map)props; 
+            RegistryRestClient client = RegistryRestClientFactory.create(getConfiguration().getRegistryURL(), config);
+            Schema.Parser schemaDefinitionParser = new Schema.Parser();
+            if (getConfiguration().getSchemaPath() != null) {
+                avroSchema = schemaDefinitionParser.parse(new File(getConfiguration().getSchemaPath()));
+                logger.info("@@@ Load schema from file " + getConfiguration().getSchemaPath() + "\n" + avroSchema.toString());
+                InputStream content = new ByteArrayInputStream(avroSchema.toString().getBytes(StandardCharsets.UTF_8));
+                ArtifactMetaData metaData = client.createArtifact(getConfiguration().getArtifactId(), ArtifactType.AVRO, IfExistsType.RETURN, content);
+               logger.info(metaData.toString());
+            } else {
+                logger.info("@@@ load schema from registry using " + getConfiguration().getArtifactId());
+                avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(getConfiguration().getArtifactId()));
+            } 
+           
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
 }

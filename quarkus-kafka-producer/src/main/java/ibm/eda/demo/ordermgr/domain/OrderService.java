@@ -4,22 +4,25 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import ibm.eda.demo.ordermgr.infra.OrderRepositoryMem;
 import ibm.eda.demo.ordermgr.infra.events.Address;
 import ibm.eda.demo.ordermgr.infra.events.EventEmitter;
 import ibm.eda.demo.ordermgr.infra.events.EventType;
 import ibm.eda.demo.ordermgr.infra.events.OrderCreatedEvent;
 import ibm.eda.demo.ordermgr.infra.events.OrderEvent;
+import ibm.eda.demo.ordermgr.infra.repo.OrderRepository;
+import ibm.eda.demo.ordermgr.infra.repo.OrderRepositoryMem;
+import io.quarkus.runtime.StartupEvent;
 
 @ApplicationScoped
 public class OrderService {
 	private static final Logger logger = Logger.getLogger(OrderService.class.getName());
 
 	@Inject
-	public OrderRepositoryMem repository;
+	public OrderRepository repository;
 
 	@Inject
 	@Named("avroProducer")
@@ -66,5 +69,9 @@ public class OrderService {
     public void updateOrder(OrderEntity entity) {
 		repository.updateOrder(entity);
     }
+
+	public void onStart(@Observes StartupEvent ev){
+		eventProducer.init();
+	}
 
 }

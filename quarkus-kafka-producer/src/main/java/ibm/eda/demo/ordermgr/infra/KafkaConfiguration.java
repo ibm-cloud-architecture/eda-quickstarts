@@ -5,7 +5,6 @@ import java.util.Properties;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -15,6 +14,12 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
+import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
+import io.apicurio.registry.utils.serde.AbstractKafkaStrategyAwareSerDe;
+import io.apicurio.registry.utils.serde.strategy.FindBySchemaIdStrategy;
+import io.apicurio.registry.utils.serde.strategy.RecordIdStrategy;
+
 /**
  * Centralize in one class the Kafka Configuration. Useful when app has producer
  * and consumer
@@ -23,20 +28,59 @@ import org.jboss.logging.Logger;
 public class KafkaConfiguration {
     protected static final Logger logger = Logger.getLogger(KafkaConfiguration.class.getName());
 
-    @Inject
-    @ConfigProperty(name="kafka.topic.name")
-    public  String mainTopicName;
-    @Inject
-    @ConfigProperty(name="app.producer.prefix.clientid")
-    public String clientID;
-    public  String schemaName = "OrderEvent";
-    public  String schemaVersion = "1.0.0";
-    public  String truststoreLocation = "";
-    public  String truststorePassword = "";
-    public  String keystoreLocation = "";
-    public  String keystorePassword = "";
-    public  String bootstrapServers = null; 
-    public  String schemaRegistryURL = null;
+    @ConfigProperty(name="app.producer.prefix.clientid",defaultValue="order-ms")
+    protected String clientID;
+  
+
+    @ConfigProperty(name="kafka.topic.name", defaultValue="orders")
+    protected  String mainTopicName;
+    @ConfigProperty(name="kafka.bootstrap.servers",defaultValue="localhost:9092")
+    protected  String bootstrapServers; 
+
+    @ConfigProperty(name="kafka.sasl.mechanism")
+    protected Optional<String> saslMechanism;
+    @ConfigProperty(name = "kafka.sasl.jaas.config")
+    public Optional<String> saslJaasConfig;
+    @ConfigProperty(name="kafka.security.protocol",defaultValue="PLAINTEXT")
+    protected  String securityProtocol;
+    @ConfigProperty(name="kafka.ssl.truststore.location")
+    protected  Optional<String> truststoreLocation;
+    @ConfigProperty(name="kafka.ssl.truststore.password")
+    protected  Optional<String> truststorePassword;
+    @ConfigProperty(name="kafka.ssl.truststore.type")
+    protected Optional<String> truststoreType;
+    @ConfigProperty(name="kafka.ssl.keystore.location")
+    protected  Optional<String> keystoreLocation;
+    @ConfigProperty(name="kafka.ssl.keystore.password")
+    protected  Optional<String> keystorePassword;
+    @ConfigProperty(name="kafka.ssl.keystore.type")
+    protected  Optional<String> keystoreType;
+   
+    @ConfigProperty(name="apicurio.registry.url")
+    protected String REGISTRY_URL;
+    @ConfigProperty(name="app.producer.schema.file.path")
+    protected String schemaPath;
+    @ConfigProperty(name="app.producer.schema.groupId",defaultValue="OrderGroup")
+    protected String groupId;
+    @ConfigProperty(name="app.producer.schema.artifactId",defaultValue="OrderEvent")
+    protected String artifactId;
+
+    // Producer specifics
+    @ConfigProperty(name = "kafka.producer.timeout.sec")
+    public  Optional<Integer> producerTimeout;
+    @ConfigProperty(name = "kafka.producer.acks", defaultValue = "all")
+    public Optional<String> producerAck;
+    @ConfigProperty(name = "kafka.producer.idempotence")
+    public Optional<Boolean> enableIdempotence;
+    @ConfigProperty(name = "kafka.producer.retries")
+    public Optional<Integer> producerRetries;
+
+    @ConfigProperty(name = "kafka.key.serializer")
+    public String keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
+    @ConfigProperty(name = "kafka.value.serializer")
+    public String valueSerializer = "ibm.eda.demo.ordermgr.infra.events.OrderEventSerializer";
+
+
 
     public KafkaConfiguration(){}
 
@@ -46,7 +90,7 @@ public class KafkaConfiguration {
 
     public KafkaConfiguration(String bootstrapServers, String schemaRegistryURL) {
         this.bootstrapServers = bootstrapServers;
-        this.schemaRegistryURL = schemaRegistryURL;
+        this.REGISTRY_URL = schemaRegistryURL;
     }
 
     /**
@@ -54,94 +98,45 @@ public class KafkaConfiguration {
      */
     private  Properties buildCommonProperties() {
         Properties properties = new Properties();
-
-        Optional<String> topic = ConfigProvider.getConfig().getOptionalValue("kafka.topic.name", String.class);
-        if (topic.isPresent()) {
-            mainTopicName = topic.get();
-        }
-
-        if (bootstrapServers == null) {
-            bootstrapServers = ConfigProvider.getConfig().getValue("kafka.bootstrap.servers", String.class);
-        }
-
-        properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        if (getBootstrapServers() == null) {
+            bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+            if (bootstrapServers == null) {
+                bootstrapServers = ConfigProvider.getConfig().getValue("kafka.bootstrap.servers", String.class);
         
-        
-        Optional<String> v = ConfigProvider.getConfig().getOptionalValue("kafka.security.protocol", String.class);
-        if (v.isPresent()) {
-            properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, v.get());
+            }
         }
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.sasl.mechanism", String.class);
-        if (v.isPresent()) {
-            properties.put(SaslConfigs.SASL_MECHANISM, v.get());
+        properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
+        
+        if (getSecurityProtocol() != null) {
+            properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, getSecurityProtocol());
+        }
+        if (getSaslMechanism().isPresent()) {
+            properties.put(SaslConfigs.SASL_MECHANISM, getSaslMechanism().get());
         }
       
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.sasl.jaas.config", String.class);
-        if (v.isPresent()) {
-            properties.put(SaslConfigs.SASL_JAAS_CONFIG, v.get());
+        if (getSaslJaasConfig().isPresent()) {
+            properties.put(SaslConfigs.SASL_JAAS_CONFIG, getSaslJaasConfig().get());
         }
+
         properties.put(SslConfigs.SSL_PROTOCOL_CONFIG, "TLSv1.2");
         properties.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2");
         properties.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "HTTPS");
         
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.truststore.location", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, v.get());
-            truststoreLocation = v.get();
+        if (getSecurityProtocol().contains("SSL")) {
+            if (getTruststoreLocation() != null) {
+                properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG,getTruststoreLocation());
+                properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG,getTruststorePassword());
+                properties.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG,getTruststoreType());
+            }
+        }
+        if (getSecurityProtocol().equals("SSL")) {
+            properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG,getKeystoreLocation());
+            properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG,getKeystorePassword()); 
+            properties.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG,getKeystoreType());   
         }
 
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.truststore.password", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, v.get());
-            truststorePassword = v.get();
-        }
-
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.keystore.location", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, v.get());
-        }
-
-        v = ConfigProvider.getConfig().getOptionalValue("kafka.ssl.keystore.password", String.class);
-        if (v.isPresent()) {
-            properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, v.get());
-        }
-      
-        return properties;
-    }
-
-
-
-   
-    public  Properties getProducerProperties() {
-        Properties properties = buildCommonProperties();
         
-        Optional<Long> v = ConfigProvider.getConfig().getOptionalValue("kafka.producer.timeout.sec", Long.class);
-        if (v.isPresent()) {
-            properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, v.get());
-        }
-
-        Optional<String> vs = ConfigProvider.getConfig().getOptionalValue("kafka.producer.acks", String.class);
-        if (vs.isPresent()) {
-            properties.put(ProducerConfig.ACKS_CONFIG, vs.get());
-        } else {
-            properties.put(ProducerConfig.ACKS_CONFIG, "all");
-        }
-    
-        Optional<Boolean> vb = ConfigProvider.getConfig().getOptionalValue("kafka.producer.idempotence", Boolean.class);
-        if (vb.isPresent()) {
-            properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, vb.get());
-        } else {
-            properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
-        }
-    
-        Optional<Integer> vi = ConfigProvider.getConfig().getOptionalValue("kafka.producer.retries", Integer.class);
-        if (vi.isPresent()) {
-            properties.put(ProducerConfig.RETRIES_CONFIG, vi.get());
-        } else {
-            properties.put(ProducerConfig.RETRIES_CONFIG, 0);
-        }
-     
-        vs = ConfigProvider.getConfig().getOptionalValue("kafka.key.serializer", String.class);
+        Optional<String> vs = ConfigProvider.getConfig().getOptionalValue("kafka.key.serializer", String.class);
         if (vs.isPresent()) {
             properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, vs.get());
         } else {
@@ -154,9 +149,76 @@ public class KafkaConfiguration {
         } else {
             properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         }
-        
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID + UUID.randomUUID());
+     
+        if (getRegistryURL() != null) {
+            properties.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, getRegistryURL());
+            properties.put(AbstractKafkaSerDe.USE_HEADERS,"true");
+            if (! getTruststoreLocation().isEmpty()) {
+                // properties.put("value.converter.schema.registry.ssl.trutstore", truststoreLocation);
+                // properties.put("value.converter.schema.registry.ssl.trutstore.password",truststorePassword);
+                // properties.put("schema.registry.ssl.truststore.location",truststoreLocation);
+                // properties.put("schema.registry.ssl.truststore.password",truststorePassword);
+                properties.put(AbstractKafkaStrategyAwareSerDe.REGISTRY_REQUEST_TRUSTSTORE_LOCATION, getTruststoreLocation());
+                properties.put(AbstractKafkaStrategyAwareSerDe.REGISTRY_REQUEST_TRUSTSTORE_PASSWORD, getTruststorePassword());
+                properties.put(AbstractKafkaStrategyAwareSerDe.REGISTRY_REQUEST_TRUSTSTORE_TYPE, getTruststoreType());
+
+            }
+            if (! getKeystoreLocation().isEmpty()) {
+                properties.put(AbstractKafkaStrategyAwareSerDe.REGISTRY_REQUEST_KEYSTORE_LOCATION,getKeystoreLocation());
+                properties.put(AbstractKafkaStrategyAwareSerDe.REGISTRY_REQUEST_KEYSTORE_PASSWORD,getKeystorePassword());
+                properties.put(AbstractKafkaStrategyAwareSerDe.REGISTRY_REQUEST_KEYSTORE_TYPE, getKeystoreType());
+            }
+        } 
+        /*
+        vs = ConfigProvider.getConfig().getOptionalValue("apicurio.registry.avro-datum-provider",String.class);
+        if (vs.isPresent()) {
+            // Use Java reflection as the Avro Datum Provider - this also generates an Avro schema from the java bean
+            properties.putIfAbsent(AbstractKafkaSerializer.AVRO_DATUM_PROVIDER, vs.get());
+        }
+        */
        
+        properties.putIfAbsent(AbstractKafkaSerializer.REGISTRY_ARTIFACT_ID_STRATEGY_CONFIG_PARAM,
+            RecordIdStrategy.class.getName());
+        properties.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM,
+            FindBySchemaIdStrategy.class.getName());
+        return properties;
+    }
+
+
+
+   
+    public  Properties getProducerProperties() {
+        Properties properties = buildCommonProperties();
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientID + "-" + UUID.randomUUID());
+     
+
+        if ( getProducerTimeout().isPresent()) {
+            properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, getProducerTimeout().get());
+        }
+
+        if ( getProducerAck().isPresent()) {
+            properties.put(ProducerConfig.ACKS_CONFIG, getProducerAck().get());
+        } else {
+            properties.put(ProducerConfig.ACKS_CONFIG, "all");
+        }
+    
+        if (getEnableIdempotence().isPresent()) {
+            properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, getEnableIdempotence().get());
+            properties.put(ProducerConfig.RETRIES_CONFIG, 1);
+        } else {
+            properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
+            if (getProducerRetries().isPresent()) {
+                properties.put(ProducerConfig.RETRIES_CONFIG, getProducerRetries().get());
+            } else {
+                properties.put(ProducerConfig.RETRIES_CONFIG, 0);
+            }
+        }
+    
+        
+   
+        // other way to access parameter
+        // Optional<Integer> vi = ConfigProvider.getConfig().getOptionalValue("kafka.producer.retries", Integer.class);
+   
         properties.forEach((k, val) -> logger.info(k + " : " + val));
         return properties;
     }
@@ -164,4 +226,89 @@ public class KafkaConfiguration {
     public  String getTopicName(){
         return mainTopicName;
     }
+
+    public String getSchemaPath(){
+        return schemaPath;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public String getRegistryURL() {
+        return REGISTRY_URL;
+    }
+
+    public String getClientID() {
+        return clientID;
+    }
+
+    public String getMainTopicName() {
+        return mainTopicName;
+    }
+
+    public Optional<String> getSaslMechanism() {
+        return saslMechanism;
+    }
+
+    public String getSecurityProtocol() {
+        return securityProtocol;
+    }
+
+    public Optional<String> getTruststoreLocation() {
+        
+        return truststoreLocation;
+    }
+
+    public String getTruststorePassword() {
+        return truststorePassword.get();
+    }
+
+    public String getTruststoreType(){
+        return truststoreType.get();
+    }
+
+    public Optional<String> getKeystoreLocation() {
+        return keystoreLocation;
+    }
+
+    
+    public String getKeystorePassword() {
+        return keystorePassword.get();
+    }
+    
+    public String getKeystoreType(){
+        return keystoreType.get();
+    }
+
+    public String getBootstrapServers() {
+        return bootstrapServers;
+    }
+
+    public Optional<Integer> getProducerTimeout() {
+        return producerTimeout;
+    }
+
+    public Optional<String> getProducerAck() {
+        return producerAck;
+    }
+
+    public Optional<String> getSaslJaasConfig() {
+        return saslJaasConfig;
+    }
+
+    
+
+    public Optional<Boolean> getEnableIdempotence(){
+        return enableIdempotence;
+    }
+
+    public Optional<Integer> getProducerRetries() {
+        return producerRetries;
+    }
+    
 }
