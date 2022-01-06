@@ -1,4 +1,4 @@
-package ibm.eda.demo.ordermgr.infra;
+package ibm.eda.demo.ordermgr.infra.kafka;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -7,10 +7,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.WebApplicationException;
 
 import org.apache.avro.Schema;
 import org.apache.kafka.clients.producer.Callback;
@@ -32,8 +34,8 @@ import io.apicurio.registry.types.ArtifactType;
  */
 @ApplicationScoped
 @Named("avroProducer")
-public class OrderEventProducerWithSchema implements EventEmitter {
-    Logger logger = Logger.getLogger(OrderEventProducerWithSchema.class.getName());
+public class OrderEventProducer implements EventEmitter {
+    Logger logger = Logger.getLogger(OrderEventProducer.class.getName());
 
     protected KafkaProducer<String,OrderEvent> kafkaProducer = null;
     @Inject
@@ -41,8 +43,12 @@ public class OrderEventProducerWithSchema implements EventEmitter {
     protected Schema avroSchema;
    
 
-    public OrderEventProducerWithSchema() {
+    public OrderEventProducer() {
         super();   
+    }
+
+    public OrderEventProducer(KafkaConfiguration configuration2) {
+        this.configuration = configuration2;
     }
 
     public void connectApicurio232(){
@@ -73,28 +79,19 @@ public class OrderEventProducerWithSchema implements EventEmitter {
 
     public void emit(OrderEvent oevent) { 
         ProducerRecord<String, OrderEvent> producerRecord = new ProducerRecord<String, OrderEvent>(
-                configuration.getTopicName(), oevent.getOrderID(), oevent);
-       
-        logger.info("sending to " + getConfiguration().getTopicName() + " item " + producerRecord
+            getConfiguration().getTopicName(), oevent.getOrderID(), oevent);
+        
+        logger.info("sending to " + getConfiguration().getTopicName() + " topic, the record: " + producerRecord
         .toString());
-        try {
-            this.kafkaProducer.send(producerRecord, new Callback() {
-
-                @Override
-                public void onCompletion(RecordMetadata metadata, Exception exception) {
+        this.kafkaProducer.send(producerRecord, 
+                (metadata, exception) -> {
                     if (exception != null) {
-                        exception.printStackTrace();
+                        logger.error(exception);
                     } else {
                         logger.info("The offset of the record just sent is: " + metadata.offset());
                     }
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            safeClose();
-        }
-        // logger.info("Partition:" + resp.partition());
+            );
     }
 
     
@@ -117,19 +114,17 @@ public class OrderEventProducerWithSchema implements EventEmitter {
         kafkaProducer = new KafkaProducer<String, OrderEvent>(props);
         try {
             Map<String,Object> config = (Map)props; 
-            RegistryRestClient client = RegistryRestClientFactory.create(getConfiguration().getRegistryURL(), config);
-            Schema.Parser schemaDefinitionParser = new Schema.Parser();
-            if (getConfiguration().getSchemaPath() != null) {
-                avroSchema = schemaDefinitionParser.parse(new File(getConfiguration().getSchemaPath()));
-                logger.info("@@@ Load schema from file " + getConfiguration().getSchemaPath() + "\n" + avroSchema.toString());
-                InputStream content = new ByteArrayInputStream(avroSchema.toString().getBytes(StandardCharsets.UTF_8));
-                ArtifactMetaData metaData = client.createArtifact(getConfiguration().getArtifactId(), ArtifactType.AVRO, IfExistsType.RETURN, content);
-               logger.info(metaData.toString());
-            } else {
-                logger.info("@@@ load schema from registry using " + getConfiguration().getArtifactId());
-                avroSchema =  new Schema.Parser().parse(client.getLatestArtifact(getConfiguration().getArtifactId()));
-            } 
-           
+            RegistryRestClient registryClient = RegistryRestClientFactory.create(getConfiguration().getRegistryURL(), config);
+            avroSchema = OrderEvent.SCHEMA$;
+            try {
+                    ArtifactMetaData metaData = registryClient.getArtifactMetaData(getConfiguration().getArtifactId());
+                    logger.info("Schema already in registry: " + metaData.toString());
+            } catch (WebApplicationException e) {
+                    InputStream content = new ByteArrayInputStream(avroSchema.toString().getBytes(StandardCharsets.UTF_8));
+                    ArtifactMetaData metaData = 
+                     registryClient.createArtifact(getConfiguration().getArtifactId(), ArtifactType.AVRO, IfExistsType.RETURN, content);
+                    logger.info("Schema created in registry:" + metaData.toString());
+            }       
         } catch(Exception e) {
             e.printStackTrace();
         }

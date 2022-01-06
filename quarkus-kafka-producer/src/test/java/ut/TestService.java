@@ -10,9 +10,9 @@ import org.testcontainers.utility.DockerImageName;
 import ibm.eda.demo.ordermgr.domain.Address;
 import ibm.eda.demo.ordermgr.domain.OrderEntity;
 import ibm.eda.demo.ordermgr.domain.OrderService;
-import ibm.eda.demo.ordermgr.infra.KafkaConfiguration;
-import ibm.eda.demo.ordermgr.infra.OrderEventProducer;
-import ibm.eda.demo.ordermgr.infra.OrderRepositoryMem;
+import ibm.eda.demo.ordermgr.infra.kafka.KafkaConfiguration;
+import ibm.eda.demo.ordermgr.infra.kafka.OrderEventProducer;
+import ibm.eda.demo.ordermgr.infra.repo.OrderRepositoryMem;
 import it.eda.StrimziContainer;
 
 public class TestService {
@@ -20,7 +20,7 @@ public class TestService {
     @ClassRule
     public static StrimziContainer kafka = new StrimziContainer();
     @ClassRule
-    public static GenericContainer apicurio = new GenericContainer(DockerImageName.parse("apicurio/apicurio-registry-mem"));
+    public static GenericContainer apicurio = new GenericContainer(DockerImageName.parse("apicurio/apicurio-registry-mem:1.3.2-final"));
     public static OrderService service = null;
 
     @BeforeAll

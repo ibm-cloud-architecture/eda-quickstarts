@@ -79,6 +79,12 @@ To create the Kafka `orders` topic:
 ./createTopics.sh
 ```
 
+* Start dev mode:
+
+```sh
+quarkus dev
+```
+
 Package the application and upload schema defined in `src/main/avro` to Apicurio registry with:
 
 ```sh

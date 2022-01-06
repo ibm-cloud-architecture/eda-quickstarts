@@ -1,4 +1,4 @@
-package ibm.eda.demo.ordermgr.infra;
+package ibm.eda.demo.ordermgr.infra.kafka;
 
 import java.util.Optional;
 import java.util.Properties;
@@ -17,7 +17,7 @@ import org.jboss.logging.Logger;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
 import io.apicurio.registry.utils.serde.AbstractKafkaStrategyAwareSerDe;
-import io.apicurio.registry.utils.serde.strategy.FindBySchemaIdStrategy;
+import io.apicurio.registry.utils.serde.strategy.FindLatestIdStrategy;
 import io.apicurio.registry.utils.serde.strategy.RecordIdStrategy;
 
 /**
@@ -58,8 +58,6 @@ public class KafkaConfiguration {
    
     @ConfigProperty(name="apicurio.registry.url")
     protected String REGISTRY_URL;
-    @ConfigProperty(name="app.producer.schema.file.path")
-    protected String schemaPath;
     @ConfigProperty(name="app.producer.schema.groupId",defaultValue="OrderGroup")
     protected String groupId;
     @ConfigProperty(name="app.producer.schema.artifactId",defaultValue="OrderEvent")
@@ -75,10 +73,10 @@ public class KafkaConfiguration {
     @ConfigProperty(name = "kafka.producer.retries")
     public Optional<Integer> producerRetries;
 
-    @ConfigProperty(name = "kafka.key.serializer")
-    public String keySerializer = "org.apache.kafka.common.serialization.StringSerializer";
-    @ConfigProperty(name = "kafka.value.serializer")
-    public String valueSerializer = "ibm.eda.demo.ordermgr.infra.events.OrderEventSerializer";
+    @ConfigProperty(name = "kafka.key.serializer", defaultValue = "org.apache.kafka.common.serialization.StringSerializer")
+    public Optional<String> keySerializer;
+    @ConfigProperty(name = "kafka.value.serializer", defaultValue = "ibm.eda.demo.ordermgr.infra.events.OrderEventSerializer")
+    public Optional<String> valueSerializer;
 
 
 
@@ -136,16 +134,14 @@ public class KafkaConfiguration {
         }
 
         
-        Optional<String> vs = ConfigProvider.getConfig().getOptionalValue("kafka.key.serializer", String.class);
-        if (vs.isPresent()) {
-            properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, vs.get());
+        if (keySerializer.isPresent()) {
+            properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer.get());
         } else {
             properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         }
 
-        vs = ConfigProvider.getConfig().getOptionalValue("kafka.value.serializer", String.class);
-        if (vs.isPresent()) {
-            properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, vs.get());
+        if (valueSerializer.isPresent()) {
+            properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer.get());
         } else {
             properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         }
@@ -180,7 +176,10 @@ public class KafkaConfiguration {
         properties.putIfAbsent(AbstractKafkaSerializer.REGISTRY_ARTIFACT_ID_STRATEGY_CONFIG_PARAM,
             RecordIdStrategy.class.getName());
         properties.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM,
-            FindBySchemaIdStrategy.class.getName());
+        FindLatestIdStrategy.class.getName());
+       
+        // The default approach is to pass the global ID in the message payload. If you want the ID sent in the message headers instead:
+        //properties.putIfAbsent(AbstractKafkaSerDe.USE_HEADERS, "true");
         return properties;
     }
 
@@ -214,8 +213,6 @@ public class KafkaConfiguration {
             }
         }
     
-        
-   
         // other way to access parameter
         // Optional<Integer> vi = ConfigProvider.getConfig().getOptionalValue("kafka.producer.retries", Integer.class);
    
@@ -225,10 +222,6 @@ public class KafkaConfiguration {
 
     public  String getTopicName(){
         return mainTopicName;
-    }
-
-    public String getSchemaPath(){
-        return schemaPath;
     }
 
     public String getGroupId() {
