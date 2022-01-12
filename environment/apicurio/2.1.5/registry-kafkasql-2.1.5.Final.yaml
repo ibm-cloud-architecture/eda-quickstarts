@@ -1,0 +1,124 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: my-apicurioregistry-kafkasql-deployment
+  namespace: kafka
+  labels:
+    apicur.io/name: my-apicurioregistry-kafkasql
+    apicur.io/type: apicurio-registry
+    apicur.io/version: 2.1.5.Final
+    app: my-apicurioregistry-kafkasql
+    app.kubernetes.io/instance: my-apicurioregistry-kafkasql
+    app.kubernetes.io/name: apicurio-registry
+    app.kubernetes.io/version: 2.1.5.Final
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-apicurioregistry-kafkasql
+  template:
+    metadata:
+      labels:
+        apicur.io/name: my-apicurioregistry-kafkasql
+        apicur.io/type: apicurio-registry
+        apicur.io/version: 2.1.5.Final
+        app: my-apicurioregistry-kafkasql
+        app.kubernetes.io/instance: my-apicurioregistry-kafkasql
+        app.kubernetes.io/name: apicurio-registry
+        app.kubernetes.io/version: 2.1.5.Final
+    spec:
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: registry-kafkasql-tls-keystore
+          secret:
+            secretName: tls-user
+            defaultMode: 420
+        - name: registry-kafkasql-tls-truststore
+          secret:
+            secretName: my-kafka-cluster-ca-cert
+            defaultMode: 420
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 1300Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: my-apicurioregistry-kafkasql
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: my-kafka-kafka-bootstrap:9093
+            - name: REGISTRY_PROPERTIES_PREFIX
+              value: REGISTRY_
+            - name: REGISTRY_KAFKA_COMMON_SECURITY_PROTOCOL
+              value: SSL
+            - name: REGISTRY_KAFKA_COMMON_SSL_KEYSTORE_TYPE
+              value: PKCS12
+            - name: REGISTRY_KAFKA_COMMON_SSL_KEYSTORE_LOCATION
+              value: /etc/registry-kafkasql-tls-keystore/user.p12
+            - name: REGISTRY_KAFKA_COMMON_SSL_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tls-user
+                  key: user.password
+            - name: REGISTRY_KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
+              value: PKCS12
+            - name: REGISTRY_KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+              value: /etc/registry-kafkasql-tls-truststore/ca.p12
+            - name: REGISTRY_KAFKA_COMMON_SSL_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-kafka-cluster-ca-cert
+                  key: ca.password
+            - name: QUARKUS_PROFILE
+              value: prod
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: registry-kafkasql-tls-keystore
+              readOnly: true
+              mountPath: etc/registry-kafkasql-tls-keystore
+            - name: registry-kafkasql-tls-truststore
+              readOnly: true
+              mountPath: etc/registry-kafkasql-tls-truststore
+          terminationMessagePolicy: File
+          image: 'docker.io/apicurio/apicurio-registry-kafkasql:2.1.5.Final'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
