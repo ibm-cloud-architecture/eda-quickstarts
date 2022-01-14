@@ -66,6 +66,10 @@ public class OrderService {
 		return repository.getAll();
 	}
 
+	public OrderEntity findById(String id) {
+        return repository.findById(id);
+    }
+	
     public void updateOrder(OrderEntity entity) {
 		repository.updateOrder(entity);
     }

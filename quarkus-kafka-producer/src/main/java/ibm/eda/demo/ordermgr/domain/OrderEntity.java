@@ -18,7 +18,9 @@ public class OrderEntity {
     public int quantity;
     public Address deliveryAddress;
     public String status;
-    
+	public String creationDate;
+	public String updateDate;
+	
 	public OrderEntity(){}
 	
 	public OrderEntity(String orderID, String productID, String customerID, int quantity, Address deliveryAddress,
@@ -30,6 +32,23 @@ public class OrderEntity {
 		this.quantity = quantity;
 		this.deliveryAddress = deliveryAddress;
 		this.status = status;
+	}
+
+	public OrderEntity(String orderID, 
+			String productID, 
+			String customerID, 
+			int quantity, 
+			Address deliveryAddress,
+			String creation,
+			String status) {
+		super();
+		this.orderID = orderID;
+		this.productID = productID;
+		this.customerID = customerID;
+		this.quantity = quantity;
+		this.deliveryAddress = deliveryAddress;
+		this.status = status;
+		this.creationDate = creation;
 	}
 	
 	public static OrderEntity from(OrderDTO orderDTO) {
