@@ -46,7 +46,7 @@ We also have defined a docker compose file to demonstrate on your laptop.
 As a pre-requisite you need an IBM Cloud Object Storage service provisioned. See the
 [Create an IBM COS Service and COS Bucket article](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/connect-cos/#create-an-ibm-cos-service-and-cos-bucket).
 
-Be sure to have docker daemon running and docker compose. If you are using Minikube
+Be sure to have docker daemon running and docker compose.
 
 * Modify the file `kustomize/services/kconnect/local/kafka-cos-sink-standalone.properties`
 with the properties to connect to your own IBM Cloud Object Storage service:
@@ -180,7 +180,7 @@ oc get kafkaconnect
 
 ## Deploy the cos sink connector
 
-Modify the kafka-cos-sink-connector.yaml with your Cloud Object Storage credential, URL, bucket...
+Modify the `kafka-cos-sink-connector.yaml` with your Cloud Object Storage credentials, URL, bucket...
 
 then deploy the connector:
 
@@ -196,13 +196,16 @@ oc exec -ti <podid> bash
 # in the pod
 curl localhost:8083/connectors
 ```
+
 ## Verify in COS the replicated records
 
 ![](docs/cos-eda-demo-bucket.png)
 
 ### For the maintainer of this tutorial
 
-Here are the needed steps as of 12/10/2021.
+Here are the needed steps to follow as of 12/10/2021.
+
+* Maintainance of the kafka connect connector in the `kustomize/services/kconnect` folder.
 
 ```sh
 # clone source 
