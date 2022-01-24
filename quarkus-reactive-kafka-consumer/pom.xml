@@ -16,6 +16,9 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.5.2.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <!--
+    <apicurio.version>2.1.4.Final</apicurio.version>
+    -->
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -53,15 +56,30 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-kafka-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-apicurio-registry-avro</artifactId>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>io.apicurio</groupId>
+      <artifactId>apicurio-registry-utils-serde</artifactId>
+      <version>${apicurio.version}</version>
+    </dependency>
+    -->
   </dependencies>
   <build>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
+        <version>${quarkus.platform.version}</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -114,6 +132,25 @@
                     <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                     <maven.home>${maven.home}</maven.home>
                   </systemPropertyVariables>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-maven-plugin</artifactId>
+            <version>${apicurio.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>register</goal>
+                </goals>
+                <configuration>
+                  <artifactType>AVRO</artifactType>
+                  <artifacts>
+                    <messages-value>${project.basedir}/src/main/avro//OrderEvent.avsc</messages-value>
+                  </artifacts>
                 </configuration>
               </execution>
             </executions>

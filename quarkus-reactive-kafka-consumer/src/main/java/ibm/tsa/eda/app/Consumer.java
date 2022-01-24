@@ -2,7 +2,11 @@ package ibm.tsa.eda.app;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Message;
+
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Consumer {
@@ -17,9 +21,15 @@ public class Consumer {
  * @param priceInUsd data sent to topic. data sent to topic should be of type double otherwise deserialization will fail
  * @return 
  */
-    @Incoming("order-stream")                    
-    public void process(double priceInUsd) {
+    @Incoming("orders")
+    public void process(Message message) {
+        IncomingKafkaRecord<String, ibm.eda.demo.ordermgr.infra.events.OrderEvent> incomingKafkaRecord =
+                (IncomingKafkaRecord<String, ibm.eda.demo.ordermgr.infra.events.OrderEvent>) message.unwrap(IncomingKafkaRecord.class);
         System.out.println("-Message Received! from kafka-");
-        System.out.println(priceInUsd);
+        System.out.println(incomingKafkaRecord.getTopic());
+        System.out.println(incomingKafkaRecord.getPartition());
+        System.out.println(incomingKafkaRecord.getOffset());
+        System.out.println(incomingKafkaRecord.getKey());
+        System.out.println(incomingKafkaRecord.getPayload());
     }
 }
