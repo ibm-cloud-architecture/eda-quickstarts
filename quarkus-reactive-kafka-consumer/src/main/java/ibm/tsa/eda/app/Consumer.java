@@ -18,8 +18,8 @@ public class Consumer {
  * @return 
  */
     @Incoming("order-stream")                    
-    public void process(double priceInUsd) {
+    public void process(Object order) {
         System.out.println("-Message Received! from kafka-");
-        System.out.println(priceInUsd);
+        System.out.println(order);
     }
 }
