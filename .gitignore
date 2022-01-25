@@ -10,3 +10,4 @@ kafka-consumer/env.sh
 reefer-ms/
 **/*.p12
 **/target/
+.vscode/
