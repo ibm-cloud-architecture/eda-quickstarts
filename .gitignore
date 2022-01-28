@@ -11,3 +11,4 @@ reefer-ms/
 **/*.p12
 **/target/
 .vscode/
+secrets/
