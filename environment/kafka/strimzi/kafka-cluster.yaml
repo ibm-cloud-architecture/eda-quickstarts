@@ -16,8 +16,9 @@ spec:
     version: 3.0.0
     authorization:
       type: simple
-      superUsers:
-        - 'ANONYMOUS'
+      # Uncomment below to enable ANONYMOUS superUser for dev/testing purposes only
+      # superUsers:
+      #   - 'ANONYMOUS'
     storage:
       type: ephemeral
     replicas: 3
