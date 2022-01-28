@@ -12,3 +12,4 @@ reefer-ms/
 **/target/
 .vscode/
 secrets/
+.DS_Store
