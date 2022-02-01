@@ -1,41 +1,27 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
+  namespace: kafka
   name: tls-user
   labels:
     strimzi.io/cluster: my-kafka
-  namespace: kafka
 spec:
   authentication:
     type: tls
   authorization:
     acls:
-      - host: '*'
-        operation: All
-        resource:
-          name: '*'
-          patternType: literal
+      - resource:
           type: topic
-        type: allow
-      - host: '*'
-        operation: All
-        resource:
           name: '*'
           patternType: literal
+        operation: All
+        host: '*'
+        type: allow
+      - resource:
           type: group
-        type: allow
-      - host: '*'
-        operation: All
-        resource:
           name: '*'
           patternType: literal
-          type: cluster
-        type: allow
-      - host: '*'
         operation: All
-        resource:
-          name: '*'
-          patternType: literal
-          type: transactionalId
+        host: '*'
         type: allow
     type: simple
