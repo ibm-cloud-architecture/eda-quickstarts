@@ -1,9 +1,21 @@
 # Cloud Object Storage Sink tutorial Project
 
-The Java Quarkus app is a generator for order events with a simple PLAINTEXT connection to
-IBM Event Streams to be source of Cloud Object Storage.
+## Overview
 
-## Development history
+This folder includes code and instructions to demonstrate how to integrate Kafka topic to a sink connector to cloud object storage. 
+The src folder defines a Java Quarkus app used to generate order events with a simple PLAINTEXT connection to 
+IBM Event Streams brokers and gitOps/services/kconnect folder includes the  Cloud Object Storage sink kafka connector configuration and image build.
+
+## Audiance
+
+Developer, architect.
+
+## Pre-requisite
+
+To run on OpenShift, you need to login as cluster administrator and use and existing deployed  Event Streams cluster. [See this tutorial]() to do so or use [the Deploy on OpenShift section below](#deploy-on-openshift).
+
+
+## What is inside
 
 The project was created with the quarkus CLI:
 
@@ -17,11 +29,33 @@ Then `DemoController.java` exposes two end points and uses reactive messaging to
 random Sale Transaction in a light version of a [TLOG](https://github.com/DFDLSchemas/IBM4690-TLOG). It is wrapped into a [CloudEvent](https://cloudevents.io/)
 using Quarkus reactive messaging.
 
-For OpenShift deployment the configuration is controlled via configuration map, and kustomize defined under `kustomize` folder.
+For OpenShift deployment, the configuration is controlled via configuration map, and kustomization defined under `gitOps` folder.
+
+### Build and package the demo app
+
+Modify the following script to change the registry and account as needed.
+
+```sh
+./scripts/buildAll.sh
+```
+
+### Build and package the kafka connector app
+
+*  build
+
+```sh
+docker build -t quay.io/ibmcase/eda-kconnect-cluster-image .
+```
+
+* Verify jars are in
+
+```sh
+docker run -ti quay.io/ibmcase/eda-kconnect-cluster-image   bash -c "ls /opt/kafka/plugins"
+```
 
 ## Run locally
 
-For development purpose you can run with Quarkus dev, which starts a local Kafka (RedPanda):
+For pure development purpose, you can continuously develop and run the application with run with `quarkus dev`, which starts a local Kafka broker (RedPanda):
 
 ```sh
 quarkus dev
@@ -31,24 +65,24 @@ quarkus dev
 
 ![](docs/swagger-ui.png)
 
-* Verify the generated message in the kafka topic:
+* If you want to verify the generated messages are in the kafka topic inside RedPanda use the `rpk` CLI, inside
+redpanda 
 
 ```sh
-docker exect -ti kafka bash
-$ cd /opt/kafka/bin
-$ ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic edademo-orders --from-beginning
+CID=$(docker ps | grep redpanda | awk '{print $1}' )
+docker exec $CID bash -c "rpk topic  consume orders -o start --pretty-print"
 ```
 
-## End to end demo
+### With docker compose
 
-We also have defined a docker compose file to demonstrate on your laptop.
+We also have defined a docker compose file to demonstrate this end to end scenario on your laptop.
 
 As a pre-requisite you need an IBM Cloud Object Storage service provisioned. See the
 [Create an IBM COS Service and COS Bucket article](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/connect-cos/#create-an-ibm-cos-service-and-cos-bucket).
 
-Be sure to have docker daemon running and docker compose.
+Be sure to have docker daemon running and docker-compose cli installed.
 
-* Modify the file `kustomize/services/kconnect/local/kafka-cos-sink-standalone.properties`
+* Modify the file `local-kconnect/tmp-kafka-cos-sink-standalone.properties` and rename it as kafka-cos-sink-standalone.properties`
 with the properties to connect to your own IBM Cloud Object Storage service:
 
 ```sh
@@ -62,7 +96,20 @@ cos.service.crn="crn:IBM_COS_CRM"
 * Start the environment
 
 ```sh
-docker compose up &
+docker-compose up -d
+```
+
+* Create the `orders` topic
+
+```sh
+./scripts/createTopics.sh 
+./scripts/listTopics.sh 
+```
+
+* Connect to Kafdrop to see the topic content:
+
+```sh
+chrome http://localhost:9000/topic/orders
 ```
 
 * Start to send some TLOG orders
@@ -84,18 +131,18 @@ You can download those records or use SQL query to access them.
 * Stop everything:
 
 ```sh
-docker compose down
+docker-compose down
 ```
 
 ## Deploy on OpenShift
 
-As a pre-requisite you need one instance of Event Streams. The kustomize folder includes
+As a pre-requisite you need one instance of Event Streams. The gitOps folder includes
 the simplest event streams cluster needed. 
 
-* Create an OpenShift project (k8s namespace) named: eda-cos
+* Create an OpenShift project (k8s namespace) named: `eda-cos`
 
   ```sh
-  oc apply -k kustomize/env/base
+  oc apply -k gitOps/env/base
   ```
 
 * Using [IBM entitled registry entitlement key](https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.2?topic=installation-entitled-registry-entitlement-keys) 
@@ -113,7 +160,7 @@ oc create secret docker-registry ibm-entitlement-key \
 * Deploy Event Streams Cluster.
  
  ```sh
- oc apply -k kustomize/services/es 
+ oc apply -k gitOps/services/es 
  # --> Results
  eventstreams.eventstreams.ibm.com/dev created
  kafkatopic.eventstreams.ibm.com/edademo-orders created
@@ -130,13 +177,12 @@ dev-kafka-0                            1/1
 dev-zookeeper-0                        1/1
 ```
 
-With this deployment there is no external route, only on bootstrap URL: `dev-kafka-bootstrap.eda-cos.svc:9092`. The Kafka listener
-is using PLAINTEXT connection. So no SSL encryption and no authentication.
+With this deployment there is no external route, only on bootstrap URL: `dev-kafka-bootstrap.eda-cos.svc:9092`. The Kafka listener is using PLAINTEXT connection. So no SSL encryption and no authentication.
 
 * Deploy the existing application (the image we built is in quay.io/ibmcase) using:
 
 ```sh
-oc apply -k kustomize/apps/eda-cos-demo/base/
+oc apply -k gitOps/apps/eda-cos-demo/base/
 ```
 
 * Test by going to the route and the swagger UI and post 5 or 10 messages. The messages should be visible in the `edademo-orders` queue.
@@ -151,11 +197,11 @@ Another way is to use curl and replace with your own deployment:
   -d '10'
   ```
 
-* As another way, you can use quarkus deployment capability:
+* As another way to deploy the app, you can use quarkus deployment capability:
 
 ```sh
 # Be sure to have created the configmap
-oc apply -f kustomize/apps/eda-cos-demo/base/configmap.yaml 
+oc apply -f gitOps/apps/eda-cos-demo/base/configmap.yaml 
 ./mvnw package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
 ```
 
@@ -163,9 +209,9 @@ Then get the routes for the `eda-code-demo` and use the swagger ui to start the 
 
 * If you plan to use a Gitops approach you can: 
 
-   * Build the image and push it to quay.io: `scripts/buildAdd.sh`. Update the image name to use your own registry.
+   * Build the image and push it to quay.io: `scripts/buildAll.sh`. Update the image name to use your own registry.
    * The service, configmap, event stream topic, and app deployment resources are created, which means
-   this `kustomize/apps` folder could be copied in a GitOps folder created by kam.
+   this `gitOps/apps` folder could be copied in a GitOps folder created by kam.
 
 ## Deploy Kafka connect
 
@@ -173,7 +219,7 @@ We have already build a kafka connect image with the Cloud Object Storage jar so
 to deploy to the `eda-cos` we need to just do:
 
 ```sh
-oc apply -f kustomize/services/kconnect/kafka-connect.yaml
+oc apply -f gitOps/services/kconnect/kafka-connect.yaml
 # Verify cluster is ready
 oc get kafkaconnect
 ```
@@ -185,7 +231,7 @@ Modify the `kafka-cos-sink-connector.yaml` with your Cloud Object Storage creden
 then deploy the connector:
 
 ```sh
-oc apply -f kustomize/services/kconnect/kafka-cos-sink-connector.yaml
+oc apply -f gitOps/services/kconnect/kafka-cos-sink-connector.yaml
 ```
 
 You can verify the connector is running by going to the connect instance
@@ -203,9 +249,9 @@ curl localhost:8083/connectors
 
 ### For the maintainer of this tutorial
 
-Here are the needed steps to follow as of 12/10/2021.
+Here are the needed steps to follow as of 2/22/2022.
 
-* Maintainance of the kafka connect connector in the `kustomize/services/kconnect` folder.
+* Maintainance of the kafka connect connector in the `src/main/kconnect` folder.
 
 ```sh
 # clone source 
@@ -216,7 +262,7 @@ sdk list java
 sdk use  java 8.0.292.j9-adpt 
 gradle shadowJar
 # mv create jars to plugin
-mv build/libs/kafka-connect-ibmcos-sink-1.0.0-all.jar kustomize/services/kconnect/my-plugins
+mv build/libs/kafka-connect-ibmcos-sink-1.0.0-all.jar src/main/kconnect/my-plugins
 # Build the docker image
 docker build -t quay.io/ibmcase/eda-cos-kconnect-cluster-image .
 docker push quay.io/ibmcase/eda-cos-kconnect-cluster-image

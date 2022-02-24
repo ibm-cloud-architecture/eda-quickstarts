@@ -1,6 +1,8 @@
 kafka-connect-ibmcos-sink/
-kustomize/services/kconnect/jb-kafka-*.*
+local-kconnect/kafka-cos*.*
+gitOps/services/kconnect/jb-kafka-*.*
 **/connect.log*
+src/main/kconnect/my-plugins/*.jar
 #Maven
 target/
 

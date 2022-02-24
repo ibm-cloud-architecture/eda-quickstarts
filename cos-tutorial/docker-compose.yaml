@@ -1,7 +1,7 @@
 version: '2'
 services:
   zookeeper:
-    image: quay.io/strimzi/kafka:latest-kafka-2.8.1
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
     container_name: zookeeper
     command: [
       "sh", "-c",
@@ -13,7 +13,7 @@ services:
       LOG_DIR: /tmp/logs
 
   kafka:
-    image: quay.io/strimzi/kafka:latest-kafka-2.8.1
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
     container_name: kafka
     command: [
       "sh", "-c",
@@ -45,22 +45,32 @@ services:
     environment:
       MP_MESSAGING_CONNECTOR_SMALLRYE_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
       MP_MESSAGING_CONNECTOR_SMALLRYE_KAFKA_SECURITY_PROTOCOL: PLAINTEXT
-      MP_MESSAGING_OUTGOING_ORDERS_TOPIC: edademo-orders
+      MP_MESSAGING_OUTGOING_ORDERS_TOPIC: orders
       JAAS_CFG: ""
       KAFKA_SSL_TRUSTSTORE_PASSWORD: ""
     depends_on:
       - kafka
   kconnect:
     container_name: kconnect
-    image: quay.io/strimzi/kafka:latest-kafka-2.8.1 
+    image: quay.io/ibmcase/eda-kconnect-cluster-image
     ports:
       - 8083:8083
     volumes:
-      - ./kustomize/services/kconnect:/tmp
+      - ./local-kconnect:/tmp
     command: [
       "sh", "-c",
       "export LOG_DIR=/tmp &&
-      bin/connect-standalone.sh /tmp/local/standalone.properties /tmp/local/kafka-cos-sink-standalone.properties"
+      bin/connect-standalone.sh /tmp/standalone.properties /tmp/kafka-cos-sink-standalone.properties"
     ]
+    depends_on:
+      - kafka
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
     depends_on:
       - kafka

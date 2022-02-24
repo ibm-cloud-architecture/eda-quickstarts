@@ -1,4 +1,0 @@
-
-resources:
-  - ./eventstreams-dev.yaml
-  - ./topic.yaml
