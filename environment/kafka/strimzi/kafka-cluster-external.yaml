@@ -32,12 +32,12 @@ spec:
         tls: true
         authentication:
           type: tls
-      - authentication:
-          type: tls
-        name: external
+      - name: external
         port: 9094
         tls: true
-        type: nodeport
+        type: route
+        authentication:
+          type: tls
   entityOperator:
     topicOperator: {}
     userOperator: {}

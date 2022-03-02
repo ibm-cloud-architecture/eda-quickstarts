@@ -5,4 +5,4 @@ metadata:
 data:
   APP_VERSION: 0.0.1
   KAFKA_BOOTSTRAP_SERVERS: <address>
-  ES_APICURIO_URL: <address>/apis/registry/v2
+  ES_APICURIO_URL: http://<addHost>apis/registry/v2
