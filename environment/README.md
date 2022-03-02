@@ -4,7 +4,15 @@ Welcome to your environment setup!
 
 The steps below will guide you towards a successful deployment of a vanilla Kafka cluster and the necessary configurations that will ensure that producers and consumers communicate with it in a secure manner.
 
-**Prerequisites**:  
+**Table of Contents**  
+[Prerequisites](#prerequisites)  
+[Step 1 - Installing & configuring your Kafka cluster](#step-1---installing--configuring-your-kafka-cluster)  
+[Step 2 - Installing Apicurio Schema Registry](#step-2---installing-apicurio-schema-registry)  
+[Step 3 - Producer / Consumer configmap](#step-3---producer--consumer-configmap)  
+[Step 4 - Managing certificates](#step-4---managing-certificates)  
+
+
+#### **Prerequisites**:  
 [RedHat OpenShift (OCP) 4.6+](https://docs.openshift.com/container-platform/4.8/welcome/index.html)  
 [Strimzi Operator](https://strimzi.io/documentation/) (deploy and manage Kafka cluster)  
 OpenShift CLI (execute `oc` commands)
