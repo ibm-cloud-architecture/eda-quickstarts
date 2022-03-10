@@ -10,5 +10,5 @@ spec:
     port: 8080
     targetPort: 8080
   selector:
-    app.kubernetes.io/name: es-demo
+    name: es-demo
   type: ClusterIP
