@@ -25,9 +25,9 @@ services:
         hostname: kafka1
         container_name: kafka1
         command: [
-        "sh", "-c",
-        "bin/kafka-server-start.sh config/server.properties --override broker.id=$${KAFKA_BROKER_ID} --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
-        ]
+            "sh", "-c",
+            "bin/kafka-server-start.sh config/server.properties --override broker.id=$${KAFKA_BROKER_ID} --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
+            ]
         ports:
             - "29091:29091"
             - "9091:9091"
@@ -52,9 +52,9 @@ services:
         hostname: kafka2
         container_name: kafka2
         command: [
-        "sh", "-c",
-        "bin/kafka-server-start.sh config/server.properties --override broker.id=$${KAFKA_BROKER_ID} --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
-        ]
+            "sh", "-c",
+            "bin/kafka-server-start.sh config/server.properties --override broker.id=$${KAFKA_BROKER_ID} --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
+            ]
         ports:
             - "29092:29092"
             - "9092:9092"
@@ -77,9 +77,9 @@ services:
         hostname: kafka3
         container_name: kafka3
         command: [
-        "sh", "-c",
-        "bin/kafka-server-start.sh config/server.properties --override broker.id=$${KAFKA_BROKER_ID} --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
-        ]
+            "sh", "-c",
+            "bin/kafka-server-start.sh config/server.properties --override broker.id=$${KAFKA_BROKER_ID} --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
+            ]
         ports:
             - "29093:29093"
             - "9093:9093"

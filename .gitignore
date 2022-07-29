@@ -12,4 +12,5 @@ reefer-ms/
 **/target/
 .vscode/
 secrets/
+.idea/
 .DS_Store

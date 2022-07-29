@@ -1,3 +1,4 @@
+# Dockerfile created from --> https://cdmana.com/2021/11/20211129141414212U.html
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 
 
 ARG JAVA_PACKAGE=java-11-openjdk-headless

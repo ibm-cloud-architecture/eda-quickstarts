@@ -21,39 +21,24 @@ spec:
         - name: es-demo
           image: quay.io/ibmcase/es-demo
           imagePullPolicy: Always
-          args:
-            -  -Dproperties_path=/deployments/cfg/kafka.properties
           env:
           - name: JAVA_APP_JAR
             value: /deployments/demo-all.jar
-          - name: SSL_TRUSTSTORE_LOCATION
-            value: /deployments/certs/truststore.p12
-          - name: properties_path
-            value: /deployments/cfg/
+          - name: JAVA_OPTIONS
+            value: '-Dproperties_path=/deployments/cfg/kafka.properties'
           ports:
           - containerPort: 8080
             name: http
             protocol: TCP
           volumeMounts:
-            - mountPath: /deployments/cfg/kafka.properties
-              name: properties
+            - name: all-in-one
+              mountPath: "/deployments/cfg"
               readOnly: true
-              subPath: ""
-            - mountPath: /deployments/certs
-              name: kafka-cert
-              readOnly: true
-              subPath: ""
       volumes:
-      - name: properties
-        secret:
-          secretName: demo-app-secret
-          items:
-            - key: kafka.properties
-              path: kafka.properties
-      - name: kafka-cert
-        secret:
-          optional: true
-          secretName: truststore-cert
-          items:  
-            - key: truststore.p12
-              path: truststore.p12
+        - name: all-in-one
+          projected:
+            sources:
+            - secret:
+                name: demo-app-secret
+            - secret:
+                name: truststore-cert

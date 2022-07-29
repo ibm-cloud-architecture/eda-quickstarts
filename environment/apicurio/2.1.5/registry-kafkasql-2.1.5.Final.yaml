@@ -2,7 +2,6 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: my-apicurioregistry-kafkasql-deployment
-  namespace: kafka
   labels:
     apicur.io/name: my-apicurioregistry-kafkasql
     apicur.io/type: apicurio-registry
@@ -122,3 +121,49 @@ spec:
       maxSurge: 1
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-apicurioregistry-kafkasql-service
+  labels:
+    apicur.io/name: my-apicurioregistry-kafkasql
+    apicur.io/type: apicurio-registry
+    apicur.io/version: 2.1.5.Final
+    app: my-apicurioregistry-kafkasql
+    app.kubernetes.io/instance: my-apicurioregistry-kafkasql
+    app.kubernetes.io/name: apicurio-registry
+    app.kubernetes.io/version: 2.1.5.Final
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: my-apicurioregistry-kafkasql
+  type: ClusterIP
+  sessionAffinity: None
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: my-apicurioregistry-kafkasql-service
+  labels:
+    apicur.io/name: my-apicurioregistry-kafkasql
+    apicur.io/type: apicurio-registry
+    apicur.io/version: 2.1.5.Final
+    app: my-apicurioregistry-kafkasql
+    app.kubernetes.io/instance: my-apicurioregistry-kafkasql
+    app.kubernetes.io/name: apicurio-registry
+    app.kubernetes.io/version: 2.1.5.Final
+spec:
+  path: /
+  to:
+    kind: Service
+    name: my-apicurioregistry-kafkasql-service
+  port:
+    targetPort: 8080
