@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: qs-order-rms
+    app: qs-order-ms
     app.kubernetes.io/name: qs-order-rms
     app.kubernetes.io/version: 1.0.0
   name: eda-qs-order-rms

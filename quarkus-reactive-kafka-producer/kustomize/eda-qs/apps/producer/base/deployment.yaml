@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+  labels:
+    app: qs-order-rms
+    app.kubernetes.io/name: qs-order-rms
+    app.kubernetes.io/version: 1.0.0
+  name: qs-order-rms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qs-order-rms
+      app.kubernetes.io/version: 1.0.0
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+      labels:
+        app: qs-order-rms
+        app.kubernetes.io/name: qs-order-rms
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - args:
+        - -Dquarkus.http.host=0.0.0.0
+        - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+        - -jar
+        - /deployments/quarkus-run.jar
+        command:
+        - java
+        image: quay.io/ibmcase/eda-qs-order-rms
+        imagePullPolicy: Always
+        # imagePullPolicy: IfNotPresent
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JAVA_APP_JAR
+          value: /deployments/quarkus-run.jar
+        - name: KAFKA_SSL_TRUSTSTORE_LOCATION
+          value: /deployments/certs/server/ca.p12
+        - name: SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION
+          value: /deployments/certs/server/ca.p12
+        - name: KAFKA_SSL_TRUSTSTORE_TYPE
+          value: PKCS12
+        - name: KAFKA_SSL_PROTOCOL
+          value: TLSv1.2
+        - name: KAFKA_SECURITY_PROTOCOL
+          value: SASL_SSL
+        - name: KAFKA_SASL_MECHANISM
+          value: SCRAM-SHA-512
+        - name: KAFKA_USER
+          value: eda-qs-scram-user
+        - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ca.password
+              name: es-demo-cluster-ca-cert
+        - name: SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ca.password
+              name: es-demo-cluster-ca-cert
+        - name: KAFKA_SASL_JAAS_CONFIG
+          valueFrom:
+            secretKeyRef:
+              key: sasl.jaas.config
+              name: eda-qs-scram-user 
+        envFrom:
+        - configMapRef:
+            name: qs-order-mgr-cm
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/live
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /q/health/ready
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: qs-order-rms
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /deployments/certs/server
+          name: kafka-cert
+          readOnly: false
+          subPath: ""
+      serviceAccount: qs-prod-sa
+      volumes:
+      - name: kafka-cert
+        secret:
+          optional: true
+          secretName: es-demo-cluster-ca-cert
+

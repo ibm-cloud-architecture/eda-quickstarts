@@ -1,0 +1,13 @@
+{
+ 
+    "customerID": "C20",
+      "productID": "P02",
+      "quantity": 20,
+      "destinationAddress": {
+        "street": "1st route in town street",
+        "city": "san jose",
+        "country": "USA",
+        "state": "CA",
+        "zipcode": "91000"
+      }
+  }

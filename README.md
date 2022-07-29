@@ -1,6 +1,6 @@
 # EDA Quickstarts
 
-UNDER CONSTRUCTION - Update 01/05/2022
+UNDER CONSTRUCTION - Updated 07/28/2022
 
 This project includes a set of getting started code templates for your event driven projects. 
 

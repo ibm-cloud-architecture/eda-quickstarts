@@ -1,0 +1,12 @@
+- op: replace
+  path: /spec/version
+  value: 11.0.2
+- op: replace
+  path: /spec/strimziOverrides/kafka/config/inter.broker.protocol.version
+  value: '3.2'
+- op: replace
+  path: /spec/strimziOverrides/kafka/config/log.message.format.version
+  value: '3.2'
+- op: replace
+  path: /apiVersion
+  value: eventstreams.ibm.com/v1beta2

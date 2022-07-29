@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Event Driven Kafka Producer using reactive messaging</title>
     <style>
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             margin-bottom: 0.5rem;
             font-weight: 400;
             line-height: 1.5;
@@ -20,7 +26,6 @@
 
         h3 {
             font-size: 1.75rem
-
         }
 
         h4 {
@@ -44,7 +49,7 @@
             font-size: 2.7rem;
             margin: 0;
             padding: 2rem 1rem;
-            background-color: #0d1c2c;
+            background-color: #087dfa;
             color: white;
         }
 
@@ -106,60 +111,54 @@
         }
     </style>
 </head>
+
 <body>
+    <div class="banner lead">
+        Your new Event Driven Kafka Producer with reactive messaging is ready!
+    </div>
 
-<div class="banner lead">
-    Your new Event Driven Kafka Producer with reactive messaging is ready!
-</div>
+    <div class="container">
+        <div class="left-column">
 
-<div class="container">
-    <div class="left-column">
-        <p class="lead"> Congratulations, you have created a new Event Driven Quarkus cloud application.</p>
-
-        <p>This page is served by Quarkus. The source is in
-            <code>src/main/resources/META-INF/resources/index.html</code>.</p>
-
-        <h2>What are your next steps?</h2>
-
-        <p>If not already done, run the application in <em>dev mode</em> using: <code>./mvnw compile quarkus:dev</code>.
-        </p>
-        <ul>
-            <li>Your static assets are located in <code>src/main/resources/META-INF/resources</code>.</li>
-            <li>Configure your application in <code>src/main/resources/application.properties</code>.</li>
-            <li>Quarkus now ships with a <a href="/q/dev/">Dev UI</a> (available in dev mode only)</li>
-            <li>Play with the provided code located in <code>src/main/java</code>:</li>
-        </ul>
-                <div class="provided-code">
-            <h3>RESTEasy JAX-RS</h3>
-            <p>Easily start your RESTful Web Services by looking at the app version</p>
-            <p><code>@Path: <a href="/api/v1/version" class="path-link" target="_blank">/api/v1/version</a></code></p>
-            <p>Or better use the Swagger UI</p>
-            <p><code>@Path: <a href="/q/swagger-ui" class="path-link" target="_blank">/q/swagger-ui</a></code></p>
-            
-            <p><a href="https://quarkus.io/guides/getting-started#the-jax-rs-resources" class="guide-link" target="_blank">Related guide section...</a></p>
+            <div class="provided-code">
+                <h3>RESTEasy JAX-RS</h3>
+                <p>Easily start your RESTful Web Services by looking at the app version</p>
+                <p><code>@Path: <a href="/api/v1/version" class="path-link" target="_blank">/api/v1/version</a></code></p>
+                <p>Or better use the Swagger UI</p>
+                <p><code>@Path: <a href="/q/swagger-ui" class="path-link" target="_blank">/q/swagger-ui</a></code></p>
+            </div>
         </div>
+        <div class="right-column">
+            <div class="right-section">
+                <h3>Application</h3>
+                <ul>
+                    <li>GroupId: <code>ibm.eda.demo</code></li>
+                    <li>ArtifactId: <code>eda-qs-order-rms</code></li>
+                    <li>Version: <code>0.0.1</code></li>
+                    <li>Quarkus Version: <code>2.11.1.Final</code></li>
+                </ul>
+            </div>
+            <div class="right-section">
+                <h3>Do you like Quarkus?</h3>
+                <ul>
+                    <li>Go give it a star on <a href="https://github.com/quarkusio/quarkus">GitHub</a>.</li>
+                </ul>
+            </div>
+            <div class="right-section">
+                <h3>More reading</h3>
+                <ul>
+                    <li><a href="https://github.com/ibm-cloud-architecture/eda-quickstarts" target="_blank">IBM EDA quickstart code</a></li>
+                    <li><a href="https://ibm-cloud-architecture.github.io/refarch-eda" target="_blank">IBM EDA reference architecture</a></li>
+                    <li><a href="https://quarkus.io" target="_blank">Quarkus Web Site</a></li>
+                    <li><a href="https://quarkus.io/guides/maven-tooling.html" target="_blank">Setup your IDE for Quarkus</a></li>
+                    <li><a href="https://quarkus.io/guides/getting-started.html" target="_blank">Getting started with Quarkus</a></li>
+                </ul>
+            </div>
+        </div>
+
+
 
     </div>
-    <div class="right-column">
-        <div class="right-section">
-            <h3>Application</h3>
-            <ul>
-                <li>GroupId: <code>ibm.eda.demo</code></li>
-                <li>ArtifactId: <code>eda-qs-order-rms</code></li>
-                <li>Version: <code>1.0.0</code></li>
-                <li>Quarkus Version: <code>2.5.1.Final</code></li>
-            </ul>
-        </div>
-        <div class="right-section">
-            <h3>More reading</h3>
-            <ul>
-                <li><a href="https://quarkus.io/guides/maven-tooling" target="_blank">Setup your IDE</a></li>
-                <li><a href="https://quarkus.io/guides/getting-started" target="_blank">Getting started</a></li>
-                <li><a href="https://quarkus.io/guides/" target="_blank">All guides</a></li>
-                <li><a href="https://quarkus.io" target="_blank">Quarkus Web Site</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
 </body>
+
 </html>

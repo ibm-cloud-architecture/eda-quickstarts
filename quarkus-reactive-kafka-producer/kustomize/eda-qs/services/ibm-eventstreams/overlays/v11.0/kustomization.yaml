@@ -1,0 +1,43 @@
+bases:
+  - ../../base
+
+patchesJson6902:
+- path: patch-version.yaml
+  target:
+    kind: EventStreams
+    name: dev
+- target:
+    kind: KafkaTopic
+    name:  rt-items
+  patch: |-
+    - op: replace
+      path: /apiVersion
+      value: eventstreams.ibm.com/v1beta2
+- target:
+    kind: KafkaTopic
+    name:  rt-item.inventory
+  patch: |-
+    - op: replace
+      path: /apiVersion
+      value: eventstreams.ibm.com/v1beta2
+- target:
+    kind: KafkaTopic
+    name:   rt-store.inventory
+  patch: |-
+    - op: replace
+      path: /apiVersion
+      value: eventstreams.ibm.com/v1beta2
+- target:
+    kind: KafkaUser
+    name:   scram-user
+  patch: |-
+    - op: replace
+      path: /apiVersion
+      value: eventstreams.ibm.com/v1beta2
+- target:
+    kind: KafkaUser
+    name:   tls-user
+  patch: |-
+    - op: replace
+      path: /apiVersion
+      value: eventstreams.ibm.com/v1beta2

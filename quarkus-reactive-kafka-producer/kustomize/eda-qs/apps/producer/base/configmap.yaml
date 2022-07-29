@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qs-order-mgr-cm
+data:
+  KAFKA_BOOTSTRAP_SERVERS: es-demo-kafka-bootstrap-cp4i-eventstreams.apps.ahsoka.coc-ibm.com:443
+  # es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093
+  REGISTRY_URL: https://es-demo-ibm-es-ac-reg-external-cp4i-eventstreams.apps.ahsoka.coc-ibm.com/apis/registry/v2
+  #apis/registry/v2
+  KAFKA_TOPIC_NAME: eda-qs-orders
+  KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ''
+  
+
+  

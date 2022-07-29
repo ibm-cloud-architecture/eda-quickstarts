@@ -1,0 +1,6 @@
+resources: 
+  - ./topic.yaml
+  - ./tls-user.yaml
+  - ./scram-user.yaml
+  - ./cp-ca-secret.yaml
+  - ./cp-tls-usr-secret.yaml
