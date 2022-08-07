@@ -49,10 +49,24 @@ spec:
           value: /deployments/quarkus-run.jar
         - name: KAFKA_SSL_TRUSTSTORE_LOCATION
           value: /deployments/certs/server/ca.p12
-        - name: SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION
-          value: /deployments/certs/server/ca.p12
         - name: KAFKA_SSL_TRUSTSTORE_TYPE
           value: PKCS12
+        - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ca.password
+              name: es-demo-cluster-ca-cert
+        - name: KAFKA_SSL_KEYSTORE_LOCATION
+          value: /deployments/certs/user/user.p12
+        - name: KAFKA_SSL_KEYSTORE_TYPE
+          value: PKCS12
+        - name: KAFKA_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: user.password
+              name: eda-qs-tls-user
+        - name: KAFKA_SECURITY_PROTOCOL
+          value: SSL
         - name: KAFKA_SSL_PROTOCOL
           value: TLSv1.2
         - name: KAFKA_SECURITY_PROTOCOL
@@ -60,22 +74,7 @@ spec:
         - name: KAFKA_SASL_MECHANISM
           value: SCRAM-SHA-512
         - name: KAFKA_USER
-          value: eda-qs-scram-user
-        - name: KAFKA_SSL_TRUSTSTORE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: ca.password
-              name: es-demo-cluster-ca-cert
-        - name: SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: ca.password
-              name: es-demo-cluster-ca-cert
-        - name: KAFKA_SASL_JAAS_CONFIG
-          valueFrom:
-            secretKeyRef:
-              key: sasl.jaas.config
-              name: eda-qs-scram-user 
+          value: eda-qs-tls-user 
         envFrom:
         - configMapRef:
             name: qs-order-mgr-cm
@@ -109,10 +108,17 @@ spec:
           name: kafka-cert
           readOnly: false
           subPath: ""
+        - mountPath: /deployments/certs/user
+          name: user-cert
+          readOnly: false
+          subPath: ""
       serviceAccount: qs-prod-sa
       volumes:
       - name: kafka-cert
         secret:
           optional: true
           secretName: es-demo-cluster-ca-cert
-
+      - name: user-cert
+        secret:
+          optional: true
+          secretName: eda-qs-tls-user

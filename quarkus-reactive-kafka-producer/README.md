@@ -151,7 +151,7 @@ quarkus dev
 
 ### Pre-requisites
 
-We assume an IBM Event Streams is already deployed in the namespace `cp4i-eventstreams` and configured to have mutual TLS for authentication. As an alternative, it is possible to install Strimzi in the namespace where this application will be deploy.
+We assume an IBM Event Streams is already deployed in the namespace `cp4i-eventstreams` and configured to have mutual TLS for authentication and SCRAM for external route. As an alternative, it is possible to install Strimzi in the namespace where this application will be deploy.
 
 ## Steps to deploy the application
 
@@ -166,6 +166,7 @@ We assume an IBM Event Streams is already deployed in the namespace `cp4i-events
     ```sh
     oc project eda-qs
     ```
+1. Ensure you have added the schema in `src/main/avro` to the Schema registry.
 
 1. Create topic, tls user, and copy secrets for CA certificate and TLS user client certification.
 
