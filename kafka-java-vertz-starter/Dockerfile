@@ -15,7 +15,7 @@ RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
     && chown 1001:root /deployments \
     && curl https://repo1.maven.org/maven2/io/fabric8/run-java-sh/${RUN_JAVA_VERSION}/run-java-sh-${RUN_JAVA_VERSION}-sh.sh -o /deployments/run-java.sh \
     && chown 1001 /deployments/run-java.sh \
-    && chmod 540 /deployments/run-java.sh \
+    && chmod 755 /deployments/run-java.sh \
     && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/lib/security/java.security
 
 COPY --chown=1001 demo-all.jar /deployments/
